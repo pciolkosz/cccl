@@ -21,3 +21,11 @@ All APIs available in CUDA Experimental are not considered stable and can change
 
 Features are exposed here for the CUDA C++ community to experiment with and provide feedback on how to shape it to best fit their use cases.
 Once we become confident a feature is ready and would be a great permanent addition in CCCL, it will become a part of some other CCCL library with a stable API.
+
+Projects available in CUDA Experimental
+**************************************************
+
+* :ref:`Thread Hierarchy Description <thread_hierarchy_description>`
+
+  * Describe a hierarchy of CUDA threads with a mix of static and dynamic information
+  * Count and enumerate CUDA threads
