@@ -29,7 +29,7 @@ sphinx_exclude_patterns = [
 # defaults to an empty list.
 doxygen_input = [
     "../include/cuda/experimental/*.cuh",
-    "../include/cuda/experimental/detail/*.cuh",
+    "../include/cuda/experimental/__hierarchy/*.cuh",
 ]
 
 # Using wildcards is also supported in `doxygen_input`. Assuming there are no other `.h` files
@@ -66,7 +66,9 @@ doxygen_predefined = [
     "__forceinline__",
     "__declspec(x)=",
     "__align__(x)=",
-    "_LIBCUDACXX_CPO_ACCESSIBILITY",
+    "_LIBCUDACXX_CPO_ACCESSIBILITY=constexpr",
+    "_CCCL_STD_VER=2017",
+    "_LIBCUDACXX_INLINE_VAR"
 ]
 
 # make sure to use ./fetch_imgs.sh
