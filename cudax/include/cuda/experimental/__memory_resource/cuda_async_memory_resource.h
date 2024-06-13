@@ -94,7 +94,6 @@ public:
   _CCCL_NODISCARD void* allocate(const size_t __bytes,
                                  const size_t __alignment = _CUDA_VMR::default_cuda_malloc_alignment)
   {
-    // We need to ensure that the provided alignment matches the minimal provided alignment
     if (!__is_valid_alignment(__alignment))
     {
       _CUDA_VSTD_NOVERSION::__throw_bad_alloc();
@@ -119,9 +118,8 @@ public:
    */
   void deallocate(void* __ptr, const size_t, const size_t __alignment = _CUDA_VMR::default_cuda_malloc_alignment)
   {
-    // We need to ensure that the provided alignment matches the minimal provided alignment
     _LIBCUDACXX_ASSERT(__is_valid_alignment(__alignment),
-                       "Invalid alignment passed to cuda_memory_resource::deallocate.");
+                       "Invalid alignment passed to cuda_async_memory_resource::deallocate.");
     _CCCL_ASSERT_CUDA_API(::cudaFreeAsync, "cuda_async_memory_resource::deallocate failed", __ptr, ::cudaStream_t{0});
     (void) __alignment;
   }
@@ -136,7 +134,6 @@ public:
    */
   _CCCL_NODISCARD void* allocate_async(const size_t __bytes, const size_t __alignment, const ::cuda::stream_ref __stream)
   {
-    // We need to ensure that the provided alignment matches the minimal provided alignment
     if (!__is_valid_alignment(__alignment))
     {
       _CUDA_VSTD_NOVERSION::__throw_bad_alloc();
@@ -177,7 +174,7 @@ public:
   {
     // We need to ensure that the provided alignment matches the minimal provided alignment
     _LIBCUDACXX_ASSERT(__is_valid_alignment(__alignment),
-                       "Invalid alignment passed to cuda_memory_resource::deallocate.");
+                       "Invalid alignment passed to cuda_async_memory_resource::deallocate.");
     deallocate_async(__ptr, __bytes, __stream);
     (void) __alignment;
   }
@@ -214,8 +211,8 @@ public:
 #    endif // _CCCL_STD_VER <= 2017
 
   /**
-   * @brief Equality comparison between a cuda_memory_resource and another resource
-   * @param __lhs The cuda_memory_resource
+   * @brief Equality comparison between a cuda_async_memory_resource and another resource
+   * @param __lhs The cuda_async_memory_resource
    * @param __rhs The resource to compare to
    * @return If the underlying types are equality comparable, returns the result of equality comparison of both
    * resources. Otherwise, returns false.
@@ -229,7 +226,7 @@ public:
   }
 #    if _CCCL_STD_VER <= 2017
   /**
-   * @copydoc cuda_async_memory_resource::operator==<_Resource>(cuda_memory_resource const&, _Resource const&)
+   * @copydoc cuda_async_memory_resource::operator==<_Resource>(cuda_async_memory_resource const&, _Resource const&)
    */
   template <class _Resource>
   _CCCL_NODISCARD_FRIEND auto operator==(_Resource const& __rhs, cuda_async_memory_resource const& __lhs) noexcept
@@ -239,7 +236,7 @@ public:
         == _CUDA_VMR::resource_ref<>{const_cast<_Resource&>(__rhs)};
   }
   /**
-   * @copydoc cuda_async_memory_resource::operator==<_Resource>(cuda_memory_resource const&, _Resource const&)
+   * @copydoc cuda_async_memory_resource::operator==<_Resource>(cuda_async_memory_resource const&, _Resource const&)
    */
   template <class _Resource>
   _CCCL_NODISCARD_FRIEND auto operator!=(cuda_async_memory_resource const& __lhs, _Resource const& __rhs) noexcept
@@ -249,7 +246,7 @@ public:
         != _CUDA_VMR::resource_ref<>{const_cast<_Resource&>(__rhs)};
   }
   /**
-   * @copydoc cuda_async_memory_resource::operator==<_Resource>(cuda_memory_resource const&, _Resource const&)
+   * @copydoc cuda_async_memory_resource::operator==<_Resource>(cuda_async_memory_resource const&, _Resource const&)
    */
   template <class _Resource>
   _CCCL_NODISCARD_FRIEND auto operator!=(_Resource const& __rhs, cuda_async_memory_resource const& __lhs) noexcept
