@@ -41,12 +41,10 @@
 namespace cuda::experimental::mr
 {
 
-/**
- * @brief  Checks whether the current device supports cudaMallocAsync
- * @param __device_id The device id of the current device
- * @throws cuda_error if cudaDeviceGetAttribute failed
- * @returns true if cudaDevAttrMemoryPoolsSupported is not zero
- */
+//! @brief  Checks whether the current device supports cudaMallocAsync
+//! @param device_id The device id of the current device
+//! @throws cuda_error if cudaDeviceGetAttribute failed
+//! @returns true if cudaDevAttrMemoryPoolsSupported is not zero
 _CCCL_NODISCARD inline bool __device_supports_pools(const int __device_id)
 {
   int __pool_is_supported = 0;
@@ -59,12 +57,10 @@ _CCCL_NODISCARD inline bool __device_supports_pools(const int __device_id)
   return __pool_is_supported != 0;
 }
 
-/**
- * @brief  Returns the default cudaMemPool_t from the current device
- * @param __device_id The device id of the current device
- * @throws cuda_error if retrieving the default cudaMemPool_t fails
- * @returns The default memory pool of the current device
- */
+//! @brief  Returns the default ``cudaMemPool_t`` from the current device
+//! @param device_id The device id of the current device
+//! @throws cuda_error if retrieving the default ``cudaMemPool_t`` fails
+//! @returns The default memory pool of the current device
 _CCCL_NODISCARD inline cudaMemPool_t __get_default_mem_pool(const int __device_id)
 {
   _LIBCUDACXX_ASSERT(_CUDA_VMR::__device_supports_pools(__device_id), "cudaMallocAsync not supported");
@@ -74,13 +70,10 @@ _CCCL_NODISCARD inline cudaMemPool_t __get_default_mem_pool(const int __device_i
   return __pool;
 }
 
-/**
- * @brief Internal redefinition of cudaMemAllocationHandleType
- *
- * @note We need to define our own enum here because the earliest CUDA runtime version that supports asynchronous
- * memory pools (CUDA 11.2) did not support these flags. See the `cudaMemAllocationHandleType` docs at
- * https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html
- */
+//! @brief Internal redefinition of ``cudaMemAllocationHandleType``
+//! @note We need to define our own enum here because the earliest CUDA runtime version that supports asynchronous
+//! memory pools (CUDA 11.2) did not support these flags. See the `cudaMemAllocationHandleType docs
+//! <https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html>`__
 enum class cudaMemAllocationHandleType
 {
   cudaMemHandleTypeNone                = 0 << 0, ///< Does not allow any export mechanism.
@@ -90,12 +83,8 @@ enum class cudaMemAllocationHandleType
   cudaMemHandleTypeFabric   = 0 << 4, ///< Allows a fabric handle to be used for exporting. (cudaMemFabricHandle_t)
 };
 
-/**
- * @brief `cuda_memory_pool_properties` is a wrapper around a properties passed to `cuda_memory_pool` to create a cuda
- * memory pool
- *
- * See https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__MEMORY__POOLS.html
- */
+//! @brief \c cuda_memory_pool_properties is a wrapper around properties passed to \c cuda_memory_pool to create a
+//! <a href="https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__MEMORY__POOLS.html">cudaMemPool_t</a>.
 struct cuda_memory_pool_properties
 {
   size_t initial_pool_size                           = 0;
@@ -103,26 +92,20 @@ struct cuda_memory_pool_properties
   cudaMemAllocationHandleType allocation_handle_type = cudaMemAllocationHandleType::cudaMemHandleTypeNone;
 };
 
-/**
- * @brief `cuda_memory_pool` is a simple wrapper around a `cudaMemPool_t`
- *
- * See https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__MEMORY__POOLS.html
- */
+//! @brief \c cuda_memory_pool is a simple wrapper around a
+//! <a href="https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__MEMORY__POOLS.html">cudaMemPool_t</a>
 class cuda_memory_pool
 {
 private:
   ::cudaMemPool_t __pool_handle_ = nullptr;
 
-  /**
-   * @brief Check whether the specified `cudaMemAllocationHandleType` is supported on the present
-   * CUDA driver/runtime version.
-   *
-   * @note This query was introduced in CUDA 11.3 so on CUDA 11.2 this function will only return
-   * true for `cudaMemHandleTypeNone`.
-   *
-   * @param handle_type An IPC export handle type to check for support.
-   * @return true if the handle type is supported by cudaDevAttrMemoryPoolSupportedHandleTypes
-   */
+  //! @brief Check whether the specified `cudaMemAllocationHandleType` is supported on the present
+  //! CUDA driver/runtime version.
+  //! @note This query was introduced in CUDA 11.3 so on CUDA 11.2 this function will only return
+  //! true for `cudaMemHandleTypeNone`.
+  //! @param device_id The id of the current device.
+  //! @param handle_type An IPC export handle type to check for support.
+  //! @return true if the handle type is supported by cudaDevAttrMemoryPoolSupportedHandleTypes
   _CCCL_NODISCARD static bool
   __cuda_supports_export_handle_type(const int __device_id, cudaMemAllocationHandleType __handle_type)
   {
@@ -148,11 +131,9 @@ private:
     return (static_cast<int>(__handle_type) & __supported_handles) == static_cast<int>(__handle_type);
   }
 
-  /**
-   * @brief  Creates the cudaMemPool from the passed in arguments
-   * @throws cuda_error if the creation of the cuda memory pool failed
-   * @returns The created cuda memory pool
-   */
+  //! @brief  Creates the cudaMemPool from the passed in arguments
+  //! @throws cuda_error If the creation of the cuda memory pool failed
+  //! @returns The created cuda memory pool
   _CCCL_NODISCARD static cudaMemPool_t
   __create_cuda_mempool(const int __device_id, cuda_memory_pool_properties __properties) noexcept
   {
@@ -211,25 +192,17 @@ private:
   }
 
 public:
-  /**
-   * @brief Constructs a cuda_memory_pool with the optionally specified initial pool size
-   * and release threshold.
-   *
-   * If the pool size grows beyond the release threshold, unused memory held by the pool will be
-   * released at the next synchronization event.
-   *
-   * @throws ::cuda::cuda_error if the CUDA version does not support `cudaMallocAsync`
-   *
-   * @param __device_id The device id of the device the stream pool is constructed on.
-   * @param __pool_properties Optional, additional properties of the pool to be created
-   */
+  //! @brief Constructs a \c cuda_memory_pool with the optionally specified initial pool size and release threshold.
+  //! If the pool size grows beyond the release threshold, unused memory held by the pool will be released at the next
+  //! synchronization event.
+  //! @throws cuda_error if the CUDA version does not support ``cudaMallocAsync``
+  //! @param device_id The device id of the device the stream pool is constructed on.
+  //! @param pool_properties Optional, additional properties of the pool to be created
   explicit cuda_memory_pool(const int __device_id, cuda_memory_pool_properties __properties = {})
       : __pool_handle_(__create_cuda_mempool(__device_id, __properties))
   {}
 
-  /**
-   * @brief Disables construction from a plain `cudaMemPool_t`. We want to ensure clean ownership semantics
-   */
+  //! @brief Disables construction from a plain `cudaMemPool_t`. We want to ensure clean ownership semantics
   cuda_memory_pool(::cudaMemPool_t) = delete;
 
   cuda_memory_pool(cuda_memory_pool const&)            = delete;
@@ -237,69 +210,57 @@ public:
   cuda_memory_pool& operator=(cuda_memory_pool const&) = delete;
   cuda_memory_pool& operator=(cuda_memory_pool&&)      = delete;
 
-  /**
-   * @brief Destroys the `cuda_memory_pool` by releasing the internal cudaMemPool_t.
-   */
+  //! @brief Destroys the \c cuda_memory_pool by releasing the internal ``cudaMemPool_t``.
   ~cuda_memory_pool() noexcept
   {
     _CCCL_ASSERT_CUDA_API(::cudaMemPoolDestroy, "~cuda_memory_pool() failed to destroy pool", __pool_handle_);
   }
 
-  /**
-   * @brief Equality comparison with another cuda_memory_pool
-   * @return true if the stored cudaMemPool_t are equal
-   */
+  //! @brief Equality comparison with another cuda_memory_pool
+  //! @return true if the stored ``cudaMemPool_t`` are equal
   _CCCL_NODISCARD constexpr bool operator==(cuda_memory_pool const& __rhs) const noexcept
   {
     return __pool_handle_ == __rhs.__pool_handle_;
   }
+
 #    if _CCCL_STD_VER <= 2017
-  /**
-   * @brief Inequality comparison with another cuda_memory_pool
-   * @return true if the stored cudaMemPool_t are not equal
-   */
+  //! @brief Inequality comparison with another cuda_memory_pool
+  //! @return true if the stored ``cudaMemPool_t`` are not equal
   _CCCL_NODISCARD constexpr bool operator!=(cuda_memory_pool const& __rhs) const noexcept
   {
     return __pool_handle_ != __rhs.__pool_handle_;
   }
 #    endif // _CCCL_STD_VER <= 2017
 
-  /**
-   * @brief Equality comparison with a cudaMemPool_t
-   * @param __rhs A cudaMemPool_t
-   * @return true if the stored cudaMemPool_t is equal to \p __rhs
-   */
+  //! @brief Equality comparison with a cudaMemPool_t
+  //! @param rhs A cudaMemPool_t
+  //! @return true if the stored ``cudaMemPool_t`` is equal to \p rhs
   _CCCL_NODISCARD_FRIEND constexpr bool operator==(cuda_memory_pool const& __lhs, ::cudaMemPool_t __rhs) noexcept
   {
     return __lhs.__pool_handle_ == __rhs;
   }
 #    if _CCCL_STD_VER <= 2017
-  /**
-   * @copydoc cuda_memory_pool::operator==(cuda_memory_pool const&, ::cudaMemPool_t)
-   */
+
+  //! @copydoc cuda_memory_pool::operator==(cuda_memory_pool const&, ::cudaMemPool_t)
   _CCCL_NODISCARD_FRIEND constexpr bool operator==(::cudaMemPool_t __lhs, cuda_memory_pool const& __rhs) noexcept
   {
     return __rhs.__pool_handle_ == __lhs;
   }
-  /**
-   * @copydoc cuda_memory_pool::operator==(cuda_memory_pool const&, ::cudaMemPool_t)
-   */
+
+  //! @copydoc cuda_memory_pool::operator==(cuda_memory_pool const&, ::cudaMemPool_t)
   _CCCL_NODISCARD_FRIEND constexpr bool operator!=(cuda_memory_pool const& __lhs, ::cudaMemPool_t __rhs) noexcept
   {
     return __lhs.__pool_handle_ != __rhs;
   }
-  /**
-   * @copydoc cuda_memory_pool::operator==(cuda_memory_pool const&, ::cudaMemPool_t)
-   */
+
+  //! @copydoc cuda_memory_pool::operator==(cuda_memory_pool const&, ::cudaMemPool_t)
   _CCCL_NODISCARD_FRIEND constexpr bool operator!=(::cudaMemPool_t __lhs, cuda_memory_pool const& __rhs) noexcept
   {
     return __rhs.__pool_handle_ != __lhs;
   }
 #    endif // _CCCL_STD_VER <= 2017
 
-  /**
-   * @brief Returns the underlying handle to the CUDA memory pool
-   */
+  //! @brief Returns the underlying handle to the CUDA memory pool
   _CCCL_NODISCARD constexpr cudaMemPool_t pool_handle() const noexcept
   {
     return __pool_handle_;
