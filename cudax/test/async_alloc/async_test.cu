@@ -20,7 +20,7 @@ TEST_CASE("Smoke", "[async_alloc]")
   auto buff = cuda::experimental::uninitialized_async_buffer<int>(res, stream, 256);
 
   auto box = cuda::experimental::alloc_async<int>(stream, 256, [](auto& async_buffer) {
-    return cuda::std::span<int, 256>(async_buffer.data(), 256);
+    return cuda::std::span<int, 256>(async_buffer);
   });
 
   auto dims = cudax::make_hierarchy(cudax::block_dims<256>(), cudax::grid_dims(2));

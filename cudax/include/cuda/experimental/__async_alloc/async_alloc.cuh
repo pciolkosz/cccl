@@ -29,37 +29,36 @@ struct async_allocation_box
 namespace detail
 {
 template <typename Container, typename T, typename... Properties>
-auto& unpack_box_and_sync(const async_allocation_box<Container, T, Properties...>& box, ::cuda::stream_ref ref)
+auto& unpack_box_and_sync(const async_allocation_box<Container, T, Properties...>& box, ::cuda::stream_ref stream)
 {
-  cudaStreamWaitEvent(ref.get(), box.event);
+  cudaStreamWaitEvent(stream.get(), box.event);
   return box.container;
 }
 
 template <typename Container, typename T, typename... Properties>
-auto&& unpack_box_and_sync(const async_allocation_box<Container, T, Properties...>&& box, ::cuda::stream_ref ref)
+auto&& unpack_box_and_sync(const async_allocation_box<Container, T, Properties...>&& box, ::cuda::stream_ref stream)
 {
-  cudaStreamWaitEvent(ref.get(), box.event);
+  cudaStreamWaitEvent(stream.get(), box.event);
   return std::move(box.container);
 }
 
 template <typename T>
-auto& unpack_box_and_sync(const T& not_box, ::cuda::stream_ref ref)
+auto& unpack_box_and_sync(const T& not_box, ::cuda::stream_ref stream)
 {
   return not_box;
 }
 
 template <typename T>
-auto&& unpack_box_and_sync(const T&& not_box, ::cuda::stream_ref ref)
+auto&& unpack_box_and_sync(const T&& not_box, ::cuda::stream_ref stream)
 {
   return std::move(not_box);
 }
 } // namespace detail
 
-template <typename T, typename Fn>
-auto alloc_async(::cuda::stream_ref stream, size_t size, const Fn& fn)
+template <typename T, typename ResRef, typename Fn>
+auto alloc_async(::cuda::stream_ref stream, ResRef res, size_t size, const Fn& fn)
 {
   cudaEvent_t event;
-  cuda::experimental::mr::cuda_async_memory_resource res;
 
   cudaEventCreateWithFlags(&event, cudaEventDisableTiming);
   auto buff = cuda::experimental::uninitialized_async_buffer<T>(res, stream, size);
@@ -67,6 +66,14 @@ auto alloc_async(::cuda::stream_ref stream, size_t size, const Fn& fn)
   auto container = fn(buff);
 
   return async_allocation_box{cuda::std::move(container), cuda::std::move(buff), event};
+}
+
+template <typename T, typename Fn>
+auto alloc_async(::cuda::stream_ref stream, size_t size, const Fn& fn)
+{
+  cuda::experimental::mr::cuda_async_memory_resource res;
+
+  return alloc_async<T>(stream, res, size, fn);
 }
 } // namespace cuda::experimental
 #endif
