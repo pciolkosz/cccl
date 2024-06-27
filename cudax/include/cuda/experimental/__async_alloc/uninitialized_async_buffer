@@ -1,0 +1,82 @@
+#ifndef __CUDAX__CONTAINERS_UNINITIALIZED_ASYNC_BUFFER_H
+#define __CUDAX__CONTAINERS_UNINITIALIZED_ASYNC_BUFFER_H
+
+#include <cuda/__memory_resource/properties.h>
+#include <cuda/__memory_resource/resource_ref.h>
+#include <cuda/std/span>
+#include <cuda/stream_ref>
+
+namespace cuda::experimental
+{
+template <class T, class... Properties>
+class uninitialized_async_buffer
+{
+private:
+  cuda::mr::async_resource_ref<Properties...> mr_;
+  cuda::stream_ref stream_;
+  size_t count_;
+  void* buf_;
+
+public:
+  using value_type = T;
+  using reference  = T&;
+  using pointer    = T*;
+  using size_type  = size_t;
+
+  uninitialized_async_buffer(cuda::mr::async_resource_ref<Properties...> mr, cuda::stream_ref stream, const size_t count)
+      : mr_(mr)
+      , stream_(stream)
+      , count_(count)
+  {
+    buf_ = mr_.allocate_async(count_ * sizeof(T), stream_.get());
+  }
+  uninitialized_async_buffer(const uninitialized_async_buffer<T, Properties...>&)            = delete;
+  uninitialized_async_buffer& operator=(const uninitialized_async_buffer<T, Properties...>&) = delete;
+  uninitialized_async_buffer(uninitialized_async_buffer<T, Properties...>&& other) noexcept
+      : mr_(cuda::std::move(other.mr_))
+      , stream_(other.stream_)
+      , count_(other.count_)
+  {
+    other.buf_ = nullptr;
+  }
+  uninitialized_async_buffer& operator=(uninitialized_async_buffer<T, Properties...>&& other) noexcept
+  {
+    mr_        = cuda::std::move(other.mr_);
+    stream_    = other.stream_;
+    count_     = other.count_;
+    other.buf_ = nullptr;
+    return *this;
+  };
+  ~uninitialized_async_buffer()
+  {
+    if (buf_ != nullptr)
+    {
+      mr_.deallocate_async(buf_, count_ * sizeof(T), stream_.get());
+    }
+  }
+
+  [[nodiscard]] __host__ __device__ constexpr pointer begin() const noexcept
+  {
+    return reinterpret_cast<pointer>(buf_);
+  }
+  [[nodiscard]] __host__ __device__ constexpr pointer end() const noexcept
+  {
+    return reinterpret_cast<pointer>(buf_) + count_;
+  }
+
+  [[nodiscard]] __host__ __device__ constexpr pointer data() const noexcept
+  {
+    return reinterpret_cast<pointer>(buf_);
+  }
+  [[nodiscard]] __host__ __device__ constexpr size_type size() const noexcept
+  {
+    return count_ * sizeof(T);
+  }
+
+  [[nodiscard]] __host__ __device__ cuda::stream_ref stream()
+  {
+    return stream_;
+  }
+};
+} // namespace cuda::experimental
+#endif

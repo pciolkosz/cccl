@@ -63,4 +63,8 @@ foreach(cn_target IN LISTS cudax_TARGETS)
     memory_resource/cuda_memory_pool.cu
     memory_resource/cuda_async_memory_resource.cu
   )
+
+  cudax_add_catch2_test(test_target async_alloc ${cn_target}
+    async_alloc/async_test.cu
+  )
 endforeach()
