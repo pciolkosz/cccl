@@ -58,6 +58,7 @@ foreach(cn_target IN LISTS cudax_TARGETS)
     launch/configuration.cu
   )
   target_compile_options(${test_target} PRIVATE $<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:--extended-lambda>)
+  target_compile_options(${test_target} PRIVATE $<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:--expt-relaxed-constexpr>)
 
   cudax_add_catch2_test(test_target async_memory_resource ${cn_target}
     memory_resource/cuda_memory_pool.cu
@@ -67,4 +68,13 @@ foreach(cn_target IN LISTS cudax_TARGETS)
   cudax_add_catch2_test(test_target async_alloc ${cn_target}
     async_alloc/async_test.cu
   )
+
+  Cudax_add_catch2_test(test_target async_tests ${cn_target}
+    async/test_when_all.cu
+    async/test_just.cu
+    async/test_continue_on.cu
+  )
+  target_compile_options(${test_target} PRIVATE $<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:--extended-lambda>)
+  target_compile_options(${test_target} PRIVATE $<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:--expt-relaxed-constexpr>)
+
 endforeach()

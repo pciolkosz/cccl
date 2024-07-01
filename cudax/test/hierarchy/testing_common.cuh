@@ -11,6 +11,7 @@
 #ifndef __TESTING_COMMON_H__
 #define __TESTING_COMMON_H__
 
+#include <cuda/experimental/async.cuh>
 #include <cuda/experimental/hierarchy.cuh>
 
 #include <exception>
