@@ -68,6 +68,14 @@ auto& unpack_box_and_sync(const async_allocation_box<Container, T, Properties...
   return box.container;
 }
 
+// This probably shouldn't be a separate overload, but otherwise not_box case is called
+template <typename Container, typename T, typename... Properties>
+auto& unpack_box_and_sync(async_allocation_box<Container, T, Properties...>& box, ::cuda::stream_ref stream)
+{
+  cudaStreamWaitEvent(stream.get(), box.event);
+  return box.container;
+}
+
 template <typename Container, typename T, typename... Properties>
 auto&& unpack_box_and_sync(async_allocation_box<Container, T, Properties...>&& box, ::cuda::stream_ref stream)
 {
