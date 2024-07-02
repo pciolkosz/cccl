@@ -5,9 +5,9 @@
 
 #include "../hierarchy/testing_common.cuh"
 
-__global__ void kernel(cuda::std::span<int, 256> span)
+__global__ void kernel(cuda::std::span<int, 256> span, int val)
 {
-  span[2] = 1;
+  span[2] = val;
 }
 
 TEST_CASE("Smoke", "[async_alloc]")
@@ -26,7 +26,7 @@ TEST_CASE("Smoke", "[async_alloc]")
   box.empty();
 
   auto dims = cudax::make_hierarchy(cudax::block_dims<256>(), cudax::grid_dims(2));
-  cudax::launch(stream, dims, kernel, box);
+  cudax::launch(stream, dims, kernel, box, 42);
 
   CUDART(cudaStreamSynchronize(stream));
 }

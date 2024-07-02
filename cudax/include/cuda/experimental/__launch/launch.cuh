@@ -126,7 +126,7 @@ void launch(::cuda::stream_ref stream,
 {
   cudaError_t status = [&](ExpArgs... args) {
     return detail::launch_impl(stream, conf, kernel, conf, args...);
-  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs)..., stream));
+  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
   if (status != cudaSuccess)
   {
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");
@@ -141,7 +141,7 @@ void launch(::cuda::stream_ref stream,
 {
   cudaError_t status = [&](ExpArgs... args) {
     return detail::launch_impl(stream, kernel_config(dims), kernel, dims, args...);
-  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs)..., stream));
+  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
   if (status != cudaSuccess)
   {
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");
@@ -156,7 +156,7 @@ void launch(::cuda::stream_ref stream,
 {
   cudaError_t status = [&](ExpArgs... args) {
     return detail::launch_impl(stream, conf, kernel, args...);
-  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs)..., stream));
+  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
   if (status != cudaSuccess)
   {
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");
@@ -171,7 +171,7 @@ void launch(::cuda::stream_ref stream,
 {
   cudaError_t status = [&](ExpArgs... args) {
     return detail::launch_impl(stream, kernel_config(dims), kernel, args...);
-  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs)..., stream));
+  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
   if (status != cudaSuccess)
   {
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");

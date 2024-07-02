@@ -76,16 +76,11 @@ auto&& unpack_box_and_sync(async_allocation_box<Container, T, Properties...>&& b
 }
 
 template <typename T>
-auto& unpack_box_and_sync(const T& not_box, ::cuda::stream_ref stream)
-{
-  return not_box;
-}
-
-template <typename T>
 auto&& unpack_box_and_sync(T&& not_box, ::cuda::stream_ref stream)
 {
-  return std::move(not_box);
+  return cuda::std::forward<T>(not_box);
 }
+
 } // namespace detail
 
 template <typename T, typename ResRef, typename Fn>
@@ -95,6 +90,7 @@ auto alloc_async(::cuda::stream_ref stream, ResRef res, size_t size, const Fn& f
 
   cudaEventCreateWithFlags(&event, cudaEventDisableTiming);
   auto buff = cuda::experimental::uninitialized_async_buffer<T>(res, stream, size);
+  cudaEventRecord(event, stream.get());
 
   auto container = fn(buff);
 
