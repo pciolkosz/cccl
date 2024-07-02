@@ -23,6 +23,8 @@ TEST_CASE("Smoke", "[async_alloc]")
     return cuda::std::span<int, 256>(async_buffer);
   });
 
+  box.empty();
+
   auto dims = cudax::make_hierarchy(cudax::block_dims<256>(), cudax::grid_dims(2));
   cudax::launch(stream, dims, kernel, box);
 

@@ -26,6 +26,39 @@ struct async_allocation_box
   }
 };
 
+template <typename T, cuda::std::size_t Extent, typename... Properties>
+struct async_allocation_box<cuda::std::span<T, Extent>, T, Properties...>
+{
+  cuda::std::span<T, Extent> container;
+  cuda::experimental::uninitialized_async_buffer<T, Properties...> buffer;
+  cudaEvent_t event;
+
+  using element_type = T;
+  using size_type    = cuda::std::size_t;
+
+  async_allocation_box(
+    cuda::std::span<T, Extent>&& c, cuda::experimental::uninitialized_async_buffer<T, Properties...>&& b, cudaEvent_t e)
+      : container(std::move(c))
+      , buffer(std::move(b))
+      , event(e)
+  {}
+
+  ~async_allocation_box()
+  {
+    cudaEventDestroy(event);
+  }
+
+  size_type size() const
+  {
+    return container.size();
+  }
+
+  bool empty() const
+  {
+    return container.empty();
+  }
+};
+
 namespace detail
 {
 template <typename Container, typename T, typename... Properties>
@@ -36,7 +69,7 @@ auto& unpack_box_and_sync(const async_allocation_box<Container, T, Properties...
 }
 
 template <typename Container, typename T, typename... Properties>
-auto&& unpack_box_and_sync(const async_allocation_box<Container, T, Properties...>&& box, ::cuda::stream_ref stream)
+auto&& unpack_box_and_sync(async_allocation_box<Container, T, Properties...>&& box, ::cuda::stream_ref stream)
 {
   cudaStreamWaitEvent(stream.get(), box.event);
   return std::move(box.container);
@@ -49,7 +82,7 @@ auto& unpack_box_and_sync(const T& not_box, ::cuda::stream_ref stream)
 }
 
 template <typename T>
-auto&& unpack_box_and_sync(const T&& not_box, ::cuda::stream_ref stream)
+auto&& unpack_box_and_sync(T&& not_box, ::cuda::stream_ref stream)
 {
   return std::move(not_box);
 }
