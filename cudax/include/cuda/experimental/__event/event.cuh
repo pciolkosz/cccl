@@ -13,6 +13,7 @@
 
 #include <cuda/experimental/__detail/utility.cuh>
 #include <cuda/std/__exception/cuda_error.h>
+#include <cuda/std/utility>
 #include <cuda/stream_ref>
 
 #include <cassert>
@@ -71,7 +72,7 @@ struct event
    * @post `other` is in a moved-from state.
    */
   event(event&& other) noexcept
-      : event_(std::exchange(other.event_, {}))
+      : event_(cuda::std::exchange(other.event_, {}))
   {
     other.event_ = nullptr;
   }
@@ -158,7 +159,7 @@ struct event
    */
   cudaEvent_t release() noexcept
   {
-    return std::exchange(event_, {});
+    return cuda::std::exchange(event_, {});
   }
 
 private:

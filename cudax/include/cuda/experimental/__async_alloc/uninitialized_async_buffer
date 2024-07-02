@@ -73,7 +73,7 @@ public:
     return count_ * sizeof(T);
   }
 
-  [[nodiscard]] __host__ __device__ cuda::stream_ref stream()
+  [[nodiscard]] __host__ __device__ cuda::stream_ref stream() const noexcept
   {
     return stream_;
   }

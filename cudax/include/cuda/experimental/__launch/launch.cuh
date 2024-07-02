@@ -73,6 +73,7 @@ launch_impl(::cuda::stream_ref stream, Config conf, const Kernel& kernel_fn, con
 }
 } // namespace detail
 
+// TODO add box unpacking to the functor case
 template <typename... Args, typename... Config, typename Dimensions, typename Kernel>
 void launch(
   ::cuda::stream_ref stream, const kernel_config<Dimensions, Config...>& conf, const Kernel& kernel, Args... args)
@@ -126,11 +127,12 @@ void launch(::cuda::stream_ref stream,
 {
   cudaError_t status = [&](ExpArgs... args) {
     return detail::launch_impl(stream, conf, kernel, conf, args...);
-  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
+  }(detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
   if (status != cudaSuccess)
   {
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");
   }
+  (detail::box_wait_for_kernel(actArgs, stream), ...);
 }
 
 template <typename... ExpArgs, typename... ActArgs, typename... Levels>
@@ -141,11 +143,12 @@ void launch(::cuda::stream_ref stream,
 {
   cudaError_t status = [&](ExpArgs... args) {
     return detail::launch_impl(stream, kernel_config(dims), kernel, dims, args...);
-  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
+  }(detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
   if (status != cudaSuccess)
   {
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");
   }
+  (detail::box_wait_for_kernel(actArgs, stream), ...);
 }
 
 template <typename... ExpArgs, typename... ActArgs, typename... Config, typename Dimensions>
@@ -156,11 +159,12 @@ void launch(::cuda::stream_ref stream,
 {
   cudaError_t status = [&](ExpArgs... args) {
     return detail::launch_impl(stream, conf, kernel, args...);
-  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
+  }(detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
   if (status != cudaSuccess)
   {
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");
   }
+  (detail::box_wait_for_kernel(actArgs, stream), ...);
 }
 
 template <typename... ExpArgs, typename... ActArgs, typename... Levels>
@@ -171,11 +175,12 @@ void launch(::cuda::stream_ref stream,
 {
   cudaError_t status = [&](ExpArgs... args) {
     return detail::launch_impl(stream, kernel_config(dims), kernel, args...);
-  }(::cuda::experimental::detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
+  }(detail::unpack_box_and_sync(cuda::std::forward<ActArgs>(actArgs), stream)...);
   if (status != cudaSuccess)
   {
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");
   }
+  (detail::box_wait_for_kernel(actArgs, stream), ...);
 }
 
 } // namespace cuda::experimental
