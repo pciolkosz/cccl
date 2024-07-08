@@ -110,29 +110,68 @@ USTDEX_HOST_DEVICE constexpr Ty _decay_copy(Ty&& ty) noexcept(_nothrow_decay_cop
   return static_cast<Ty&&>(ty);
 }
 
-// _ref is for keeping type names short in compiler output.
-// It has the unfortunate side effect of obfuscating the types.
-#if USTDEX_NVHPC() || USTDEX_EDG()
-// This version of _ref is for compilers that display the return
-// type of a monomorphic lambda in the compiler output.
-inline constexpr auto _ref = [](auto fn) noexcept {
-  return [fn](auto...) noexcept -> decltype(auto) {
-    return fn;
-  };
-};
-#else
-inline constexpr auto _ref = [](auto fn) noexcept {
-  return [fn]() noexcept -> decltype(auto) {
-    return fn;
-  };
-};
-#endif
+USTDEX_PRAGMA_PUSH()
+USTDEX_PRAGMA_IGNORE_GNU("-Wnon-template-friend")
+USTDEX_PRAGMA_IGNORE_EDG(probable_guiding_friend)
 
-template <class Ty>
-using _ref_t = decltype(_ref(static_cast<Ty (*)()>(nullptr)));
+// _zip/_unzip is for keeping type names short. It has the unfortunate side
+// effect of obfuscating the types.
+namespace
+{
+template <::std::size_t N>
+struct _slot
+{
+  friend constexpr auto _slot_allocated(_slot<N>);
+  static constexpr ::std::size_t value = N;
+};
 
-template <class Ref>
-using _deref_t = decltype(_declval<Ref>()()());
+template <class Type, ::std::size_t N>
+struct _allocate_slot : _slot<N>
+{
+  friend constexpr auto _slot_allocated(_slot<N>)
+  {
+    return static_cast<Type (*)()>(nullptr);
+  }
+};
+
+template <class Type, ::std::size_t Id = 0, ::std::size_t Pow2 = 0>
+constexpr ::std::size_t _next(long);
+
+// If _slot_allocated(_slot<Id>) has NOT been defined, then SFINAE will keep this function out of the overload set...
+template <class Type, //
+          ::std::size_t Id   = 0,
+          ::std::size_t Pow2 = 0,
+          bool               = !_slot_allocated(_slot<Id + (1 << Pow2) - 1>())>
+constexpr ::std::size_t _next(int)
+{
+  return ustdex::_next<Type, Id, Pow2 + 1>(0);
+}
+
+template <class Type, ::std::size_t Id, ::std::size_t Pow2>
+constexpr ::std::size_t _next(long)
+{
+  if constexpr (Pow2 == 0)
+  {
+    return _allocate_slot<Type, Id>::value;
+  }
+  else
+  {
+    return ustdex::_next<Type, Id + (1 << (Pow2 - 1)), 0>(0);
+  }
+}
+
+template <class Type, ::std::size_t Val = ustdex::_next<Type>(0)>
+using _zip = _slot<Val>;
+
+template <class Id>
+using _unzip = decltype(_slot_allocated(Id())());
+
+// burn the first slot
+using _ignore_this_typedef [[maybe_unused]] = _zip<void>;
+} // namespace
+
+USTDEX_PRAGMA_POP()
+
 } // namespace USTDEX_NAMESPACE
 
 #include "epilogue.hpp"

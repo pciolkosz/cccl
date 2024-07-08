@@ -10,7 +10,8 @@
 
 #include <cuda/experimental/async.cuh>
 
-#include "common/catch2.hpp"
+// Catch header in its own header block
+#include "common/catch2.hpp" // IWYU pragma: keep
 
 TEST_CASE("this is a dummy test", "[just]")
 {

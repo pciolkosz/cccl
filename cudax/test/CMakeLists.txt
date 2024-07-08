@@ -70,9 +70,11 @@ foreach(cn_target IN LISTS cudax_TARGETS)
   )
 
   Cudax_add_catch2_test(test_target async_tests ${cn_target}
-    async/test_when_all.cu
-    async/test_just.cu
+    async/test_conditional.cu
     async/test_continue_on.cu
+    async/test_just.cu
+    async/test_sequence.cu
+    async/test_when_all.cu
   )
   target_compile_options(${test_target} PRIVATE $<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:--extended-lambda>)
   target_compile_options(${test_target} PRIVATE $<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:--expt-relaxed-constexpr>)

@@ -11,6 +11,7 @@
 
 #include "config.hpp"
 #include "cpos.hpp"
+#include "cuda/experimental/__async/completion_signatures.hpp"
 #include "env.hpp"
 #include "exception.hpp"
 #include "queries.hpp"
@@ -55,7 +56,7 @@ private:
 
     Rcvr _rcvr;
 
-    explicit opstate_t(Rcvr rcvr)
+    USTDEX_HOST_DEVICE explicit opstate_t(Rcvr rcvr)
         : _rcvr(static_cast<Rcvr&&>(rcvr))
     {}
 
@@ -76,13 +77,25 @@ private:
       {
         USTDEX_TRY( //
           ( //
-            { ustdex::set_value(static_cast<Rcvr&&>(_rcvr), Query()(ustdex::get_env(_rcvr))); }),
+            { //
+              ustdex::set_value(static_cast<Rcvr&&>(_rcvr), Query()(ustdex::get_env(_rcvr)));
+            }),
           USTDEX_CATCH(...)( //
             { //
               ustdex::set_error(static_cast<Rcvr&&>(_rcvr), ::std::current_exception());
             }))
       }
     }
+  };
+
+  // This makes read_env a dependent sender:
+  template <class Query>
+  struct opstate_t<receiver_archetype, Query>
+  {
+    using operation_state_concept = operation_state_t;
+    using completion_signatures   = dependent_completions;
+    USTDEX_HOST_DEVICE explicit opstate_t(receiver_archetype);
+    USTDEX_HOST_DEVICE void start() noexcept;
   };
 
   template <class Query>

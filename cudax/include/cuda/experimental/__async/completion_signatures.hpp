@@ -17,10 +17,25 @@
 
 namespace USTDEX_NAMESPACE
 {
+// A typelist for completion signatures
 template <class... Ts>
 struct completion_signatures
 {};
 
+// A metafunction to determine if a type is a completion signature
+template <class>
+inline constexpr bool _is_valid_signature = false;
+
+template <class... Ts>
+inline constexpr bool _is_valid_signature<set_value_t(Ts...)> = true;
+
+template <class Error>
+inline constexpr bool _is_valid_signature<set_error_t(Error)> = true;
+
+template <>
+inline constexpr bool _is_valid_signature<set_stopped_t()> = true;
+
+// The implementation of transform_completion_signatures starts here
 template <class Sig, template <class...> class V, template <class...> class E, class S>
 extern _undefined<Sig> _transform_sig;
 
@@ -230,11 +245,11 @@ template <class Sndr, class Rcvr, template <class...> class Variant>
 using error_types_of_t = _error_types<completion_signatures_of_t<Sndr, Rcvr>, Variant>;
 
 template <class Sigs>
-USTDEX_DEVICE_CONSTANT constexpr bool _sends_stopped = //
+inline constexpr bool _sends_stopped = //
   _transform_completion_signatures<Sigs, _malways<_mfalse>::_f, _malways<_mfalse>::_f, _mtrue, _mor>::value;
 
 template <class Sndr, class Rcvr = receiver_archetype>
-USTDEX_DEVICE_CONSTANT constexpr bool sends_stopped = //
+inline constexpr bool sends_stopped = //
   _sends_stopped<completion_signatures_of_t<Sndr, Rcvr>>;
 
 using _eptr_completion = completion_signatures<set_error_t(::std::exception_ptr)>;

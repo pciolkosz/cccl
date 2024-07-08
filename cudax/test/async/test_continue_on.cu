@@ -19,7 +19,7 @@
 #include "common/utility.hpp"
 
 // Catch header in its own header block
-#include "common/catch2.hpp"
+#include "common/catch2.hpp" // IWYU pragma: keep
 
 namespace
 {
