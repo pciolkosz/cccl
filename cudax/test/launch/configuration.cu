@@ -15,8 +15,6 @@
 #include <cuda/experimental/launch.cuh>
 #undef cudaLaunchKernelEx
 
-#include <sstream>
-
 #include "../hierarchy/testing_common.cuh"
 
 static cudaLaunchConfig_t expectedConfig;
@@ -27,6 +25,7 @@ cudaError_t
 cudaLaunchKernelExTestReplacement(const cudaLaunchConfig_t* config, void (*kernel)(ExpTypes...), ActTypes&&... args)
 {
   replacementCalled = true;
+  bool has_cluster  = false;
 
   CHECK(expectedConfig.numAttrs == config->numAttrs);
   CHECK(expectedConfig.blockDim == config->blockDim);
@@ -49,6 +48,7 @@ cudaLaunchKernelExTestReplacement(const cudaLaunchConfig_t* config, void (*kerne
             CHECK(expectedAttr.val.clusterDim.x == actualAttr.val.clusterDim.x);
             CHECK(expectedAttr.val.clusterDim.y == actualAttr.val.clusterDim.y);
             CHECK(expectedAttr.val.clusterDim.z == actualAttr.val.clusterDim.z);
+            has_cluster = true;
             break;
           case cudaLaunchAttributeCooperative:
             CHECK(expectedAttr.val.cooperative == actualAttr.val.cooperative);
@@ -67,7 +67,7 @@ cudaLaunchKernelExTestReplacement(const cudaLaunchConfig_t* config, void (*kerne
     CHECK(j != expectedConfig.numAttrs);
   }
 
-  if (!skip_device_exec(arch_filter<std::less<int>, 90>))
+  if (!has_cluster || !skip_device_exec(arch_filter<std::less<int>, 90>))
   {
     return cudaLaunchKernelEx(config, kernel, cuda::std::forward<ActTypes>(args)...);
   }
@@ -148,9 +148,7 @@ auto configuration_test(
     {
       add_cluster(cluster_dims, expectedConfig.attrs[1]);
     }
-    {
-      cudax::launch(stream, config, empty_kernel, 0);
-    }
+    cudax::launch(stream, config, empty_kernel, 0);
 
     SECTION("Large dynamic smem")
     {
@@ -161,7 +159,7 @@ auto configuration_test(
         int arr[13 * 1024];
       };
       cudaLaunchAttribute attrs[1];
-      auto config                     = cudax::make_config(dims, cudax::dynamic_shared_memory<S>());
+      auto config                     = cudax::make_config(dims, cudax::dynamic_shared_memory<S, 1, true>());
       expectedConfig.dynamicSmemBytes = sizeof(S);
       expectedConfig.numAttrs         = HasCluster;
       expectedConfig.attrs            = &attrs[0];
@@ -181,11 +179,11 @@ TEST_CASE("Launch configuration", "[launch]")
   CUDART(cudaStreamCreate(&stream));
   SECTION("No cluster")
   {
-    configuration_test<false>(stream, 256, 4);
+    configuration_test<false>(stream, 8, 64);
   }
   SECTION("With cluster")
   {
-    configuration_test<true>(stream, 256, 2, 2);
+    configuration_test<true>(stream, 8, 32, 2);
   }
 
   CUDART(cudaStreamDestroy(stream));
