@@ -108,7 +108,8 @@ struct dynamic_smem_span
   }
 };
 
-TEST_CASE("Smoke", "[launch]")
+// Windows needs non-static function for __device__ lambda, had to move it out from catch2 testcase
+void test_launch_overloads()
 {
   // Use raw stream to make sure it can be implicitly converted on call to launch
   cudaStream_t stream;
@@ -236,4 +237,9 @@ TEST_CASE("Smoke", "[launch]")
 
   CUDART(cudaStreamSynchronize(stream));
   CUDART(cudaStreamDestroy(stream));
+}
+
+TEST_CASE("Smoke", "[launch]")
+{
+  test_launch_overloads();
 }

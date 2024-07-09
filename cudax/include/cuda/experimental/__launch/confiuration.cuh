@@ -214,7 +214,7 @@ private:
     std::size_t size_needed = size * sizeof(Content);
     cudaError_t status      = cudaFuncGetAttributes(&attrs, kernel);
 
-    if (NonPortableSize && size_needed > static_cast<std::size_t>(attrs.maxDynamicSharedSizeBytes))
+    if ((size_needed > static_cast<std::size_t>(attrs.maxDynamicSharedSizeBytes)) && NonPortableSize)
     {
       // TODO since 12.6 there is a per launch option available, we should switch once compatibility is not an issue
       // TODO should we validate the max amount with device props or just pass it through and rely on driver error?
@@ -394,8 +394,7 @@ namespace detail
 {
 
 template <typename Dimensions, typename... Options>
-inline unsigned int constexpr kernel_config_count_attr_space(
-  const kernel_config<Dimensions, Options...>& config) noexcept
+inline unsigned int constexpr kernel_config_count_attr_space(const kernel_config<Dimensions, Options...>&) noexcept
 {
   return (0 + ... + Options::needs_attribute_space);
 }
