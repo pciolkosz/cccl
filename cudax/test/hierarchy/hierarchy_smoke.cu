@@ -526,3 +526,13 @@ TEST_CASE("cudax::distribute", "[hierarchy]")
   CUDAX_REQUIRE(dims.count(cudax::thread, cudax::block) == 256);
   CUDAX_REQUIRE(dims.count(cudax::block, cudax::grid) == (numElements + threadsPerBlock - 1) / threadsPerBlock);
 }
+
+TEST_CASE("Meta dimensions", "[hierarchy]")
+{
+  auto dims = cudax::make_hierarchy(cudax::block_dims<256>(), cudax::grid_dims(cudax::at_least(1024, cudax::thread)));
+  // dims.count();
+
+  auto dims_transformed = cudax::hierarchy_transform(dims);
+
+  CUDAX_REQUIRE(dims_transformed.count(cudax::block, cudax::grid) == 4);
+}

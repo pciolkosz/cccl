@@ -240,7 +240,7 @@ _CCCL_NODISCARD _CUDAX_API constexpr auto dims_to_count(const dimensions<T, Exte
 template <typename... Levels>
 _CCCL_NODISCARD _CUDAX_API constexpr auto get_level_counts_helper(const Levels&... ls)
 {
-  return ::cuda::std::make_tuple(dims_to_count(ls.dims)...);
+  return ::cuda::std::make_tuple(dims_to_count(ls.dims_for_query())...);
 }
 
 template <typename Unit, typename Level, typename Dims>
@@ -271,13 +271,13 @@ struct hierarchy_extents_helper
     using TopLevel = __level_type_of<LTopDims>;
     if constexpr (sizeof...(Levels) == 0)
     {
-      return replace_with_intrinsics_or_constexpr<BottomUnit, TopLevel>(ltop.dims);
+      return replace_with_intrinsics_or_constexpr<BottomUnit, TopLevel>(ltop.dims_for_query());
     }
     else
     {
       using Unit = ::cuda::std::__type_index_c<0, __level_type_of<Levels>...>;
       return dims_product<typename TopLevel::product_type>(
-        replace_with_intrinsics_or_constexpr<Unit, TopLevel>(ltop.dims), (*this)(levels...));
+        replace_with_intrinsics_or_constexpr<Unit, TopLevel>(ltop.dims_for_query()), (*this)(levels...));
     }
   }
 };
@@ -298,12 +298,12 @@ struct index_helper
     using TopLevel = __level_type_of<LTopDims>;
     if constexpr (sizeof...(Levels) == 0)
     {
-      return static_index_hint(ltop.dims, dims_helper<BottomUnit, TopLevel>::index());
+      return static_index_hint(ltop.dims_for_query(), dims_helper<BottomUnit, TopLevel>::index());
     }
     else
     {
       using Unit        = ::cuda::std::__type_index_c<0, __level_type_of<Levels>...>;
-      auto hinted_index = static_index_hint(ltop.dims, dims_helper<Unit, TopLevel>::index());
+      auto hinted_index = static_index_hint(ltop.dims_for_query(), dims_helper<Unit, TopLevel>::index());
       return dims_sum<typename TopLevel::product_type>(
         dims_product<typename TopLevel::product_type>(hinted_index, hierarchy_extents_helper<BottomUnit>()(levels...)),
         index_helper<BottomUnit>()(levels...));
@@ -320,14 +320,14 @@ struct rank_helper
     using TopLevel = __level_type_of<LTopDims>;
     if constexpr (sizeof...(Levels) == 0)
     {
-      auto hinted_index = static_index_hint(ltop.dims, dims_helper<BottomUnit, TopLevel>::index());
-      return detail::index_to_linear<typename TopLevel::product_type>(hinted_index, ltop.dims);
+      auto hinted_index = static_index_hint(ltop.dims_for_query(), dims_helper<BottomUnit, TopLevel>::index());
+      return detail::index_to_linear<typename TopLevel::product_type>(hinted_index, ltop.dims_for_query());
     }
     else
     {
       using Unit        = ::cuda::std::__type_index_c<0, __level_type_of<Levels>...>;
-      auto hinted_index = static_index_hint(ltop.dims, dims_helper<Unit, TopLevel>::index());
-      auto level_rank   = detail::index_to_linear<typename TopLevel::product_type>(hinted_index, ltop.dims);
+      auto hinted_index = static_index_hint(ltop.dims_for_query(), dims_helper<Unit, TopLevel>::index());
+      auto level_rank   = detail::index_to_linear<typename TopLevel::product_type>(hinted_index, ltop.dims_for_query());
       return level_rank * dims_to_count(hierarchy_extents_helper<BottomUnit>()(levels...))
            + rank_helper<BottomUnit>()(levels...);
     }
@@ -427,7 +427,7 @@ private:
     template <typename... Selected>
     _CCCL_NODISCARD _CUDAX_API constexpr auto operator()(const Selected&... levels) const noexcept
     {
-      return hierarchy_dimensions_fragment<Unit, Selected...>(levels...);
+      return hierarchy_dimensions_fragment<Unit, Selected...>(std::make_tuple(levels...));
     }
   };
 
