@@ -15,5 +15,6 @@
 #include <cuda/experimental/__launch/launch.cuh>
 #include <cuda/experimental/__launch/launch_transform.cuh>
 #include <cuda/experimental/__launch/param_kind.cuh>
+#include <cuda/experimental/__launch/transform.cuh>
 
 #endif // __CUDAX_LAUNCH___
