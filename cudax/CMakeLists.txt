@@ -49,4 +49,5 @@ if (cudax_ENABLE_SAMPLES)
     PREFIX samples
     SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/samples"
     INSTALL_COMMAND cmake -E echo "Skipping install step.")
+  add_dependencies(cudax.all cudax_samples)
 endif()
