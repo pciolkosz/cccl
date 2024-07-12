@@ -41,8 +41,16 @@ struct extents_corrected : public ::cuda::std::extents<T, Extents...> {
 };
 */
 
+struct base_dimensions_handler
+{
+  // TODO: Should these two be merged into one bool?
+  static constexpr bool is_type_supported = true;
+  template <typename Level>
+  static constexpr bool is_level_supported = true;
+};
+
 template <typename Dims>
-struct dimensions_handler
+struct dimensions_handler : public base_dimensions_handler
 {
   static constexpr bool is_type_supported = ::cuda::std::is_integral_v<Dims>;
 
@@ -53,10 +61,8 @@ struct dimensions_handler
 };
 
 template <>
-struct dimensions_handler<dim3>
+struct dimensions_handler<dim3> : public base_dimensions_handler
 {
-  static constexpr bool is_type_supported = true;
-
   _CCCL_NODISCARD _CCCL_HOST_DEVICE static constexpr auto translate(const dim3& d) noexcept
   {
     return dimensions<dimensions_index_type,
@@ -67,10 +73,8 @@ struct dimensions_handler<dim3>
 };
 
 template <typename Dims, Dims Val>
-struct dimensions_handler<::cuda::std::integral_constant<Dims, Val>>
+struct dimensions_handler<::cuda::std::integral_constant<Dims, Val>> : public base_dimensions_handler
 {
-  static constexpr bool is_type_supported = true;
-
   _CCCL_NODISCARD _CCCL_HOST_DEVICE static constexpr auto translate(const Dims& d) noexcept
   {
     return dimensions<dimensions_index_type, size_t(d), 1, 1>();
@@ -193,6 +197,8 @@ template <typename T>
 _CCCL_HOST_DEVICE constexpr auto grid_dims(T t) noexcept
 {
   static_assert(detail::dimensions_handler<T>::is_type_supported);
+  static_assert(detail::dimensions_handler<T>::template is_level_supported<grid_level>,
+                "This level type does not support the provided type of dimensions");
   auto dims = detail::dimensions_handler<T>::translate(t);
   return level_dimensions<grid_level, decltype(dims)>(dims);
 }
@@ -217,6 +223,8 @@ template <typename T>
 _CCCL_HOST_DEVICE constexpr auto cluster_dims(T t) noexcept
 {
   static_assert(detail::dimensions_handler<T>::is_type_supported);
+  static_assert(detail::dimensions_handler<T>::template is_level_supported<cluster_level>,
+                "This level type does not support the provided type of dimensions");
   auto dims = detail::dimensions_handler<T>::translate(t);
   return level_dimensions<cluster_level, decltype(dims)>(dims);
 }
@@ -241,6 +249,8 @@ template <typename T>
 _CCCL_HOST_DEVICE constexpr auto block_dims(T t) noexcept
 {
   static_assert(detail::dimensions_handler<T>::is_type_supported);
+  static_assert(detail::dimensions_handler<T>::template is_level_supported<block_level>,
+                "This level type does not support the provided type of dimensions");
   auto dims = detail::dimensions_handler<T>::translate(t);
   return level_dimensions<block_level, decltype(dims)>(dims);
 }
