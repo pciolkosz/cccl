@@ -117,7 +117,7 @@ void launch(
 {
   __ensure_current_device __dev_setter(stream);
   cudaError_t status;
-  auto finalized = finalize(conf, kernel, args...);
+  auto finalized = finalize(stream, conf, kernel, args...);
   if constexpr (::cuda::std::is_invocable_v<Kernel, decltype(finalized), as_kernel_arg_t<Args>...>
                 || __nv_is_extended_device_lambda_closure_type(Kernel))
   {
@@ -196,7 +196,7 @@ void launch(::cuda::stream_ref stream, const hierarchy_dimensions<Levels...>& di
 {
   __ensure_current_device __dev_setter(stream);
   cudaError_t status;
-  auto finalized = finalize(dims, kernel, args...);
+  auto finalized = finalize(stream, dims, kernel, args...);
   if constexpr (::cuda::std::is_invocable_v<Kernel, decltype(finalized), as_kernel_arg_t<Args>...>
                 || __nv_is_extended_device_lambda_closure_type(Kernel))
   {
@@ -277,7 +277,7 @@ void launch(::cuda::stream_ref stream,
             ActArgs&&... args)
 {
   __ensure_current_device __dev_setter(stream);
-  auto finalized     = finalize(conf, kernel);
+  auto finalized     = finalize(stream, conf, kernel);
   cudaError_t status = detail::launch_impl(
     stream, //
     finalized,
@@ -340,7 +340,7 @@ void launch(::cuda::stream_ref stream,
             ActArgs&&... args)
 {
   __ensure_current_device __dev_setter(stream);
-  auto finalized     = finalize(dims, kernel);
+  auto finalized     = finalize(stream, dims, kernel);
   cudaError_t status = detail::launch_impl(
     stream,
     kernel_config(finalized),
@@ -404,7 +404,7 @@ void launch(::cuda::stream_ref stream,
             ActArgs&&... args)
 {
   __ensure_current_device __dev_setter(stream);
-  auto finalized     = finalize(conf, kernel);
+  auto finalized     = finalize(stream, conf, kernel);
   cudaError_t status = detail::launch_impl(
     stream, //
     finalized,
@@ -464,7 +464,7 @@ void launch(
   ::cuda::stream_ref stream, const hierarchy_dimensions<Levels...>& dims, void (*kernel)(ExpArgs...), ActArgs&&... args)
 {
   __ensure_current_device __dev_setter(stream);
-  auto finalized     = finalize(dims, kernel);
+  auto finalized     = finalize(stream, dims, kernel);
   cudaError_t status = detail::launch_impl(
     stream,
     kernel_config(finalized),
