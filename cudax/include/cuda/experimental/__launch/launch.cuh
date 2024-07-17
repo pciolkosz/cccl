@@ -16,6 +16,7 @@
 #include <cuda/stream_ref>
 
 #include <cuda/experimental/__launch/configuration.cuh>
+#include <cuda/experimental/__launch/hierarchy_draft.cuh>
 #include <cuda/experimental/__launch/kernel_launchers.cuh>
 #include <cuda/experimental/__launch/launch_transform.cuh>
 #include <cuda/experimental/__launch/transform.cuh>
@@ -273,7 +274,7 @@ template <typename... ExpArgs,
           typename = ::cuda::std::enable_if_t<sizeof...(ExpArgs) == sizeof...(ActArgs)>>
 void launch(::cuda::stream_ref stream,
             const kernel_config<Dimensions, Config...>& conf,
-            void (*kernel)(transformed_config_t<kernel_config<Dimensions, Config...>>, ExpArgs...),
+            void (*kernel)(finalized_t<kernel_config<Dimensions, Config...>>, ExpArgs...),
             ActArgs&&... args)
 {
   __ensure_current_device __dev_setter(stream);
@@ -336,7 +337,7 @@ template <typename... ExpArgs,
           typename = ::cuda::std::enable_if_t<sizeof...(ExpArgs) == sizeof...(ActArgs)>>
 void launch(::cuda::stream_ref stream,
             const hierarchy_dimensions<Levels...>& dims,
-            void (*kernel)(transformed_hierarchy_t<hierarchy_dimensions<Levels...>>, ExpArgs...),
+            void (*kernel)(finalized_t<hierarchy_dimensions<Levels...>>, ExpArgs...),
             ActArgs&&... args)
 {
   __ensure_current_device __dev_setter(stream);
