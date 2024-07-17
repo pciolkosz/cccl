@@ -380,9 +380,9 @@ void meta_dims_test()
 
     CUDAX_REQUIRE(dims_finalized.count(cudax::thread) >= target_count);
 
-    cudax::launch(stream, dims_finalized, empty_kernel);
+    cudax::launch(stream, dims_finalized, empty_kernel, 1);
 
-    cudax::launch(stream, dims, empty_kernel);
+    cudax::launch(stream, dims, empty_kernel, 1);
   }
 
   SECTION("max_coresident + best occupancy")
