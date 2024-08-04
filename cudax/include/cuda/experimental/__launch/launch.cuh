@@ -15,7 +15,6 @@
 #include <cuda/std/__exception/cuda_error.h>
 #include <cuda/stream_ref>
 
-#include <cuda/experimental/__launch/configuration.cuh>
 #include <cuda/experimental/__launch/hierarchy_draft.cuh>
 #include <cuda/experimental/__launch/kernel_launchers.cuh>
 #include <cuda/experimental/__launch/launch_transform.cuh>
