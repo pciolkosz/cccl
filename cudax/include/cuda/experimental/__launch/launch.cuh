@@ -109,10 +109,8 @@ launch_impl(::cuda::stream_ref stream, Config conf, const Kernel& kernel_fn, con
  * @param args
  * arguments to be passed into the kernel functor
  */
-#  ifdef _MSC_VER
-#    pragma warning(push)
-#    pragma warning(disable : 4180) // qualifier applied to function type has no meaning; ignored
-#  endif
+_CCCL_DIAG_PUSH
+_CCCL_DIAG_SUPPRESS_MSVC(4180) // qualifier applied to function type has no meaning; ignored in is_function
 template <typename... Args,
           typename... Config,
           typename Dimensions,
@@ -235,9 +233,8 @@ void launch(::cuda::stream_ref stream, const hierarchy_dimensions<Levels...>& di
     ::cuda::__throw_cuda_error(status, "Failed to launch a kernel");
   }
 }
-#  ifdef _MSC_VER
-#    pragma warning(pop)
-#  endif
+_CCCL_DIAG_POP
+
 /**
  * @brief Launch a kernel function with specified configuration and arguments
  *
