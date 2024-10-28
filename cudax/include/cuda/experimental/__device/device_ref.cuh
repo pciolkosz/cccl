@@ -161,6 +161,16 @@ public:
     return __can_access;
   }
 
+  _CCCL_NODISCARD ::std::string get_name() const
+  {
+    constexpr int __max_name_length = 256;
+    ::std::string __name(256, 0);
+
+    // For some reason there is no separate name query in CUDA runtime
+    detail::driver::getName(__name.data(), __max_name_length, get());
+    return __name;
+  }
+
   const arch_traits_t& arch_traits() const;
 
   // TODO this might return some more complex type in the future
