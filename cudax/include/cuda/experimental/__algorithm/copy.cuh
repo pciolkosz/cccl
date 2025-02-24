@@ -25,6 +25,7 @@
 
 #include <cuda/experimental/__algorithm/common.cuh>
 #include <cuda/experimental/__stream/stream_ref.cuh>
+#include <cuda/experimental/__utility/copy.cuh>
 
 namespace cuda::experimental
 {
@@ -67,7 +68,7 @@ _CCCL_TEMPLATE(typename _SrcTy, typename _DstTy)
 _CCCL_REQUIRES(__valid_1d_copy_fill_argument<_SrcTy> _CCCL_AND __valid_1d_copy_fill_argument<_DstTy>)
 void copy_bytes(stream_ref __stream, _SrcTy&& __src, _DstTy&& __dst)
 {
-  __copy_bytes_impl(
+  __copy_bytes_with_hints_impl(
     __stream,
     _CUDA_VSTD::span(__kernel_transform(__launch_transform(__stream, _CUDA_VSTD::forward<_SrcTy>(__src)))),
     _CUDA_VSTD::span(__kernel_transform(__launch_transform(__stream, _CUDA_VSTD::forward<_DstTy>(__dst)))));
@@ -110,7 +111,7 @@ void __nd_copy_bytes_impl(stream_ref __stream,
     _CUDA_VSTD::__throw_invalid_argument("Copy destination size differs from the source");
   }
 
-  __copy_bytes_impl(__stream,
+  __copy_bytes_with_hints_impl(__stream,
                     _CUDA_VSTD::span(__src.data_handle(), __src.mapping().required_span_size()),
                     _CUDA_VSTD::span(__dst.data_handle(), __dst.mapping().required_span_size()));
 }
