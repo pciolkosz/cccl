@@ -187,25 +187,29 @@ TEST_CASE("device_memory_resource construction", "[memory_resource]")
   // Allocation handles are only supported after 11.2
   SECTION("Construct with allocation handle")
   {
-    cudax::memory_pool_properties props = {
-      42,
-      20,
-      cudax::cudaMemAllocationHandleType::cudaMemHandleTypePosixFileDescriptor,
-    };
-    cudax::device_memory_pool pool{current_device, props};
-    async_resource with_allocation_handle{pool};
+    if (cudax::devices[0].attr(cudax::device::attrs::memory_pool_supported_handle_types)
+        & cudax::device::attrs::memory_pool_supported_handle_types_t::posix_file_descriptor)
+    {
+      cudax::memory_pool_properties props = {
+        42,
+        20,
+        cudax::cudaMemAllocationHandleType::cudaMemHandleTypePosixFileDescriptor,
+      };
+      cudax::device_memory_pool pool{current_device, props};
+      async_resource with_allocation_handle{pool};
 
-    ::cudaMemPool_t get = with_allocation_handle.get();
-    CHECK(get != current_default_pool);
+      ::cudaMemPool_t get = with_allocation_handle.get();
+      CHECK(get != current_default_pool);
 
-    // Ensure we use the right release threshold
-    CHECK(ensure_release_threshold(get, props.release_threshold));
+      // Ensure we use the right release threshold
+      CHECK(ensure_release_threshold(get, props.release_threshold));
 
-    // Ensure that we disable reuse with unsupported drivers
-    CHECK(ensure_disable_reuse(get, driver_version));
+      // Ensure that we disable reuse with unsupported drivers
+      CHECK(ensure_disable_reuse(get, driver_version));
 
-    // Ensure that we disable export
-    CHECK(ensure_export_handle(get, static_cast<cudaMemAllocationHandleType>(props.allocation_handle_type)));
+      // Ensure that we disable export
+      CHECK(ensure_export_handle(get, static_cast<cudaMemAllocationHandleType>(props.allocation_handle_type)));
+    }
   }
 }
 

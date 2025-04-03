@@ -218,9 +218,10 @@ TEST_CASE("Smoke", "[device]")
       STATIC_REQUIRE(
         ::cudaFlushGPUDirectRDMAWritesOptionMemOps == device::attrs::gpu_direct_rdma_flush_writes_options.mem_ops);
 
-      auto options = device_ref(0).attr(device::attrs::gpu_direct_rdma_flush_writes_options);
-      CUDAX_REQUIRE((options == device::attrs::gpu_direct_rdma_flush_writes_options.host || //
-                     options == device::attrs::gpu_direct_rdma_flush_writes_options.mem_ops));
+      auto full_mask = (device::attrs::gpu_direct_rdma_flush_writes_options.host
+                        | device::attrs::gpu_direct_rdma_flush_writes_options.mem_ops);
+      auto options   = device_ref(0).attr(device::attrs::gpu_direct_rdma_flush_writes_options);
+      CUDAX_REQUIRE((options & ~full_mask) == 0);
     }
 
     SECTION("gpu_direct_rdma_writes_ordering")
