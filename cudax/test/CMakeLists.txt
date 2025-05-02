@@ -117,6 +117,7 @@ foreach(cn_target IN LISTS cudax_TARGETS)
     memory_resource/managed_memory_resource.cu
     memory_resource/pinned_memory_resource.cu
     memory_resource/shared_resource.cu
+    memory_resource/resource_refs.cu
   )
 
   cudax_add_catch2_test(test_target async ${cn_target}

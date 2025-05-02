@@ -157,6 +157,14 @@ struct _CCCL_DECLSPEC_EMPTY_BASES basic_any<__ireference<_Interface>>
   }
 #endif // _CCCL_DOXYGEN_INVOKED
 
+protected:
+  // Assignment is deleted for basic_any<__ireference<_Interface>> by default, but if a type that inherits from it wants
+  // to provide rebinding assignment, it can use this function
+  _CUDAX_HOST_API void __set_ref(const basic_any& __other) noexcept
+  {
+    this->__set_ref(__other.__get_vptr(), __other.__get_optr());
+  }
+
 private:
   template <class>
   friend struct basic_any;

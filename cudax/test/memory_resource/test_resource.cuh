@@ -225,3 +225,47 @@ using small_resource = test_resource<unsigned int>;
 
 static_assert(sizeof(big_resource) > cuda::experimental::__default_buffer_size);
 static_assert(sizeof(small_resource) <= cuda::experimental::__default_buffer_size);
+
+template <uint64_t N>
+struct dummy_test_resource_n
+{
+  static constexpr uint64_t value = N;
+
+  void* allocate(std::size_t, std::size_t)
+  {
+    return reinterpret_cast<void*>(N);
+  }
+
+  void* allocate_async(std::size_t, std::size_t, ::cuda::stream_ref)
+  {
+    return reinterpret_cast<void*>(N);
+  }
+
+  void deallocate(void*, std::size_t, std::size_t) noexcept
+  {
+    return;
+  }
+
+  void deallocate_async(void*, std::size_t, std::size_t, ::cuda::stream_ref) noexcept
+  {
+    return;
+  }
+
+  friend bool operator==(const dummy_test_resource_n& lhs, const dummy_test_resource_n& rhs)
+  {
+    return lhs.value == rhs.value;
+  }
+
+  friend bool operator!=(const dummy_test_resource_n& lhs, const dummy_test_resource_n& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  friend constexpr void get_property(const dummy_test_resource_n&, cudax::host_accessible) noexcept {}
+  friend constexpr uint64_t get_property(const dummy_test_resource_n& self, get_data) noexcept
+  {
+    return self.value;
+  }
+};
+
+static_assert(_CUDA_VMR::async_resource<dummy_test_resource_n<0>>);

@@ -353,6 +353,13 @@ private:
   using __base_t::interface;
 
 public:
+  // resource_ref can be assigned with rebinding semantics
+  resource_ref& operator=(const resource_ref& __other)
+  {
+    __base_t::__set_ref(__other);
+    return *this;
+  }
+
   // async_resource_ref is convertible to resource_ref
   _CCCL_TEMPLATE(class... _OtherProperties)
   _CCCL_REQUIRES((_CUDA_VSTD::__type_set_contains_v<_CUDA_VSTD::__type_set<_OtherProperties...>, _Properties...>) )
@@ -395,6 +402,13 @@ private:
   }
 
 public:
+  // async_resource_ref can be assigned with rebinding semantics
+  async_resource_ref& operator=(const async_resource_ref& __other)
+  {
+    __base_t::__set_ref(__other);
+    return *this;
+  }
+
   // Conversions from the resource_ref types in cuda::mr is not supported.
   template <class... _OtherProperties>
   async_resource_ref(_CUDA_VMR::async_resource_ref<_OtherProperties...>) = delete;
