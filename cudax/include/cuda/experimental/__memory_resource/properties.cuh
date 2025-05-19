@@ -24,6 +24,7 @@
 #include <cuda/__memory_resource/get_property.h>
 #include <cuda/__memory_resource/properties.h>
 #include <cuda/std/__type_traits/decay.h>
+#include <cuda/std/__type_traits/type_list.h>
 
 #include <cuda/std/__cccl/prologue.h>
 
@@ -38,6 +39,9 @@ struct properties_list
 {
   template <template <class...> class _Fn, class... _ExtraArgs>
   using rebind = _Fn<_ExtraArgs..., _Properties...>;
+
+  template <template <class...> class _Fn, class... _ExtraArgs>
+  using rebind_unique = _CUDA_VSTD::__type_apply_q<_Fn, _CUDA_VSTD::__make_type_set<_Properties..., _ExtraArgs...>>;
 };
 
 template <class _T>
