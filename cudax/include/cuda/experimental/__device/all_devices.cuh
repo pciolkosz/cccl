@@ -53,6 +53,8 @@ public:
 
   [[nodiscard]] iterator end() const noexcept;
 
+  [[nodiscard]] const device& back() const noexcept;
+
   operator ::std::vector<device_ref>() const;
 
 private:
@@ -141,6 +143,11 @@ struct all_devices::__initializer_iterator
 [[nodiscard]] inline all_devices::iterator all_devices::end() const noexcept
 {
   return __devices().end();
+}
+
+[[nodiscard]] inline const device& all_devices::back() const noexcept
+{
+  return __devices().back();
 }
 
 inline all_devices::operator ::std::vector<device_ref>() const

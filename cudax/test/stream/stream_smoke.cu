@@ -115,13 +115,13 @@ C2H_CCCLRT_TEST("Stream get device", "[stream]")
   cudax::stream dev0_stream(cudax::device_ref{0});
   CUDAX_REQUIRE(dev0_stream.get_device() == 0);
 
-  cudax::__ensure_current_device guard(cudax::device_ref{*std::prev(cudax::devices.end())});
+  cudax::__ensure_current_device guard(cudax::devices.back());
   cudaStream_t stream_handle;
   CUDART(cudaStreamCreate(&stream_handle));
   auto stream_cudart = cudax::stream::from_native_handle(stream_handle);
-  CUDAX_REQUIRE(stream_cudart.get_device() == *std::prev(cudax::devices.end()));
+  CUDAX_REQUIRE(stream_cudart.get_device() == cudax::devices.back());
   auto stream_ref_cudart = cudax::stream_ref(stream_handle);
-  CUDAX_REQUIRE(stream_ref_cudart.get_device() == *std::prev(cudax::devices.end()));
+  CUDAX_REQUIRE(stream_ref_cudart.get_device() == cudax::devices.back());
 
   INFO("Can create a side stream using logical device");
   {

@@ -310,6 +310,7 @@ C2H_CCCLRT_TEST("global devices vector", "[device]")
     CUDAX_REQUIRE(1 == std::next(cudax::devices.begin())->get());
     CUDAX_REQUIRE(1 == cudax::devices.begin()[1].get());
 
+    CUDAX_REQUIRE(cudax::devices.size() - 1 == static_cast<std::size_t>(cudax::devices.back().get()));
     CUDAX_REQUIRE(cudax::devices.size() - 1 == static_cast<std::size_t>((*std::prev(cudax::devices.end())).get()));
     CUDAX_REQUIRE(cudax::devices.size() - 1 == static_cast<std::size_t>(std::prev(cudax::devices.end())->get()));
     CUDAX_REQUIRE(cudax::devices.size() - 1 == static_cast<std::size_t>(cudax::devices.end()[-1].get()));
