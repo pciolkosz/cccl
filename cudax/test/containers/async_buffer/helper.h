@@ -156,6 +156,11 @@ struct dev0_device_memory_resource : cudax::device_memory_resource
   using default_queries = cudax::properties_list<cuda::mr::device_accessible>;
 };
 
+template <bool IsLegacy>
+struct is_legacy_resource {
+  static constexpr bool value = IsLegacy;
+};
+
 // helper class as we need to pass the properties in a tuple to the catch tests
 template <class>
 struct extract_properties;

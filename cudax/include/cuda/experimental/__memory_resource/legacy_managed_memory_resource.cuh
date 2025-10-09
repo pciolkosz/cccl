@@ -35,6 +35,7 @@
 #include <cuda/experimental/__memory_resource/any_resource.cuh>
 #include <cuda/experimental/__memory_resource/properties.cuh>
 #include <cuda/experimental/__stream/internal_streams.cuh>
+#include <cuda/experimental/__memory_resource/synchronous_resource_adapter.cuh>
 
 #include <cuda/std/__cccl/prologue.h>
 
@@ -140,6 +141,7 @@ private:
 };
 static_assert(::cuda::mr::synchronous_resource_with<legacy_managed_memory_resource, device_accessible>, "");
 static_assert(::cuda::mr::synchronous_resource_with<legacy_managed_memory_resource, host_accessible>, "");
+static_assert(::cuda::mr::resource<synchronous_resource_adapter<legacy_managed_memory_resource>>, "");
 
 } // namespace cuda::experimental
 

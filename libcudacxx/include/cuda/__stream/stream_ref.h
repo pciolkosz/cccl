@@ -112,6 +112,11 @@ public:
     return __stream;
   }
 
+  void __sync_no_throw() const noexcept
+  {
+    ::cuda::__driver::__streamSynchronizeNoThrow(__stream);
+  }
+
   //! @brief Synchronizes the wrapped stream.
   //!
   //! @throws cuda::cuda_error if synchronization fails.

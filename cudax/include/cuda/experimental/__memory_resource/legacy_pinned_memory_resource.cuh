@@ -34,6 +34,7 @@
 #include <cuda/experimental/__memory_resource/memory_resource_base.cuh>
 #include <cuda/experimental/__memory_resource/pinned_memory_pool.cuh>
 #include <cuda/experimental/__stream/internal_streams.cuh>
+#include <cuda/experimental/__memory_resource/synchronous_resource_adapter.cuh>
 
 #include <cuda/std/__cccl/prologue.h>
 
@@ -131,6 +132,7 @@ private:
 
 static_assert(::cuda::mr::synchronous_resource_with<legacy_pinned_memory_resource, device_accessible>, "");
 static_assert(::cuda::mr::synchronous_resource_with<legacy_pinned_memory_resource, host_accessible>, "");
+static_assert(::cuda::mr::resource<synchronous_resource_adapter<legacy_pinned_memory_resource>>, "");
 
 } // namespace cuda::experimental
 
