@@ -354,8 +354,7 @@ struct resource
 
   template <AccessibilityType Accessibilty2                                         = Accessibility,
             cuda::std::enable_if_t<Accessibilty2 == AccessibilityType::Device, int> = 0>
-  friend void get_property(const resource&, ::cuda::mr::device_accessible) noexcept
-  {}
+  friend void get_property(const resource&, ::cuda::mr::device_accessible) noexcept {}
 };
 static_assert(cuda::mr::synchronous_resource<resource<AccessibilityType::Host>>, "");
 static_assert(!cuda::mr::synchronous_resource_with<resource<AccessibilityType::Host>, ::cuda::mr::device_accessible>,

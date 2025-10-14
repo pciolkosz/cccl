@@ -22,6 +22,7 @@
 #endif // no system header
 
 #include <cuda/std/__type_traits/decay.h>
+#include <cuda/std/__type_traits/decay.h>
 #include <cuda/std/__type_traits/type_set.h>
 #include <cuda/std/cstddef>
 

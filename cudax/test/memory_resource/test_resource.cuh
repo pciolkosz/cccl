@@ -216,7 +216,6 @@ struct test_resource
   }
 
   friend constexpr void get_property(const test_resource&, ::cuda::mr::host_accessible) noexcept {}
-  friend constexpr void get_property(const test_resource&, extra_property) noexcept {}
   friend constexpr int get_property(const test_resource& self, get_data) noexcept
   {
     return self.data;
