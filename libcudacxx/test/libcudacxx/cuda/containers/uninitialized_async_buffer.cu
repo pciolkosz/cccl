@@ -17,6 +17,7 @@
 #include <cuda/memory_resource>
 #include <cuda/std/cassert>
 #include <cuda/std/cstdint>
+#include <cuda/std/cstddef>
 #include <cuda/std/span>
 #include <cuda/std/type_traits>
 #include <cuda/std/utility>
@@ -51,6 +52,54 @@ constexpr int get_property(const cuda::device_memory_pool_ref&, my_property)
   return 42;
 }
 
+template <class Resource>
+struct alignment_tracking_resource
+    : ::cuda::mr::__copy_default_queries<Resource>
+    , ::cuda::forward_property<alignment_tracking_resource<Resource>, Resource>
+{
+  Resource resource_;
+  ::cuda::std::size_t* alignment_;
+
+  alignment_tracking_resource(const Resource& resource, ::cuda::std::size_t& alignment) noexcept
+      : resource_(resource)
+      , alignment_(&alignment)
+  {}
+
+  alignment_tracking_resource(Resource&& resource, ::cuda::std::size_t& alignment) noexcept
+      : resource_(::cuda::std::move(resource))
+      , alignment_(&alignment)
+  {}
+
+  void* allocate(::cuda::stream_ref stream, ::cuda::std::size_t size, ::cuda::std::size_t alignment)
+  {
+    *alignment_ = alignment;
+    return resource_.allocate(stream, size, alignment);
+  }
+
+  void deallocate(::cuda::stream_ref stream, void* ptr, ::cuda::std::size_t size, ::cuda::std::size_t alignment)
+  {
+    resource_.deallocate(stream, ptr, size, alignment);
+  }
+
+  bool operator==(const alignment_tracking_resource&) const
+  {
+    return true;
+  }
+  bool operator!=(const alignment_tracking_resource&) const
+  {
+    return false;
+  }
+
+  Resource& upstream_resource() noexcept
+  {
+    return resource_;
+  }
+  const Resource& upstream_resource() const noexcept
+  {
+    return resource_;
+  }
+};
+
 C2H_TEST_LIST(
   "__uninitialized_async_buffer", "[container]", char, short, int, long, long long, float, double, do_not_construct)
 {
@@ -68,6 +117,15 @@ C2H_TEST_LIST(
       __uninitialized_async_buffer from_stream_count{resource, stream, 42};
       CCCLRT_CHECK(from_stream_count.data() != nullptr);
       CCCLRT_CHECK(from_stream_count.size() == 42);
+    }
+
+    {
+      ::cuda::std::size_t last_alignment = 0;
+      const ::cuda::std::size_t alignment = 64;
+      alignment_tracking_resource tracking_resource{resource, last_alignment};
+      __uninitialized_async_buffer from_stream_count{tracking_resource, stream, 42, alignment};
+      CCCLRT_CHECK(last_alignment == alignment);
+      CCCLRT_CHECK(from_stream_count.alignment() == alignment);
     }
 
     {

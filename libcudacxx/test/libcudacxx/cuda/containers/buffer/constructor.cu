@@ -14,6 +14,7 @@
 #include <cuda/std/algorithm>
 #include <cuda/std/array>
 #include <cuda/std/cassert>
+#include <cuda/std/cstddef>
 #include <cuda/std/initializer_list>
 #include <cuda/std/tuple>
 #include <cuda/std/type_traits>
@@ -30,6 +31,13 @@ bool check_offseted_pointer(const T* ptr)
 {
   return (ptr != nullptr)
       && (reinterpret_cast<std::uintptr_t>(ptr) % cuda::mr::default_cuda_malloc_alignment == alignof(T));
+}
+
+template <typename T>
+bool check_offseted_pointer_with_alignment(const T* ptr, ::cuda::std::size_t alignment)
+{
+  return (ptr != nullptr)
+      && (reinterpret_cast<std::uintptr_t>(ptr) % cuda::mr::default_cuda_malloc_alignment == alignment);
 }
 
 C2H_CCCLRT_TEST("cuda::buffer constructors", "[container][buffer]", test_types)
@@ -95,6 +103,14 @@ C2H_CCCLRT_TEST("cuda::buffer constructors", "[container][buffer]", test_types)
     {
       const auto buf = cuda::make_buffer<T>(stream, resource, 5, cuda::no_init);
       CCCLRT_CHECK(check_offseted_pointer(buf.data()));
+      CCCLRT_CHECK(buf.size() == 5);
+    }
+
+    { // from size with no_init and over-aligned allocation
+      const ::cuda::std::size_t alignment = ::cuda::mr::default_cuda_malloc_alignment / 2;
+      const auto env         = ::cuda::std::execution::prop{::cuda::overalign_allocation, alignment};
+      const Buffer buf{stream, resource, 5, cuda::no_init, env};
+      CCCLRT_CHECK(check_offseted_pointer_with_alignment(buf.data(), alignment));
       CCCLRT_CHECK(buf.size() == 5);
     }
   }
