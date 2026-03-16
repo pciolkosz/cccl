@@ -31,6 +31,7 @@
 #include <cuda/std/array>
 #include <cuda/std/span>
 
+#include <cuda/experimental/__detail/type_traits.cuh>
 #include <cuda/experimental/__stream/stream.cuh>
 
 #include <vector>
@@ -121,16 +122,16 @@ template <::cuda::std::size_t _Count>
 
 template <class _Range>
 _CCCL_CONCEPT __stream_join_range =
-  ::cuda::std::is_same_v<::cuda::std::ranges::range_value_t<const _Range&>, stream_ref>
-  || ::cuda::std::is_same_v<::cuda::std::ranges::range_value_t<const _Range&>, stream>;
+  cuda::experimental::__one_of<::cuda::std::ranges::range_value_t<const _Range&>, stream_ref, stream>;
 
 //! @brief Make each target stream wait on `__event`, skipping the source stream itself.
 template <class _ToRange, class _Event>
-_CCCL_HOST_API void __wait_all_targets_on_event(const _ToRange& __to_streams, stream_ref __from, const _Event& __local_event)
+_CCCL_HOST_API void
+__wait_all_targets_on_event(const _ToRange& __to_streams, stream_ref __from, const _Event& __local_event)
 {
   for (const auto& __to_stream : __to_streams)
   {
-    auto __to = stream_ref(__to_stream);
+    auto __to = stream_ref{__to_stream};
     if (__to != __from)
     {
       __to.wait(__local_event);
@@ -154,13 +155,13 @@ _CCCL_HOST_API void __join_impl(const _ToRange& __to_streams, const _FromRange& 
     return;
   }
 
-  auto __first                 = stream_ref(*__to_begin);
+  auto __first                 = stream_ref{*__to_begin};
   auto __first_device          = __first.device();
   bool __use_per_stream_events = false;
   cuda::event __local_event(__first_device);
   for (const auto& __from_stream : __from_streams)
   {
-    auto __from = stream_ref(__from_stream);
+    auto __from = stream_ref{__from_stream};
 
     if (!__use_per_stream_events)
     {
@@ -187,7 +188,7 @@ _CCCL_HOST_API void __join_impl(const _ToRange& __to_streams, const _FromRange& 
     {
       // Some stream/device combinations cannot record into a shared event.
       // Fall back to an event allocated for each source stream's device.
-      auto __from_event = cuda::event(__from);
+      auto __from_event = cuda::event{__from};
       __wait_all_targets_on_event(__to_streams, __from, __from_event);
     }
   }
