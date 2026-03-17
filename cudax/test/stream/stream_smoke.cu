@@ -15,6 +15,8 @@
 #include <cuda/experimental/launch.cuh>
 #include <cuda/experimental/stream.cuh>
 
+#include <vector>
+
 #include <testing.cuh>
 #include <utility.cuh>
 
@@ -193,7 +195,7 @@ C2H_CCCLRT_TEST("Replicate only creates streams", "[stream]")
   ::cuda::atomic_ref atomic_gate(*gate);
 
   cudax::launch(source, ::test::one_thread_dims, ::test::spin_until_80{}, gate.get());
-  auto [left] = cudax::replicate<1>(source);
+  auto [left] = source.replicate<1>();
   cudax::launch(left, ::test::one_thread_dims, ::test::assign_42{}, out.get());
 
   left.sync();
@@ -210,7 +212,7 @@ C2H_CCCLRT_TEST("Replicate supports dynamic stream counts", "[stream]")
 {
   cudax::stream source{cuda::device_ref{0}};
   constexpr size_t count = 3;
-  auto streams           = cudax::replicate(source, count);
+  auto streams           = source.replicate(count);
 
   CUDAX_REQUIRE(streams.size() == count);
   for (size_t idx = 0; idx < count; ++idx)
@@ -220,13 +222,16 @@ C2H_CCCLRT_TEST("Replicate supports dynamic stream counts", "[stream]")
   }
 }
 
-C2H_CCCLRT_TEST("Replicate prepend keeps moved stream at index zero", "[stream]")
+C2H_CCCLRT_TEST("Replicate into appends streams to an existing container", "[stream]")
 {
   cudax::stream source{cuda::device_ref{0}};
   auto source_id         = source.id();
   constexpr size_t count = 2;
 
-  auto streams = cudax::replicate_prepend(::cuda::std::move(source), count);
+  ::std::vector<cudax::stream> streams;
+  streams.reserve(count + 1);
+  streams.emplace_back(::cuda::std::move(source));
+  streams.front().replicate_into(streams, count);
 
   CUDAX_REQUIRE(streams.size() == count + 1);
   CUDAX_REQUIRE(streams.front().id() == source_id);
@@ -236,12 +241,16 @@ C2H_CCCLRT_TEST("Replicate prepend keeps moved stream at index zero", "[stream]"
   }
 }
 
-C2H_CCCLRT_TEST("Replicate prepend static keeps moved stream at index zero", "[stream]")
+C2H_CCCLRT_TEST("Replicate into appends streams with runtime count", "[stream]")
 {
   cudax::stream source{cuda::device_ref{0}};
-  auto source_id = source.id();
+  auto source_id         = source.id();
+  constexpr size_t count = 2;
 
-  auto streams = cudax::replicate_prepend<2>(::cuda::std::move(source));
+  ::std::vector<cudax::stream> streams;
+  streams.reserve(3);
+  streams.emplace_back(::cuda::std::move(source));
+  streams.front().replicate_into(streams, count);
 
   CUDAX_REQUIRE(streams.size() == 3);
   CUDAX_REQUIRE(streams[0].id() == source_id);
@@ -249,7 +258,7 @@ C2H_CCCLRT_TEST("Replicate prepend static keeps moved stream at index zero", "[s
   CUDAX_REQUIRE(streams[2].device() == streams[0].device());
 }
 
-C2H_CCCLRT_TEST("Join synchronizes stream groups", "[stream]")
+C2H_CCCLRT_TEST("all_wait_all synchronizes stream groups", "[stream]")
 {
   cudax::stream target1{cuda::device_ref{0}};
   cudax::stream target2{cuda::device_ref{0}};
@@ -261,7 +270,7 @@ C2H_CCCLRT_TEST("Join synchronizes stream groups", "[stream]")
   cudax::launch(source, ::test::one_thread_dims, ::test::assign_42{}, i.get());
 
   auto targets = ::cuda::std::array<cudax::stream_ref, 2>{target1, target2};
-  cudax::join(targets, cudax::stream_ref{source});
+  cudax::all_wait_all(targets, cudax::stream_ref{source});
 
   cudax::launch(target1, ::test::one_thread_dims, ::test::verify_42{}, i.get());
   cudax::launch(target2, ::test::one_thread_dims, ::test::verify_42{}, i.get());
@@ -275,7 +284,7 @@ C2H_CCCLRT_TEST("Join synchronizes stream groups", "[stream]")
   source.sync();
 }
 
-C2H_CCCLRT_TEST("Join overload accepts stream_ref single target", "[stream]")
+C2H_CCCLRT_TEST("stream.wait_all accepts stream group", "[stream]")
 {
   cudax::stream target{cuda::device_ref{0}};
   cudax::stream source1{cuda::device_ref{0}};
@@ -287,7 +296,7 @@ C2H_CCCLRT_TEST("Join overload accepts stream_ref single target", "[stream]")
   cudax::launch(source2, ::test::one_thread_dims, ::test::assign_42{}, i.get());
 
   auto sources = ::cuda::std::array<cudax::stream_ref, 2>{source1, source2};
-  cudax::join(cudax::stream_ref{target}, sources);
+  target.wait_all(sources);
 
   cudax::launch(target, ::test::one_thread_dims, ::test::verify_42{}, i.get());
   CUDAX_REQUIRE(atomic_i.load() != 42);
@@ -299,7 +308,7 @@ C2H_CCCLRT_TEST("Join overload accepts stream_ref single target", "[stream]")
   source2.sync();
 }
 
-C2H_CCCLRT_TEST("Join supports streams from multiple devices", "[stream]")
+C2H_CCCLRT_TEST("all_wait_all supports streams from multiple devices", "[stream]")
 {
   if (cuda::devices.size() < 2)
   {
@@ -318,7 +327,7 @@ C2H_CCCLRT_TEST("Join supports streams from multiple devices", "[stream]")
 
   auto targets = ::cuda::std::array<cudax::stream_ref, 1>{target};
   auto sources = ::cuda::std::array<cudax::stream_ref, 2>{source0, source1};
-  cudax::join(targets, sources);
+  cudax::all_wait_all(targets, sources);
 
   cudax::launch(target, ::test::one_thread_dims, ::test::verify_42{}, i.get());
   CUDAX_REQUIRE(atomic_i.load() != 42);
@@ -330,7 +339,7 @@ C2H_CCCLRT_TEST("Join supports streams from multiple devices", "[stream]")
   source1.sync();
 }
 
-C2H_CCCLRT_TEST("Join handles a stream present in both groups", "[stream]")
+C2H_CCCLRT_TEST("all_wait_all handles stream present in both groups", "[stream]")
 {
   cudax::stream shared{cuda::device_ref{0}};
   cudax::stream target{cuda::device_ref{0}};
@@ -340,9 +349,8 @@ C2H_CCCLRT_TEST("Join handles a stream present in both groups", "[stream]")
   cudax::launch(shared, ::test::one_thread_dims, ::test::spin_until_80{}, i.get());
   cudax::launch(shared, ::test::one_thread_dims, ::test::assign_42{}, i.get());
 
-  auto to_streams   = ::cuda::std::array<cudax::stream_ref, 2>{shared, target};
-  auto from_streams = ::cuda::std::array<cudax::stream_ref, 1>{shared};
-  cudax::join(to_streams, from_streams);
+  auto to_streams = ::cuda::std::array<cudax::stream_ref, 2>{shared, target};
+  cudax::all_wait_all(to_streams, shared);
 
   cudax::launch(target, ::test::one_thread_dims, ::test::verify_42{}, i.get());
   CUDAX_REQUIRE(atomic_i.load() != 42);
