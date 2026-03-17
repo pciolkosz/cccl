@@ -15,6 +15,8 @@
 #include <cuda/experimental/memory_resource.cuh>
 #include <cuda/experimental/stream.cuh>
 
+#include <vector>
+
 #include <testing.cuh>
 #include <utility.cuh>
 
@@ -251,7 +253,7 @@ C2H_TEST("Path builder with kernel nodes", "[graph]")
     auto pb = cudax::start_path(g);
     cudax::launch(pb, test::one_thread_dims, test::assign_42{}, ptr);
 
-    auto branches = cudax::replicate<2>(pb);
+    auto branches = pb.replicate<2>();
     CUDAX_REQUIRE(branches[0].get_dependencies().size() == 0);
     CUDAX_REQUIRE(branches[1].get_dependencies().size() == 0);
 
@@ -341,14 +343,17 @@ C2H_TEST("Path builder with kernel nodes", "[graph]")
     *ptr = 0;
   }
 
-  SECTION("path_builder replicate_prepend variants")
+  SECTION("path_builder replicate_into appends peers")
   {
     cudax::graph_builder g;
 
     auto dynamic_seed = cudax::start_path(g);
     cudax::launch(dynamic_seed, test::one_thread_dims, test::assign_42{}, ptr);
     const auto dynamic_seed_dep = dynamic_seed.get_dependencies()[0];
-    auto dynamic_group          = cudax::replicate_prepend(std::move(dynamic_seed), 2);
+    ::std::vector<cudax::path_builder> dynamic_group;
+    dynamic_group.reserve(3);
+    dynamic_group.emplace_back(std::move(dynamic_seed));
+    dynamic_group.front().replicate_into(dynamic_group, 2);
 
     CUDAX_REQUIRE(dynamic_group.size() == 3);
     CUDAX_REQUIRE(dynamic_group[0].get_dependencies().size() == 1);
@@ -359,7 +364,10 @@ C2H_TEST("Path builder with kernel nodes", "[graph]")
     auto static_seed = cudax::start_path(g);
     cudax::launch(static_seed, test::one_thread_dims, test::assign_42{}, ptr);
     const auto static_seed_dep = static_seed.get_dependencies()[0];
-    auto static_group          = cudax::replicate_prepend<2>(std::move(static_seed));
+    ::std::vector<cudax::path_builder> static_group;
+    static_group.reserve(3);
+    static_group.emplace_back(std::move(static_seed));
+    static_group.front().replicate_into(static_group, 2);
 
     CUDAX_REQUIRE(static_group.size() == 3);
     CUDAX_REQUIRE(static_group[0].get_dependencies().size() == 1);
@@ -407,7 +415,7 @@ C2H_TEST("Path builder with kernel nodes", "[graph]")
       cudax::launch(dev0_source, test::one_thread_dims, test::atomic_add_one{}, ptr);
       cudax::launch(dev1_source, test::one_thread_dims, test::atomic_add_one{}, ptr);
 
-      auto target_group = cudax::replicate<1>(cudax::start_path(cuda::devices[0], root));
+      auto target_group = cudax::start_path(cuda::devices[0], root).replicate<1>();
       auto source_group = ::cuda::std::array<cudax::path_builder, 2>{dev0_source, dev1_source};
       cudax::join(target_group, source_group);
       CUDAX_REQUIRE(target_group[0].get_dependencies().size() >= 2);

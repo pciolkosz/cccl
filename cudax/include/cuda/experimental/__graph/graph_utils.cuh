@@ -24,7 +24,6 @@
 #include <cuda/std/__ranges/concepts.h>
 #include <cuda/std/__type_traits/is_same.h>
 #include <cuda/std/__utility/integer_sequence.h>
-#include <cuda/std/__utility/move.h>
 #include <cuda/std/array>
 #include <cuda/std/span>
 
@@ -36,35 +35,24 @@
 
 namespace cuda::experimental
 {
-template <::cuda::std::size_t _Count, ::cuda::std::size_t... _Idx>
-[[nodiscard]] _CCCL_HOST_API auto __replicate_impl(const path_builder& __source, ::cuda::std::index_sequence<_Idx...>)
+template <::cuda::std::size_t... _Idx>
+[[nodiscard]] _CCCL_HOST_API auto
+__replicate_impl(device_ref __dev, cudaGraph_t __graph, ::cuda::std::index_sequence<_Idx...>)
+  -> ::cuda::std::array<path_builder, sizeof...(_Idx)>
+{
+  return ::cuda::std::array<path_builder, sizeof...(_Idx)>{((void) _Idx, path_builder(__dev, __graph))...};
+}
+
+template <::cuda::std::size_t _Count>
+[[nodiscard]] _CCCL_HOST_API auto __replicate_builders(const path_builder& __source)
   -> ::cuda::std::array<path_builder, _Count>
 {
   const auto __dev   = __source.get_device();
   const auto __graph = __source.get_native_graph_handle();
-  return ::cuda::std::array<path_builder, _Count>{((void) _Idx, path_builder(__dev, __graph))...};
+  return __replicate_impl(__dev, __graph, ::cuda::std::make_index_sequence<_Count>{});
 }
 
-template <::cuda::std::size_t _Count, ::cuda::std::size_t... _Idx>
-[[nodiscard]] _CCCL_HOST_API auto __replicate_prepend_impl(
-  path_builder&& __source, device_ref __dev, cudaGraph_t __graph, ::cuda::std::index_sequence<_Idx...>)
-  -> ::cuda::std::array<path_builder, _Count + 1>
-{
-  return ::cuda::std::array<path_builder, _Count + 1>{
-    ::cuda::std::move(__source), ((void) _Idx, path_builder(__dev, __graph))...};
-}
-
-//! @brief Create a fixed-size group of peer path builders with the same graph/device as `__source`.
-//! @note This function only creates path builders; it does not add synchronization dependencies.
-template <::cuda::std::size_t _Count>
-[[nodiscard]] _CCCL_HOST_API auto replicate(const path_builder& __source) -> ::cuda::std::array<path_builder, _Count>
-{
-  return __replicate_impl<_Count>(__source, ::cuda::std::make_index_sequence<_Count>{});
-}
-
-//! @brief Create a runtime-sized group of peer path builders with the same graph/device as `__source`.
-//! @note This function only creates path builders; it does not add synchronization dependencies.
-[[nodiscard]] _CCCL_HOST_API inline auto replicate(const path_builder& __source, ::cuda::std::size_t __count)
+[[nodiscard]] _CCCL_HOST_API inline auto __replicate_builders(const path_builder& __source, ::cuda::std::size_t __count)
   -> ::std::vector<path_builder>
 {
   const auto __dev   = __source.get_device();
@@ -78,35 +66,16 @@ template <::cuda::std::size_t _Count>
   return __replicas;
 }
 
-//! @brief Create a runtime-sized group of peer path builders with the same graph/device as `__source` and prepend
-//! `__source` at index 0.
-//! @note This function only creates path builders; it does not add synchronization dependencies.
-[[nodiscard]] _CCCL_HOST_API inline auto replicate_prepend(path_builder&& __source, ::cuda::std::size_t __count)
-  -> ::std::vector<path_builder>
+template <class _Container>
+_CCCL_HOST_API void
+__replicate_builders_into(const path_builder& __source, _Container& __out, ::cuda::std::size_t __count)
 {
   const auto __dev   = __source.get_device();
   const auto __graph = __source.get_native_graph_handle();
-  ::std::vector<path_builder> __replicas;
-  __replicas.reserve(__count + 1);
-  __replicas.emplace_back(::cuda::std::move(__source));
   for (::cuda::std::size_t __idx = 0; __idx < __count; ++__idx)
   {
-    __replicas.emplace_back(__dev, __graph);
+    __out.emplace_back(__dev, __graph);
   }
-  return __replicas;
-}
-
-template <::cuda::std::size_t _Count>
-//! @brief Create a fixed-size group of peer path builders with the same graph/device as `__source` and prepend
-//! `__source` at index 0.
-//! @note This function only creates path builders; it does not add synchronization dependencies.
-[[nodiscard]] _CCCL_HOST_API auto replicate_prepend(path_builder&& __source)
-  -> ::cuda::std::array<path_builder, _Count + 1>
-{
-  const auto __dev   = __source.get_device();
-  const auto __graph = __source.get_native_graph_handle();
-  return __replicate_prepend_impl<_Count>(
-    ::cuda::std::move(__source), __dev, __graph, ::cuda::std::make_index_sequence<_Count>{});
 }
 
 template <class _Range>
