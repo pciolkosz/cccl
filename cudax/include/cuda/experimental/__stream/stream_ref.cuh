@@ -163,29 +163,20 @@ struct stream_ref : ::cuda::stream_ref
   //! @note This function only creates streams; it does not add synchronization dependencies.
   //! @note The streams are created with the default priority, which can be changed by the user.
   template <::cuda::std::size_t _Count>
-  [[nodiscard]] _CCCL_HOST_API auto replicate() const
-  {
-    return __replicate_streams<_Count>(*this);
-  }
+  [[nodiscard]] _CCCL_HOST_API auto replicate() const -> ::cuda::std::array<stream, _Count>;
 
   //! @brief Create a runtime-sized group of streams on the same logical device as this stream.
   //!
   //! @note This function only creates streams; it does not add synchronization dependencies.
   //! @note The streams are created with the default priority, which can be changed by the user.
-  [[nodiscard]] _CCCL_HOST_API auto replicate(::cuda::std::size_t __count) const
-  {
-    return __replicate_streams(*this, __count);
-  }
+  [[nodiscard]] _CCCL_HOST_API auto replicate(::cuda::std::size_t __count) const -> ::std::vector<stream>;
 
   //! @brief Append a runtime-sized group of streams on the same logical device as this stream to `__out`.
   //!
   //! @note This function only creates streams; it does not add synchronization dependencies.
   //! @note The appended streams are created with the default priority, which can be changed by the user.
   template <class _Container>
-  _CCCL_HOST_API void replicate_into(_Container& __out, ::cuda::std::size_t __count) const
-  {
-    __replicate_streams_into(*this, __out, __count);
-  }
+  _CCCL_HOST_API void replicate_into(_Container& __out, ::cuda::std::size_t __count) const;
 };
 } // namespace cuda::experimental
 

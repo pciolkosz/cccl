@@ -24,6 +24,9 @@
 #include <cuda/std/__type_traits/is_constructible.h>
 #include <cuda/std/__utility/integer_sequence.h>
 #include <cuda/std/array>
+#include <cuda/std/span>
+
+#include <cuda/experimental/__stream/stream.cuh>
 
 #include <vector>
 
@@ -64,6 +67,24 @@ _CCCL_HOST_API void __replicate_streams_into(stream_ref __source, _Container& __
   {
     __out.emplace_back(__dev);
   }
+}
+
+template <::cuda::std::size_t _Count>
+[[nodiscard]] _CCCL_HOST_API auto stream_ref::replicate() const -> ::cuda::std::array<stream, _Count>
+{
+  return __replicate_streams<_Count>(*this);
+}
+
+[[nodiscard]] _CCCL_HOST_API inline auto stream_ref::replicate(::cuda::std::size_t __count) const
+  -> ::std::vector<stream>
+{
+  return __replicate_streams(*this, __count);
+}
+
+template <class _Container>
+_CCCL_HOST_API void stream_ref::replicate_into(_Container& __out, ::cuda::std::size_t __count) const
+{
+  __replicate_streams_into(*this, __out, __count);
 }
 
 template <class _Range>
