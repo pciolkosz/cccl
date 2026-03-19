@@ -60,12 +60,12 @@ template <::cuda::std::size_t _Count>
 }
 
 template <class _Container>
-_CCCL_HOST_API void __replicate_streams_into(stream_ref __source, _Container& __out, ::cuda::std::size_t __count)
+_CCCL_HOST_API void __replicate_streams_into(stream_ref __source, _Container& __container, ::cuda::std::size_t __count)
 {
   auto __dev = __source.logical_device();
   for (::cuda::std::size_t __idx = 0; __idx < __count; ++__idx)
   {
-    __out.emplace_back(__dev);
+    __container.emplace_back(__dev);
   }
 }
 
@@ -82,9 +82,9 @@ template <::cuda::std::size_t _Count>
 }
 
 template <class _Container>
-_CCCL_HOST_API void stream_ref::replicate_into(_Container& __out, ::cuda::std::size_t __count) const
+_CCCL_HOST_API void stream_ref::replicate_into(_Container& __container, ::cuda::std::size_t __count) const
 {
-  __replicate_streams_into(*this, __out, __count);
+  __replicate_streams_into(*this, __container, __count);
 }
 
 template <class _Range>
