@@ -23,6 +23,7 @@
 
 #include <cuda/std/__utility/exchange.h>
 
+#include <cuda/experimental/__driver/driver_api.cuh>
 #include <cuda/experimental/__graph/graph_builder_ref.cuh>
 
 #include <cuda/std/__cccl/prologue.h>
@@ -67,7 +68,7 @@ struct _CCCL_TYPE_VISIBILITY_DEFAULT graph_builder : graph_builder_ref
   _CCCL_HOST_API explicit graph_builder(device_ref __dev)
       : graph_builder_ref(nullptr, __dev)
   {
-    _CCCL_TRY_CUDA_API(cudaGraphCreate, "cudaGraphCreate failed", &__graph_, 0);
+    __graph_ = ::cuda::experimental::__driver::__graphCreate();
   }
 
   //! \brief Constructs a new, empty CUDA graph.
@@ -108,7 +109,7 @@ struct _CCCL_TYPE_VISIBILITY_DEFAULT graph_builder : graph_builder_ref
   {
     if (__other.__graph_)
     {
-      _CCCL_TRY_CUDA_API(cudaGraphClone, "cudaGraphClone failed", &__graph_, __other.__graph_);
+      __graph_ = ::cuda::experimental::__driver::__graphClone(__other.__graph_);
     }
   }
 
@@ -166,7 +167,8 @@ struct _CCCL_TYPE_VISIBILITY_DEFAULT graph_builder : graph_builder_ref
   {
     if (auto __graph = ::cuda::std::exchange(__graph_, nullptr))
     {
-      _CCCL_ASSERT_CUDA_API(cudaGraphDestroy, "cudaGraphDestroy failed", __graph);
+      [[maybe_unused]] auto __status = ::cuda::experimental::__driver::__graphDestroyNoThrow(__graph);
+      _CCCL_ASSERT(__status == cudaSuccess, "cuGraphDestroy failed");
     }
   }
 

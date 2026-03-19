@@ -25,6 +25,7 @@
 #include <cuda/std/__utility/exchange.h>
 #include <cuda/std/__utility/swap.h>
 
+#include <cuda/experimental/__driver/driver_api.cuh>
 #include <cuda/experimental/__stream/stream_ref.cuh>
 
 #include <cuda_runtime_api.h>
@@ -110,7 +111,8 @@ struct _CCCL_TYPE_VISIBILITY_DEFAULT graph
   {
     if (auto __exec = ::cuda::std::exchange(__exec_, nullptr))
     {
-      _CCCL_ASSERT_CUDA_API(cudaGraphExecDestroy, "cudaGraphDestroy failed", __exec);
+      [[maybe_unused]] auto __status = ::cuda::experimental::__driver::__graphExecDestroyNoThrow(__exec);
+      _CCCL_ASSERT(__status == cudaSuccess, "cuGraphExecDestroy failed");
     }
   }
 
@@ -129,7 +131,7 @@ struct _CCCL_TYPE_VISIBILITY_DEFAULT graph
   //! \throws cuda::std::cuda_error if `cudaGraphLaunch` fails.
   _CCCL_HOST_API void launch(stream_ref __stream)
   {
-    _CCCL_TRY_CUDA_API(cudaGraphLaunch, "cudaGraphLaunch failed", __exec_, __stream.get());
+    ::cuda::experimental::__driver::__graphLaunch(__exec_, __stream.get());
   }
 
 private:
