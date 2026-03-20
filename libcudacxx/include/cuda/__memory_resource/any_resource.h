@@ -133,8 +133,8 @@ struct __ibasic_resource : __basic_interface<__ibasic_resource>
   }
 
   CCCL_DEPRECATED_BECAUSE("Specify an explicit alignment argument. The default alignment will be removed in a future "
-                           "release.")
-  _CCCL_PUBLIC_HOST_API void* allocate_sync(size_t __bytes)
+                          "release.") _CCCL_PUBLIC_HOST_API void*
+  allocate_sync(size_t __bytes)
   {
     return allocate_sync(__bytes, alignof(::cuda::std::max_align_t));
   }
@@ -145,8 +145,8 @@ struct __ibasic_resource : __basic_interface<__ibasic_resource>
   }
 
   CCCL_DEPRECATED_BECAUSE("Specify an explicit alignment argument. The default alignment will be removed in a future "
-                           "release.")
-  _CCCL_PUBLIC_HOST_API void deallocate_sync(void* __pv, size_t __bytes) noexcept
+                          "release.") _CCCL_PUBLIC_HOST_API void
+  deallocate_sync(void* __pv, size_t __bytes) noexcept
   {
     return deallocate_sync(__pv, __bytes, alignof(::cuda::std::max_align_t));
   }
@@ -164,8 +164,8 @@ struct __ibasic_async_resource : __basic_interface<__ibasic_async_resource>
   }
 
   CCCL_DEPRECATED_BECAUSE("Specify an explicit alignment argument. The default alignment will be removed in a future "
-                           "release.")
-  _CCCL_PUBLIC_HOST_API void* allocate(::cuda::stream_ref __stream, size_t __bytes)
+                          "release.") _CCCL_PUBLIC_HOST_API void*
+  allocate(::cuda::stream_ref __stream, size_t __bytes)
   {
     return ::cuda::__virtcall<&__allocate_async<__ibasic_async_resource>>(
       this, __stream, __bytes, alignof(::cuda::std::max_align_t));
@@ -178,8 +178,8 @@ struct __ibasic_async_resource : __basic_interface<__ibasic_async_resource>
   }
 
   CCCL_DEPRECATED_BECAUSE("Specify an explicit alignment argument. The default alignment will be removed in a future "
-                           "release.")
-  _CCCL_PUBLIC_HOST_API void deallocate(::cuda::stream_ref __stream, void* __pv, size_t __bytes) noexcept
+                          "release.") _CCCL_PUBLIC_HOST_API void
+  deallocate(::cuda::stream_ref __stream, void* __pv, size_t __bytes) noexcept
   {
     return ::cuda::__virtcall<&__deallocate_async<__ibasic_async_resource>>(
       this, __stream, __pv, __bytes, alignof(::cuda::std::max_align_t));

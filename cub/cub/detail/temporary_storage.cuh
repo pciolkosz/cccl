@@ -367,9 +367,9 @@ deallocate(::cuda::stream_ref stream, void* d_temp_storage, size_t temp_storage_
   NV_IF_ELSE_TARGET(
     NV_IS_HOST,
     (
-      try { mr.deallocate(stream, d_temp_storage, temp_storage_bytes, alignof(::cuda::std::max_align_t)); } catch (...) {
-        return cudaErrorMemoryAllocation;
-      }),
+      try {
+        mr.deallocate(stream, d_temp_storage, temp_storage_bytes, alignof(::cuda::std::max_align_t));
+      } catch (...) { return cudaErrorMemoryAllocation; }),
     (mr.deallocate(stream, d_temp_storage, temp_storage_bytes, alignof(::cuda::std::max_align_t));));
   return cudaSuccess;
 }
