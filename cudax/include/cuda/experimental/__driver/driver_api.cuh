@@ -40,7 +40,6 @@
 
 namespace cuda::experimental::__driver
 {
-
 // ── Graph: memset node ──────────────────────────────────────────────────────
 
 [[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode __graphAddMemsetNode(
@@ -63,7 +62,7 @@ namespace cuda::experimental::__driver
   __params.elementSize = __element_size;
   __params.width       = __width;
   __params.height      = __height;
-  ::CUcontext __ctx = ::cuda::__driver::__ctxGetCurrent();
+  ::CUcontext __ctx    = ::cuda::__driver::__ctxGetCurrent();
   ::cuda::__driver::__call_driver_fn(
     __driver_fn, "Failed to add a memset node to graph", &__node, __graph, __deps, __ndeps, &__params, __ctx);
   return __node;
@@ -89,7 +88,7 @@ namespace cuda::experimental::__driver
   __params.WidthInBytes  = __byte_count;
   __params.Height        = 1;
   __params.Depth         = 1;
-  ::CUcontext __ctx = ::cuda::__driver::__ctxGetCurrent();
+  ::CUcontext __ctx      = ::cuda::__driver::__ctxGetCurrent();
   ::cuda::__driver::__call_driver_fn(
     __driver_fn, "Failed to add a memcpy node to graph", &__node, __graph, __deps, __ndeps, &__params, __ctx);
   return __node;
@@ -98,11 +97,7 @@ namespace cuda::experimental::__driver
 // ── Graph: host node ────────────────────────────────────────────────────────
 
 [[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode __graphAddHostNode(
-  ::CUgraph __graph,
-  const ::CUgraphNode* __deps,
-  ::cuda::std::size_t __ndeps,
-  ::CUhostFn __fn,
-  void* __user_data)
+  ::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUhostFn __fn, void* __user_data)
 {
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddHostNode);
   ::CUgraphNode __node{};
@@ -117,10 +112,7 @@ namespace cuda::experimental::__driver
 // ── Graph: child graph node ─────────────────────────────────────────────────
 
 [[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode __graphAddChildGraphNode(
-  ::CUgraph __graph,
-  const ::CUgraphNode* __deps,
-  ::cuda::std::size_t __ndeps,
-  ::CUgraph __child_graph)
+  ::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUgraph __child_graph)
 {
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddChildGraphNode);
   ::CUgraphNode __node{};
@@ -131,8 +123,8 @@ namespace cuda::experimental::__driver
 
 // ── Graph: event record node ────────────────────────────────────────────────
 
-[[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode
-__graphAddEventRecordNode(::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUevent __event)
+[[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode __graphAddEventRecordNode(
+  ::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUevent __event)
 {
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddEventRecordNode);
   ::CUgraphNode __node{};
@@ -171,10 +163,7 @@ __graphConditionalHandleCreate(::CUgraph __graph, unsigned int __default_val, un
 // ── Graph: generic add node (used for conditional nodes) ────────────────────
 
 [[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode __graphAddNode(
-  ::CUgraph __graph,
-  const ::CUgraphNode* __deps,
-  ::cuda::std::size_t __ndeps,
-  ::CUgraphNodeParams* __params)
+  ::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUgraphNodeParams* __params)
 {
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddNode);
   ::CUgraphNode __node{};
@@ -217,7 +206,7 @@ __graphConditionalHandleCreate(::CUgraph __graph, unsigned int __default_val, un
 
 [[nodiscard]] _CCCL_HOST_API inline ::cuda::std::size_t __graphGetNodeCount(::CUgraph __graph)
 {
-  static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphGetNodes);
+  static auto __driver_fn     = _CUDAX_GET_DRIVER_FUNCTION(cuGraphGetNodes);
   ::cuda::std::size_t __count = 0;
   ::cuda::__driver::__call_driver_fn(__driver_fn, "Failed to get graph node count", __graph, nullptr, &__count);
   return __count;
@@ -278,8 +267,7 @@ _CCCL_HOST_API inline void __graphAddDependencies(
 #  else
   _CCCL_ASSERT(__edge_data == nullptr, "Edge data requires CUDA Toolkit 12.3 or later");
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddDependencies);
-  ::cuda::__driver::__call_driver_fn(
-    __driver_fn, "Failed to add graph dependencies", __graph, __from, __to, __ndeps);
+  ::cuda::__driver::__call_driver_fn(__driver_fn, "Failed to add graph dependencies", __graph, __from, __to, __ndeps);
 #  endif
 }
 
@@ -323,7 +311,7 @@ struct __stream_capture_info
 __streamGetCaptureInfo(::CUstream __stream, const ::CUgraphEdgeData** __edge_data_out = nullptr)
 {
   __stream_capture_info __info{};
-#  if _CCCL_CTK_AT_LEAST(12, 4)
+#    if _CCCL_CTK_AT_LEAST(12, 4)
   static auto __driver_fn =
     _CUDAX_GET_DRIVER_FUNCTION_VERSIONED(cuStreamGetCaptureInfo, cuStreamGetCaptureInfo_v3, 12, 4);
   ::cuda::__driver::__call_driver_fn(
@@ -336,9 +324,9 @@ __streamGetCaptureInfo(::CUstream __stream, const ::CUgraphEdgeData** __edge_dat
     &__info.__deps,
     &__info.__edge_data,
     &__info.__ndeps);
-#  else
+#    else
   _CCCL_ASSERT(__edge_data_out == nullptr, "Edge data requires CUDA Toolkit 12.4 or later");
-  __info.__edge_data = nullptr;
+  __info.__edge_data      = nullptr;
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuStreamGetCaptureInfo);
   ::cuda::__driver::__call_driver_fn(
     __driver_fn,
@@ -349,7 +337,7 @@ __streamGetCaptureInfo(::CUstream __stream, const ::CUgraphEdgeData** __edge_dat
     nullptr, // graph_out
     &__info.__deps,
     &__info.__ndeps);
-#  endif
+#    endif
   return __info;
 }
 
@@ -362,7 +350,6 @@ _CCCL_HOST_API inline void __streamEndCapture(::CUstream __stream, ::CUgraph* __
 }
 
 #  endif // _CCCL_CTK_AT_LEAST(12, 3)
-
 } // namespace cuda::experimental::__driver
 
 #  undef _CUDAX_GET_DRIVER_FUNCTION

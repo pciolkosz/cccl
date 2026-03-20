@@ -268,8 +268,8 @@ private:
   {
     graph_node_ref __child;
     __child.__graph_ = __graph_;
-    __child.__node_  = ::cuda::experimental::__driver::__graphAddChildGraphNode(
-      __parent, __deps.data(), __deps.size(), __graph_);
+    __child.__node_ =
+      ::cuda::experimental::__driver::__graphAddChildGraphNode(__parent, __deps.data(), __deps.size(), __graph_);
     return __child;
   }
 

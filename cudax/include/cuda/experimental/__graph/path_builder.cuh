@@ -80,8 +80,7 @@ struct path_builder
 
     if (__info.__status != CU_STREAM_CAPTURE_STATUS_ACTIVE)
     {
-      _CCCL_THROW(
-        cuda::cuda_error, cudaErrorInvalidValue, "Stream capture no longer active", "cuStreamGetCaptureInfo");
+      _CCCL_THROW(cuda::cuda_error, cudaErrorInvalidValue, "Stream capture no longer active", "cuStreamGetCaptureInfo");
     }
 
     cudaGraph_t __graph_out = nullptr;
