@@ -168,7 +168,7 @@ __graphConditionalHandleCreate(::CUgraph __graph, unsigned int __default_val, un
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddNode);
   ::CUgraphNode __node{};
   ::cuda::__driver::__call_driver_fn(
-    __driver_fn, "Failed to add a node to graph", &__node, __graph, __deps, nullptr, __ndeps, __params);
+    __driver_fn, "Failed to add a node to graph", &__node, __graph, __deps, __ndeps, __params);
   return __node;
 }
 
