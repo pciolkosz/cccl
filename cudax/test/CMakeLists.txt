@@ -67,6 +67,7 @@ target_compile_options(
 
 cudax_add_catch2_test(test_target graph
     graph/graph_smoke.cu
+    graph/graph_node_ops_smoke.cu
 )
 
 cudax_add_catch2_test(test_target stream

@@ -266,10 +266,12 @@ private:
   [[nodiscard]] _CCCL_HOST_API auto
   __add_to_graph(cudaGraph_t __parent, ::cuda::std::span<cudaGraphNode_t, _Extent> __deps) -> graph_node_ref
   {
+    ::CUgraphNodeParams __params{};
+    __params.type        = ::CU_GRAPH_NODE_TYPE_GRAPH;
+    __params.graph.graph = __graph_;
     graph_node_ref __child;
     __child.__graph_ = __graph_;
-    __child.__node_ =
-      ::cuda::experimental::__driver::__graphAddChildGraphNode(__parent, __deps.data(), __deps.size(), __graph_);
+    __child.__node_ = ::cuda::experimental::__driver::__graphAddNode(__parent, __deps.data(), __deps.size(), &__params);
     return __child;
   }
 
