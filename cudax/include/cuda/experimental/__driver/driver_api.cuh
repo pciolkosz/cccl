@@ -36,8 +36,8 @@
 // #define'd version aliases in cuda.h (e.g. #define cuFoo cuFoo_v2).
 // The ## operator suppresses macro expansion of the function name, so this is
 // safe even for names that are #define'd to versioned variants.
-#  define _CUDAX_GET_DRIVER_FUNCTION(pfn_name, major, minor)                                    \
-    reinterpret_cast<PFN_##pfn_name##_v##major##0##minor##0>(                                   \
+#  define _CUDAX_GET_DRIVER_FUNCTION(pfn_name, major, minor)  \
+    reinterpret_cast<PFN_##pfn_name##_v##major##0##minor##0>( \
       ::cuda::__driver::__get_driver_entry_point(#pfn_name, major, minor))
 
 namespace cuda::experimental::__driver
@@ -125,8 +125,8 @@ namespace cuda::experimental::__driver
 
 // ── Graph: event record node ────────────────────────────────────────────────
 
-[[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode __graphAddEventRecordNode(
-  ::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUevent __ev)
+[[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode
+__graphAddEventRecordNode(::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUevent __ev)
 {
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddEventRecordNode, 11, 1);
   ::CUgraphNode __node{};
@@ -255,10 +255,7 @@ __graphAddEmptyNode(::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std:
 // ── Graph: add dependencies ─────────────────────────────────────────────────
 
 _CCCL_HOST_API inline void __graphAddDependencies(
-  ::CUgraph __graph,
-  const ::CUgraphNode* __from,
-  const ::CUgraphNode* __to,
-  ::cuda::std::size_t __ndeps)
+  ::CUgraph __graph, const ::CUgraphNode* __from, const ::CUgraphNode* __to, ::cuda::std::size_t __ndeps)
 {
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddDependencies, 10, 0);
   ::cuda::__driver::__call_driver_fn(__driver_fn, "Failed to add graph dependencies", __graph, __from, __to, __ndeps);
@@ -272,8 +269,7 @@ _CCCL_HOST_API inline void __graphAddDependencies(
   ::cuda::std::size_t __ndeps,
   const ::CUgraphEdgeData* __edge_data)
 {
-  static auto __driver_fn =
-    _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddDependencies, 12, 3);
+  static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddDependencies, 12, 3);
   ::cuda::__driver::__call_driver_fn(
     __driver_fn, "Failed to add graph dependencies", __graph, __from, __to, __edge_data, __ndeps);
 }
@@ -300,8 +296,7 @@ _CCCL_HOST_API inline void __streamBeginCaptureToGraph(
   ::cuda::std::size_t __ndeps,
   ::CUstreamCaptureMode __mode)
 {
-  static auto __driver_fn =
-    _CUDAX_GET_DRIVER_FUNCTION(cuStreamBeginCaptureToGraph, 12, 3);
+  static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuStreamBeginCaptureToGraph, 12, 3);
   ::cuda::__driver::__call_driver_fn(
     __driver_fn, "Failed to begin stream capture to graph", __stream, __graph, __deps, nullptr, __ndeps, __mode);
 }
@@ -321,8 +316,7 @@ __streamGetCaptureInfo(::CUstream __stream, const ::CUgraphEdgeData** __edge_dat
 {
   __stream_capture_info __info{};
 #    if _CCCL_CTK_AT_LEAST(12, 4)
-  static auto __driver_fn =
-    _CUDAX_GET_DRIVER_FUNCTION(cuStreamGetCaptureInfo, 12, 3);
+  static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuStreamGetCaptureInfo, 12, 3);
   ::cuda::__driver::__call_driver_fn(
     __driver_fn,
     "Failed to get stream capture info",
@@ -336,8 +330,7 @@ __streamGetCaptureInfo(::CUstream __stream, const ::CUgraphEdgeData** __edge_dat
 #    else
   _CCCL_ASSERT(__edge_data_out == nullptr, "Edge data requires CUDA Toolkit 12.4 or later");
   __info.__edge_data      = nullptr;
-  static auto __driver_fn =
-    _CUDAX_GET_DRIVER_FUNCTION(cuStreamGetCaptureInfo, 11, 3);
+  static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuStreamGetCaptureInfo, 11, 3);
   ::cuda::__driver::__call_driver_fn(
     __driver_fn,
     "Failed to get stream capture info",
