@@ -68,13 +68,13 @@ template <::cuda::std::size_t _Count>
 
 template <class _Container>
 _CCCL_HOST_API void
-__replicate_builders_into(const path_builder& __source, _Container& __out, ::cuda::std::size_t __count)
+__replicate_builders_into(const path_builder& __source, _Container& __dest, ::cuda::std::size_t __count)
 {
   const auto __dev   = __source.get_device();
   const auto __graph = __source.get_native_graph_handle();
   for (::cuda::std::size_t __idx = 0; __idx < __count; ++__idx)
   {
-    __out.emplace_back(__dev, __graph);
+    __dest.emplace_back(__dev, __graph);
   }
 }
 

@@ -50,7 +50,7 @@ template <::cuda::std::size_t _Count>
 
 template <class _Container>
 _CCCL_HOST_API void
-__replicate_builders_into(const path_builder& __source, _Container& __out, ::cuda::std::size_t __count);
+__replicate_builders_into(const path_builder& __source, _Container& __dest, ::cuda::std::size_t __count);
 
 //! \brief A builder for a path in a CUDA graph.
 //!
@@ -213,12 +213,12 @@ struct path_builder
     return __replicate_builders(*this, __count);
   }
 
-  //! @brief Append runtime-sized peer path builders with the same graph/device as this path builder to `__out`.
+  //! @brief Append runtime-sized peer path builders with the same graph/device as this path builder to `__dest`.
   //! @note This function only creates path builders; it does not add synchronization dependencies.
   template <class _Container>
-  _CCCL_HOST_API void replicate_into(_Container& __out, ::cuda::std::size_t __count) const
+  _CCCL_HOST_API void replicate_into(_Container& __dest, ::cuda::std::size_t __count) const
   {
-    __replicate_builders_into(*this, __out, __count);
+    __replicate_builders_into(*this, __dest, __count);
   }
 
   //! \brief Get the graph that the path builder is building.
