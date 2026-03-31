@@ -4,7 +4,7 @@
 // under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-// SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES.
+// SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
 //
 //===----------------------------------------------------------------------===//
 
@@ -161,7 +161,6 @@ struct _CCCL_TYPE_VISIBILITY_DEFAULT graph_builder : graph_builder_ref
   }
 
   //! \brief Resets the `graph_builder` object, destroying the underlying CUDA graph object.
-  //! \throws cuda::std::cuda_error if `cudaGraphDestroy` fails.
   //! \post `get() == nullptr`
   _CCCL_HOST_API constexpr void reset() noexcept
   {
