@@ -23,5 +23,6 @@
 
 #include <cuda/__container/buffer.h>
 #include <cuda/__container/heterogeneous_iterator.h>
+#include <cuda/__container/make_buffer_with_pool.h>
 
 #endif // _CUDA_BUFFER
