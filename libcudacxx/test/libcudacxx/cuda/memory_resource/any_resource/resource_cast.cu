@@ -91,7 +91,7 @@ TEST_CASE("resource_cast with void extracts raw pointer", "[container][resource]
   auto* vptr = cuda::mr::resource_cast<void>(&mr);
   CHECK(vptr != nullptr);
 
-  const auto& cmr  = mr;
+  const auto& cmr   = mr;
   const auto* cvptr = cuda::mr::resource_cast<void>(&cmr);
   CHECK(cvptr != nullptr);
   CHECK(cvptr == vptr);
@@ -130,12 +130,12 @@ TEST_CASE("dynamic_resource_cast any_resource narrowing", "[container][resource]
     CHECK(ptr->data == 42);
   }
 
-#if _CCCL_HAS_EXCEPTIONS()
+#  if _CCCL_HAS_EXCEPTIONS()
   SECTION("cast to unsupported property throws")
   {
     cuda::mr::any_resource<cuda::mr::host_accessible> src{stored};
-    CHECK_THROWS_AS(
-      cuda::mr::dynamic_resource_cast<cuda::mr::device_accessible>(::cuda::std::move(src)), cuda::__bad_any_cast);
+    CHECK_THROWS_AS(cuda::mr::dynamic_resource_cast<cuda::mr::device_accessible>(::cuda::std::move(src)),
+                    cuda::__bad_any_cast);
   }
 
   SECTION("cast to undeclared property throws")
@@ -144,7 +144,7 @@ TEST_CASE("dynamic_resource_cast any_resource narrowing", "[container][resource]
     cuda::mr::any_resource<cuda::mr::host_accessible> src{stored};
     CHECK_THROWS_AS(cuda::mr::dynamic_resource_cast<extra_property>(::cuda::std::move(src)), cuda::__bad_any_cast);
   }
-#endif // _CCCL_HAS_EXCEPTIONS()
+#  endif // _CCCL_HAS_EXCEPTIONS()
 }
 
 TEST_CASE("dynamic_resource_cast any_resource narrow-then-widen round-trip", "[container][resource]")
@@ -179,14 +179,14 @@ TEST_CASE("dynamic_resource_cast any_synchronous_resource", "[container][resourc
     CHECK(ptr->data == 7);
   }
 
-#if _CCCL_HAS_EXCEPTIONS()
+#  if _CCCL_HAS_EXCEPTIONS()
   SECTION("invalid cast throws")
   {
     cuda::mr::any_synchronous_resource<cuda::mr::host_accessible> src{stored};
-    CHECK_THROWS_AS(
-      cuda::mr::dynamic_resource_cast<cuda::mr::device_accessible>(::cuda::std::move(src)), cuda::__bad_any_cast);
+    CHECK_THROWS_AS(cuda::mr::dynamic_resource_cast<cuda::mr::device_accessible>(::cuda::std::move(src)),
+                    cuda::__bad_any_cast);
   }
-#endif // _CCCL_HAS_EXCEPTIONS()
+#  endif // _CCCL_HAS_EXCEPTIONS()
 }
 
 TEST_CASE("dynamic_resource_cast resource_ref", "[container][resource]")
@@ -197,19 +197,19 @@ TEST_CASE("dynamic_resource_cast resource_ref", "[container][resource]")
   SECTION("valid narrowing cast")
   {
     cuda::mr::resource_ref<cuda::mr::host_accessible, extra_property> ref{stored};
-    auto dst = cuda::mr::dynamic_resource_cast<extra_property>(&ref);
+    auto dst  = cuda::mr::dynamic_resource_cast<extra_property>(&ref);
     auto* ptr = cuda::mr::resource_cast<big_resource>(&dst);
     REQUIRE(ptr != nullptr);
     CHECK(ptr->data == 99);
   }
 
-#if _CCCL_HAS_EXCEPTIONS()
+#  if _CCCL_HAS_EXCEPTIONS()
   SECTION("invalid cast throws")
   {
     cuda::mr::resource_ref<cuda::mr::host_accessible> ref{stored};
     CHECK_THROWS_AS(cuda::mr::dynamic_resource_cast<cuda::mr::device_accessible>(&ref), cuda::__bad_any_cast);
   }
-#endif // _CCCL_HAS_EXCEPTIONS()
+#  endif // _CCCL_HAS_EXCEPTIONS()
 }
 
 TEST_CASE("dynamic_resource_cast synchronous_resource_ref", "[container][resource]")
@@ -220,20 +220,19 @@ TEST_CASE("dynamic_resource_cast synchronous_resource_ref", "[container][resourc
   SECTION("valid narrowing cast")
   {
     cuda::mr::synchronous_resource_ref<cuda::mr::host_accessible, extra_property> ref{stored};
-    auto dst = cuda::mr::dynamic_resource_cast<extra_property>(&ref);
+    auto dst  = cuda::mr::dynamic_resource_cast<extra_property>(&ref);
     auto* ptr = cuda::mr::resource_cast<big_resource>(&dst);
     REQUIRE(ptr != nullptr);
     CHECK(ptr->data == 55);
   }
 
-#if _CCCL_HAS_EXCEPTIONS()
+#  if _CCCL_HAS_EXCEPTIONS()
   SECTION("invalid cast throws")
   {
     cuda::mr::synchronous_resource_ref<cuda::mr::host_accessible> ref{stored};
-    CHECK_THROWS_AS(
-      cuda::mr::dynamic_resource_cast<cuda::mr::device_accessible>(&ref), cuda::__bad_any_cast);
+    CHECK_THROWS_AS(cuda::mr::dynamic_resource_cast<cuda::mr::device_accessible>(&ref), cuda::__bad_any_cast);
   }
-#endif // _CCCL_HAS_EXCEPTIONS()
+#  endif // _CCCL_HAS_EXCEPTIONS()
 }
 
 // ── void property vtable entry verification ─────────────────────────────────

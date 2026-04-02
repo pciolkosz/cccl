@@ -1064,42 +1064,38 @@ template <class _Tp, class... _Properties>
 //! @throws __bad_any_cast if the runtime type does not support the destination
 //!   interface.
 template <class... _DstProperties, class... _SrcProperties>
-[[nodiscard]] _CCCL_HOST_API auto
-dynamic_resource_cast(any_resource<_SrcProperties...>&& __src) -> any_resource<_DstProperties...>
+[[nodiscard]] _CCCL_HOST_API auto dynamic_resource_cast(any_resource<_SrcProperties...>&& __src)
+  -> any_resource<_DstProperties...>
 {
   return any_resource<_DstProperties...>{
-    __from_base_tag{},
-    ::cuda::__dynamic_any_cast<__iasync_resource<_DstProperties...>>(::cuda::std::move(__src))};
+    __from_base_tag{}, ::cuda::__dynamic_any_cast<__iasync_resource<_DstProperties...>>(::cuda::std::move(__src))};
 }
 
 //! @overload
 template <class... _DstProperties, class... _SrcProperties>
-[[nodiscard]] _CCCL_HOST_API auto
-dynamic_resource_cast(any_synchronous_resource<_SrcProperties...>&& __src) -> any_synchronous_resource<_DstProperties...>
+[[nodiscard]] _CCCL_HOST_API auto dynamic_resource_cast(any_synchronous_resource<_SrcProperties...>&& __src)
+  -> any_synchronous_resource<_DstProperties...>
 {
   return any_synchronous_resource<_DstProperties...>{
-    __from_base_tag{},
-    ::cuda::__dynamic_any_cast<__iresource<_DstProperties...>>(::cuda::std::move(__src))};
+    __from_base_tag{}, ::cuda::__dynamic_any_cast<__iresource<_DstProperties...>>(::cuda::std::move(__src))};
 }
 
 //! @overload
 template <class... _DstProperties, class... _SrcProperties>
-[[nodiscard]] _CCCL_HOST_API auto
-dynamic_resource_cast(resource_ref<_SrcProperties...>* __src) -> resource_ref<_DstProperties...>
+[[nodiscard]] _CCCL_HOST_API auto dynamic_resource_cast(resource_ref<_SrcProperties...>* __src)
+  -> resource_ref<_DstProperties...>
 {
   return resource_ref<_DstProperties...>{
-    __from_base_tag{},
-    ::cuda::__dynamic_any_cast<__iasync_resource<_DstProperties...>&>(*__src)};
+    __from_base_tag{}, ::cuda::__dynamic_any_cast<__iasync_resource<_DstProperties...>&>(*__src)};
 }
 
 //! @overload
 template <class... _DstProperties, class... _SrcProperties>
-[[nodiscard]] _CCCL_HOST_API auto dynamic_resource_cast(
-  synchronous_resource_ref<_SrcProperties...>* __src) -> synchronous_resource_ref<_DstProperties...>
+[[nodiscard]] _CCCL_HOST_API auto dynamic_resource_cast(synchronous_resource_ref<_SrcProperties...>* __src)
+  -> synchronous_resource_ref<_DstProperties...>
 {
   return synchronous_resource_ref<_DstProperties...>{
-    __from_base_tag{},
-    ::cuda::__dynamic_any_cast<__iresource<_DstProperties...>&>(*__src)};
+    __from_base_tag{}, ::cuda::__dynamic_any_cast<__iresource<_DstProperties...>&>(*__src)};
 }
 
 _CCCL_END_NAMESPACE_CUDA_MR

@@ -664,8 +664,14 @@ struct HasBoth
     o.val = -1;
     return *this;
   }
-  _CCCL_HOST_DEVICE int get_a() { return val; }
-  _CCCL_HOST_DEVICE int get_b() { return val * 10; }
+  _CCCL_HOST_DEVICE int get_a()
+  {
+    return val;
+  }
+  _CCCL_HOST_DEVICE int get_b()
+  {
+    return val * 10;
+  }
   int val;
 };
 
@@ -718,7 +724,6 @@ _CCCL_HOST void test_iset_dynamic_cast()
 
 int main(int, char**)
 {
-  NV_IF_TARGET(NV_IS_HOST,
-               (test_basic_any<SmallType>(); test_basic_any<LargeType>(); test_iset_dynamic_cast();))
+  NV_IF_TARGET(NV_IS_HOST, (test_basic_any<SmallType>(); test_basic_any<LargeType>(); test_iset_dynamic_cast();))
   return 0;
 }
