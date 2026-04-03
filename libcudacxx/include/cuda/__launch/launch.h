@@ -360,19 +360,16 @@ template <class _Kernel, class _Config, class... _Args>
 
       if constexpr (_ClusterExts::rank_dynamic() == 0)
       {
-        return reinterpret_cast<const void*>(
-          ::cuda::__kernel_launcher_with_block_size<_Config, _Kernel, _Args...>);
+        return reinterpret_cast<const void*>(::cuda::__kernel_launcher_with_block_size<_Config, _Kernel, _Args...>);
       }
       else
       {
-        return reinterpret_cast<const void*>(
-          ::cuda::__kernel_launcher_with_launch_bounds<_Config, _Kernel, _Args...>);
+        return reinterpret_cast<const void*>(::cuda::__kernel_launcher_with_launch_bounds<_Config, _Kernel, _Args...>);
       }
     }
     else
     {
-      return reinterpret_cast<const void*>(
-        ::cuda::__kernel_launcher_with_launch_bounds<_Config, _Kernel, _Args...>);
+      return reinterpret_cast<const void*>(::cuda::__kernel_launcher_with_launch_bounds<_Config, _Kernel, _Args...>);
     }
   }
   else
@@ -386,8 +383,7 @@ template <class _Kernel, class _Config, class... _Args>
 [[nodiscard]] _CCCL_HOST_API inline ::CUfunction __get_cufunction_of(const void* __kernel)
 {
   ::cudaFunction_t __kernel_cufunction{};
-  _CCCL_TRY_CUDA_API(
-    ::cudaGetFuncBySymbol, "Failed to get function from symbol", &__kernel_cufunction, __kernel);
+  _CCCL_TRY_CUDA_API(::cudaGetFuncBySymbol, "Failed to get function from symbol", &__kernel_cufunction, __kernel);
   return (::CUfunction) __kernel_cufunction;
 }
 
