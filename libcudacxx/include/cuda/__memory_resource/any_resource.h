@@ -999,7 +999,8 @@ template <class _Tp, class... _Properties>
 {
   static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::resource_with<_Tp, _Properties...>,
                 "_Tp must be void or satisfy resource_with<_Tp, _Properties...>");
-  return ::cuda::__any_cast<_Tp>(__res);
+  // Use static_cast to the __basic_any base to work around GCC < 11 template argument deduction issues.
+  return ::cuda::__any_cast<_Tp>(static_cast<::cuda::__basic_any<__iasync_resource<_Properties...>>*>(__res));
 }
 
 //! @overload
@@ -1008,7 +1009,7 @@ template <class _Tp, class... _Properties>
 {
   static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::resource_with<_Tp, _Properties...>,
                 "_Tp must be void or satisfy resource_with<_Tp, _Properties...>");
-  return ::cuda::__any_cast<_Tp>(__res);
+  return ::cuda::__any_cast<_Tp>(static_cast<const ::cuda::__basic_any<__iasync_resource<_Properties...>>*>(__res));
 }
 
 //! @overload
@@ -1017,7 +1018,7 @@ template <class _Tp, class... _Properties>
 {
   static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::synchronous_resource_with<_Tp, _Properties...>,
                 "_Tp must be void or satisfy synchronous_resource_with<_Tp, _Properties...>");
-  return ::cuda::__any_cast<_Tp>(__res);
+  return ::cuda::__any_cast<_Tp>(static_cast<::cuda::__basic_any<__iresource<_Properties...>>*>(__res));
 }
 
 //! @overload
@@ -1027,7 +1028,7 @@ template <class _Tp, class... _Properties>
 {
   static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::synchronous_resource_with<_Tp, _Properties...>,
                 "_Tp must be void or satisfy synchronous_resource_with<_Tp, _Properties...>");
-  return ::cuda::__any_cast<_Tp>(__res);
+  return ::cuda::__any_cast<_Tp>(static_cast<const ::cuda::__basic_any<__iresource<_Properties...>>*>(__res));
 }
 
 //! @overload
@@ -1036,7 +1037,7 @@ template <class _Tp, class... _Properties>
 {
   static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::resource_with<_Tp, _Properties...>,
                 "_Tp must be void or satisfy resource_with<_Tp, _Properties...>");
-  return ::cuda::__any_cast<_Tp>(__res);
+  return ::cuda::__any_cast<_Tp>(static_cast<::cuda::__basic_any<__iasync_resource<_Properties...>&>*>(__res));
 }
 
 //! @overload
@@ -1045,7 +1046,7 @@ template <class _Tp, class... _Properties>
 {
   static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::resource_with<_Tp, _Properties...>,
                 "_Tp must be void or satisfy resource_with<_Tp, _Properties...>");
-  return ::cuda::__any_cast<_Tp>(__res);
+  return ::cuda::__any_cast<_Tp>(static_cast<const ::cuda::__basic_any<__iasync_resource<_Properties...>&>*>(__res));
 }
 
 //! @overload
@@ -1054,7 +1055,7 @@ template <class _Tp, class... _Properties>
 {
   static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::synchronous_resource_with<_Tp, _Properties...>,
                 "_Tp must be void or satisfy synchronous_resource_with<_Tp, _Properties...>");
-  return ::cuda::__any_cast<_Tp>(__res);
+  return ::cuda::__any_cast<_Tp>(static_cast<::cuda::__basic_any<__iresource<_Properties...>&>*>(__res));
 }
 
 //! @overload
@@ -1064,7 +1065,7 @@ template <class _Tp, class... _Properties>
 {
   static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::synchronous_resource_with<_Tp, _Properties...>,
                 "_Tp must be void or satisfy synchronous_resource_with<_Tp, _Properties...>");
-  return ::cuda::__any_cast<_Tp>(__res);
+  return ::cuda::__any_cast<_Tp>(static_cast<const ::cuda::__basic_any<__iresource<_Properties...>&>*>(__res));
 }
 
 // ── dynamic_resource_cast ───────────────────────────────────────────────────

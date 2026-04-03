@@ -675,7 +675,7 @@ struct HasBoth
   int val;
 };
 
-_CCCL_HOST void test_iset_dynamic_cast()
+_CCCL_HOST_DEVICE void test_iset_dynamic_cast()
 {
   // Start with both interfaces, narrow to one, verify cross-cast to the other fails
   cuda::__basic_any<iset_ab> ab{::cuda::std::in_place_type<HasBoth>, 7};
