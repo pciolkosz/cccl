@@ -77,7 +77,7 @@ _CCCL_HOST_API inline graph_node_ref insert_child_graph(path_builder& __pb, grap
   auto __node              = ::cuda::experimental::__driver::__graphAddNode(
     __pb.get_native_graph_handle(), __deps.data(), __deps.size(), &__params);
 
-  __child.release();
+  (void) __child.release();
 
   __pb.__clear_and_set_dependency_node(__node);
   return graph_node_ref{__node, __pb.get_native_graph_handle()};
