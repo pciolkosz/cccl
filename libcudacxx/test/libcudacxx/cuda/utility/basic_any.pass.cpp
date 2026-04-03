@@ -675,7 +675,8 @@ struct HasBoth
   int val;
 };
 
-_CCCL_HOST_DEVICE void test_iset_dynamic_cast()
+#if !_CCCL_COMPILER(NVRTC)
+_CCCL_HOST void test_iset_dynamic_cast()
 {
   // Start with both interfaces, narrow to one, verify cross-cast to the other fails
   cuda::__basic_any<iset_ab> ab{::cuda::std::in_place_type<HasBoth>, 7};
@@ -694,34 +695,40 @@ _CCCL_HOST_DEVICE void test_iset_dynamic_cast()
   cuda::__basic_any<iset_a> a_only{::cuda::std::in_place_type<HasBoth>, 42};
   assert(a_only.has_value());
 
-  NV_IF_TARGET(
-    NV_IS_HOST,
-    (
-#if _CCCL_HAS_EXCEPTIONS()
-      // Cross-cast to iset_ab should fail — iprop_b is not in the vtable
-      try {
-        auto bad = cuda::__dynamic_any_cast<iset_ab>(::cuda::std::move(a_only));
-        (void) bad;
-        assert(false && "should have thrown");
-      } catch (cuda::__bad_any_cast const&) {
-        // expected
-      }
+#  if _CCCL_HAS_EXCEPTIONS()
+  // Cross-cast to iset_ab should fail — iprop_b is not in the vtable
+  try
+  {
+    auto bad = cuda::__dynamic_any_cast<iset_ab>(::cuda::std::move(a_only));
+    (void) bad;
+    assert(false && "should have thrown");
+  }
+  catch (cuda::__bad_any_cast const&)
+  {
+    // expected
+  }
 
-      // Cross-cast to iset_b should also fail
-      cuda::__basic_any<iset_a> a_only2{::cuda::std::in_place_type<HasBoth>, 42};
-      try {
-        auto bad = cuda::__dynamic_any_cast<iset_b>(::cuda::std::move(a_only2));
-        (void) bad;
-        assert(false && "should have thrown");
-      } catch (cuda::__bad_any_cast const&){
-        // expected
-      }
-#endif // _CCCL_HAS_EXCEPTIONS()
-      ))
+  // Cross-cast to iset_b should also fail
+  cuda::__basic_any<iset_a> a_only2{::cuda::std::in_place_type<HasBoth>, 42};
+  try
+  {
+    auto bad = cuda::__dynamic_any_cast<iset_b>(::cuda::std::move(a_only2));
+    (void) bad;
+    assert(false && "should have thrown");
+  }
+  catch (cuda::__bad_any_cast const&)
+  {
+    // expected
+  }
+#  endif // _CCCL_HAS_EXCEPTIONS()
 }
+#endif // !_CCCL_COMPILER(NVRTC)
 
 int main(int, char**)
 {
-  NV_IF_TARGET(NV_IS_HOST, (test_basic_any<SmallType>(); test_basic_any<LargeType>(); test_iset_dynamic_cast();))
+  NV_IF_TARGET(NV_IS_HOST, (test_basic_any<SmallType>(); test_basic_any<LargeType>();))
+#if !_CCCL_COMPILER(NVRTC)
+  test_iset_dynamic_cast();
+#endif // !_CCCL_COMPILER(NVRTC)
   return 0;
 }
