@@ -694,32 +694,30 @@ _CCCL_HOST_DEVICE void test_iset_dynamic_cast()
   cuda::__basic_any<iset_a> a_only{::cuda::std::in_place_type<HasBoth>, 42};
   assert(a_only.has_value());
 
+  NV_IF_TARGET(
+    NV_IS_HOST,
+    (
 #if _CCCL_HAS_EXCEPTIONS()
-  // Cross-cast to iset_ab should fail — iprop_b is not in the vtable
-  try
-  {
-    auto bad = cuda::__dynamic_any_cast<iset_ab>(::cuda::std::move(a_only));
-    (void) bad;
-    assert(false && "should have thrown");
-  }
-  catch (cuda::__bad_any_cast const&)
-  {
-    // expected
-  }
+      // Cross-cast to iset_ab should fail — iprop_b is not in the vtable
+      try {
+        auto bad = cuda::__dynamic_any_cast<iset_ab>(::cuda::std::move(a_only));
+        (void) bad;
+        assert(false && "should have thrown");
+      } catch (cuda::__bad_any_cast const&) {
+        // expected
+      }
 
-  // Cross-cast to iset_b should also fail
-  cuda::__basic_any<iset_a> a_only2{::cuda::std::in_place_type<HasBoth>, 42};
-  try
-  {
-    auto bad = cuda::__dynamic_any_cast<iset_b>(::cuda::std::move(a_only2));
-    (void) bad;
-    assert(false && "should have thrown");
-  }
-  catch (cuda::__bad_any_cast const&)
-  {
-    // expected
-  }
+      // Cross-cast to iset_b should also fail
+      cuda::__basic_any<iset_a> a_only2{::cuda::std::in_place_type<HasBoth>, 42};
+      try {
+        auto bad = cuda::__dynamic_any_cast<iset_b>(::cuda::std::move(a_only2));
+        (void) bad;
+        assert(false && "should have thrown");
+      } catch (cuda::__bad_any_cast const&){
+        // expected
+      }
 #endif // _CCCL_HAS_EXCEPTIONS()
+      ))
 }
 
 int main(int, char**)
