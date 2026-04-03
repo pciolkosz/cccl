@@ -726,9 +726,11 @@ _CCCL_HOST void test_iset_dynamic_cast()
 
 int main(int, char**)
 {
-  NV_IF_TARGET(NV_IS_HOST, (test_basic_any<SmallType>(); test_basic_any<LargeType>();))
+  NV_IF_TARGET(NV_IS_HOST,
+               (test_basic_any<SmallType>(); test_basic_any<LargeType>();
 #if !_CCCL_COMPILER(NVRTC)
-  test_iset_dynamic_cast();
+                test_iset_dynamic_cast();
 #endif // !_CCCL_COMPILER(NVRTC)
+                ))
   return 0;
 }
