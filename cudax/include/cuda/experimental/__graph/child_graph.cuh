@@ -23,13 +23,13 @@
 
 #if _CCCL_CTK_AT_LEAST(12, 2)
 
-#include <cuda/experimental/__driver/driver_api.cuh>
-#include <cuda/experimental/__graph/graph_builder.cuh>
-#include <cuda/experimental/__graph/graph_builder_ref.cuh>
-#include <cuda/experimental/__graph/graph_node_ref.cuh>
-#include <cuda/experimental/__graph/path_builder.cuh>
+#  include <cuda/experimental/__driver/driver_api.cuh>
+#  include <cuda/experimental/__graph/graph_builder.cuh>
+#  include <cuda/experimental/__graph/graph_builder_ref.cuh>
+#  include <cuda/experimental/__graph/graph_node_ref.cuh>
+#  include <cuda/experimental/__graph/path_builder.cuh>
 
-#include <cuda/std/__cccl/prologue.h>
+#  include <cuda/std/__cccl/prologue.h>
 
 namespace cuda::experimental
 {
@@ -56,7 +56,7 @@ _CCCL_HOST_API inline graph_node_ref insert_child_graph(path_builder& __pb, grap
   return graph_node_ref{__node, __pb.get_native_graph_handle()};
 }
 
-#if _CCCL_CTK_AT_LEAST(12, 9)
+#  if _CCCL_CTK_AT_LEAST(12, 9)
 //! \brief Adds a child graph node to a CUDA graph path, transferring ownership.
 //!
 //! The child graph is moved into the parent graph node. After this call, the
@@ -82,10 +82,10 @@ _CCCL_HOST_API inline graph_node_ref insert_child_graph(path_builder& __pb, grap
   __pb.__clear_and_set_dependency_node(__node);
   return graph_node_ref{__node, __pb.get_native_graph_handle()};
 }
-#endif // _CCCL_CTK_AT_LEAST(12, 9)
+#  endif // _CCCL_CTK_AT_LEAST(12, 9)
 } // namespace cuda::experimental
 
-#include <cuda/std/__cccl/epilogue.h>
+#  include <cuda/std/__cccl/epilogue.h>
 
 #endif // _CCCL_CTK_AT_LEAST(12, 2)
 

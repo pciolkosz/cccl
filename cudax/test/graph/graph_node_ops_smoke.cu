@@ -12,12 +12,12 @@
 
 #if _CCCL_CTK_AT_LEAST(12, 2)
 
-#include <cuda/experimental/graph.cuh>
-#include <cuda/experimental/launch.cuh>
-#include <cuda/experimental/stream.cuh>
+#  include <cuda/experimental/graph.cuh>
+#  include <cuda/experimental/launch.cuh>
+#  include <cuda/experimental/stream.cuh>
 
-#include <testing.cuh>
-#include <utility.cuh>
+#  include <testing.cuh>
+#  include <utility.cuh>
 
 namespace
 {
@@ -57,7 +57,7 @@ struct pinned_array
 
 // ─── kernels used in conditional tests ─────────────────────────────────────
 
-#if _CCCL_CTK_AT_LEAST(12, 4)
+#  if _CCCL_CTK_AT_LEAST(12, 4)
 // Body kernel for while-loop conditional test: decrements a counter and
 // stops the loop when it reaches zero.
 struct count_down_and_stop
@@ -71,7 +71,7 @@ struct count_down_and_stop
     }
   }
 };
-#endif // _CCCL_CTK_AT_LEAST(12, 4)
+#  endif // _CCCL_CTK_AT_LEAST(12, 4)
 } // namespace test
 } // namespace
 
@@ -291,7 +291,7 @@ C2H_TEST("graph host_launch can be launched multiple times", "[graph][host_launc
 C2H_TEST("graph host_launch data is cleaned up when graph is destroyed", "[graph][host_launch]")
 {
   // Use a shared_ptr as a witness: the weak_ptr expires when all copies are gone.
-  auto witness = ::std::make_shared<int>(42);
+  auto witness              = ::std::make_shared<int>(42);
   ::std::weak_ptr<int> weak = witness;
 
   {
@@ -399,7 +399,7 @@ C2H_TEST("graph insert_child_graph embeds a subgraph", "[graph][child_graph]")
   CUDAX_REQUIRE(mem[0] == 42);
 }
 
-#if _CCCL_CTK_AT_LEAST(12, 9)
+#  if _CCCL_CTK_AT_LEAST(12, 9)
 C2H_TEST("graph insert_child_graph with ownership transfer", "[graph][child_graph]")
 {
   cudax::stream s{cuda::device_ref{0}};
@@ -427,7 +427,7 @@ C2H_TEST("graph insert_child_graph with ownership transfer", "[graph][child_grap
 
   CUDAX_REQUIRE(mem[0] == 42);
 }
-#endif // _CCCL_CTK_AT_LEAST(12, 9)
+#  endif // _CCCL_CTK_AT_LEAST(12, 9)
 
 C2H_TEST("graph insert_child_graph node has the correct node type", "[graph][child_graph]")
 {
@@ -449,7 +449,7 @@ C2H_TEST("graph insert_child_graph node has the correct node type", "[graph][chi
 // conditional nodes (if / while)
 // ────────────────────────────────────────────────────────────────────────────
 
-#if _CCCL_CTK_AT_LEAST(12, 4)
+#  if _CCCL_CTK_AT_LEAST(12, 4)
 
 C2H_TEST("graph make_if_node body executes when handle is non-zero", "[graph][conditional][if_node]")
 {
@@ -550,6 +550,6 @@ C2H_TEST("graph make_if_node with pre-constructed handle", "[graph][conditional]
   CUDAX_REQUIRE(mem[0] == 42);
 }
 
-#endif // _CCCL_CTK_AT_LEAST(12, 4)
+#  endif // _CCCL_CTK_AT_LEAST(12, 4)
 
 #endif // _CCCL_CTK_AT_LEAST(12, 2)

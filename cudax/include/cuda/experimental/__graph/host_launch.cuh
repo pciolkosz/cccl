@@ -23,23 +23,23 @@
 
 #if _CCCL_CTK_AT_LEAST(12, 2)
 
-#include <cuda/__launch/host_launch.h>
-#include <cuda/std/__functional/invoke.h>
-#include <cuda/std/__functional/reference_wrapper.h>
-#include <cuda/std/__memory/addressof.h>
-#include <cuda/std/__type_traits/is_function.h>
-#include <cuda/std/__type_traits/is_move_constructible.h>
-#include <cuda/std/__type_traits/is_pointer.h>
-#include <cuda/std/__type_traits/remove_pointer.h>
-#include <cuda/std/__utility/move.h>
+#  include <cuda/__launch/host_launch.h>
+#  include <cuda/std/__functional/invoke.h>
+#  include <cuda/std/__functional/reference_wrapper.h>
+#  include <cuda/std/__memory/addressof.h>
+#  include <cuda/std/__type_traits/is_function.h>
+#  include <cuda/std/__type_traits/is_move_constructible.h>
+#  include <cuda/std/__type_traits/is_pointer.h>
+#  include <cuda/std/__type_traits/remove_pointer.h>
+#  include <cuda/std/__utility/move.h>
 
-#include <cuda/experimental/__driver/driver_api.cuh>
-#include <cuda/experimental/__graph/graph_node_ref.cuh>
-#include <cuda/experimental/__graph/path_builder.cuh>
+#  include <cuda/experimental/__driver/driver_api.cuh>
+#  include <cuda/experimental/__graph/graph_node_ref.cuh>
+#  include <cuda/experimental/__graph/path_builder.cuh>
 
-#include <memory>
+#  include <memory>
 
-#include <cuda/std/__cccl/prologue.h>
+#  include <cuda/std/__cccl/prologue.h>
 
 namespace cuda::experimental
 {
@@ -127,7 +127,7 @@ _CCCL_HOST_API graph_node_ref host_launch(path_builder& __pb, _Callable __callab
   __params.type          = ::CU_GRAPH_NODE_TYPE_HOST;
   __params.host.fn       = __fn;
   __params.host.userData = __user_data;
-  auto __node = ::cuda::experimental::__driver::__graphAddNode(
+  auto __node            = ::cuda::experimental::__driver::__graphAddNode(
     __pb.get_native_graph_handle(), __deps.data(), __deps.size(), &__params);
 
   __pb.__clear_and_set_dependency_node(__node);
@@ -135,7 +135,7 @@ _CCCL_HOST_API graph_node_ref host_launch(path_builder& __pb, _Callable __callab
 }
 } // namespace cuda::experimental
 
-#include <cuda/std/__cccl/epilogue.h>
+#  include <cuda/std/__cccl/epilogue.h>
 
 #endif // _CCCL_CTK_AT_LEAST(12, 2)
 
