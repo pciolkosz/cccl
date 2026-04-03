@@ -103,6 +103,53 @@ TEST_CASE("resource_cast on empty any_resource returns null", "[container][resou
   CHECK(cuda::mr::resource_cast<big_resource>(&mr) == nullptr);
 }
 
+TEST_CASE("resource_cast on nullptr input returns null", "[container][resource]")
+{
+  cuda::mr::any_resource<cuda::mr::host_accessible>* ptr = nullptr;
+  CHECK(cuda::mr::resource_cast<big_resource>(ptr) == nullptr);
+
+  const cuda::mr::any_resource<cuda::mr::host_accessible>* cptr = nullptr;
+  CHECK(cuda::mr::resource_cast<big_resource>(cptr) == nullptr);
+}
+
+TEST_CASE("resource_cast on moved-from any_resource returns null", "[container][resource]")
+{
+  test_fixture_ fixture;
+  cuda::mr::any_resource<cuda::mr::host_accessible> src{big_resource{42, &fixture}};
+  auto dst = ::cuda::std::move(src);
+
+  // moved-from source should be empty
+  CHECK(cuda::mr::resource_cast<big_resource>(&src) == nullptr);
+
+  // destination should have the value
+  auto* ptr = cuda::mr::resource_cast<big_resource>(&dst);
+  REQUIRE(ptr != nullptr);
+  CHECK(ptr->data == 42);
+}
+
+// A derived resource type for testing that resource_cast uses exact type matching
+struct derived_resource : big_resource
+{
+  using big_resource::big_resource;
+  using default_queries = cuda::mr::properties_list<>;
+};
+
+TEST_CASE("resource_cast uses exact type matching, not derived-to-base", "[container][resource]")
+{
+  test_fixture_ fixture;
+  derived_resource stored{99, &fixture};
+  cuda::mr::any_resource<cuda::mr::host_accessible> mr{stored};
+
+  // Exact type match succeeds
+  auto* exact = cuda::mr::resource_cast<derived_resource>(&mr);
+  REQUIRE(exact != nullptr);
+  CHECK(exact->data == 99);
+
+  // Base type does NOT match — resource_cast uses exact type identity
+  auto* base = cuda::mr::resource_cast<big_resource>(&mr);
+  CHECK(base == nullptr);
+}
+
 // ── dynamic_resource_cast ───────────────────────────────────────────────────
 
 TEST_CASE("dynamic_resource_cast any_resource narrowing", "[container][resource]")

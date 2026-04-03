@@ -997,6 +997,8 @@ auto make_any_resource(_Args&&... __args) -> any_resource<_Properties...>
 template <class _Tp, class... _Properties>
 [[nodiscard]] _CCCL_HOST_API auto resource_cast(any_resource<_Properties...>* __res) noexcept -> _Tp*
 {
+  static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::resource_with<_Tp, _Properties...>,
+                "_Tp must be void or satisfy resource_with<_Tp, _Properties...>");
   return ::cuda::__any_cast<_Tp>(__res);
 }
 
@@ -1004,6 +1006,8 @@ template <class _Tp, class... _Properties>
 template <class _Tp, class... _Properties>
 [[nodiscard]] _CCCL_HOST_API auto resource_cast(const any_resource<_Properties...>* __res) noexcept -> const _Tp*
 {
+  static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::resource_with<_Tp, _Properties...>,
+                "_Tp must be void or satisfy resource_with<_Tp, _Properties...>");
   return ::cuda::__any_cast<_Tp>(__res);
 }
 
@@ -1011,6 +1015,8 @@ template <class _Tp, class... _Properties>
 template <class _Tp, class... _Properties>
 [[nodiscard]] _CCCL_HOST_API auto resource_cast(any_synchronous_resource<_Properties...>* __res) noexcept -> _Tp*
 {
+  static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::synchronous_resource_with<_Tp, _Properties...>,
+                "_Tp must be void or satisfy synchronous_resource_with<_Tp, _Properties...>");
   return ::cuda::__any_cast<_Tp>(__res);
 }
 
@@ -1019,6 +1025,8 @@ template <class _Tp, class... _Properties>
 [[nodiscard]] _CCCL_HOST_API auto resource_cast(const any_synchronous_resource<_Properties...>* __res) noexcept
   -> const _Tp*
 {
+  static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::synchronous_resource_with<_Tp, _Properties...>,
+                "_Tp must be void or satisfy synchronous_resource_with<_Tp, _Properties...>");
   return ::cuda::__any_cast<_Tp>(__res);
 }
 
@@ -1026,6 +1034,8 @@ template <class _Tp, class... _Properties>
 template <class _Tp, class... _Properties>
 [[nodiscard]] _CCCL_HOST_API auto resource_cast(resource_ref<_Properties...>* __res) noexcept -> _Tp*
 {
+  static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::resource_with<_Tp, _Properties...>,
+                "_Tp must be void or satisfy resource_with<_Tp, _Properties...>");
   return ::cuda::__any_cast<_Tp>(__res);
 }
 
@@ -1033,6 +1043,8 @@ template <class _Tp, class... _Properties>
 template <class _Tp, class... _Properties>
 [[nodiscard]] _CCCL_HOST_API auto resource_cast(const resource_ref<_Properties...>* __res) noexcept -> const _Tp*
 {
+  static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::resource_with<_Tp, _Properties...>,
+                "_Tp must be void or satisfy resource_with<_Tp, _Properties...>");
   return ::cuda::__any_cast<_Tp>(__res);
 }
 
@@ -1040,6 +1052,8 @@ template <class _Tp, class... _Properties>
 template <class _Tp, class... _Properties>
 [[nodiscard]] _CCCL_HOST_API auto resource_cast(synchronous_resource_ref<_Properties...>* __res) noexcept -> _Tp*
 {
+  static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::synchronous_resource_with<_Tp, _Properties...>,
+                "_Tp must be void or satisfy synchronous_resource_with<_Tp, _Properties...>");
   return ::cuda::__any_cast<_Tp>(__res);
 }
 
@@ -1048,6 +1062,8 @@ template <class _Tp, class... _Properties>
 [[nodiscard]] _CCCL_HOST_API auto resource_cast(const synchronous_resource_ref<_Properties...>* __res) noexcept
   -> const _Tp*
 {
+  static_assert(::cuda::std::is_void_v<_Tp> || ::cuda::mr::synchronous_resource_with<_Tp, _Properties...>,
+                "_Tp must be void or satisfy synchronous_resource_with<_Tp, _Properties...>");
   return ::cuda::__any_cast<_Tp>(__res);
 }
 
