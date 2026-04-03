@@ -21,6 +21,8 @@
 #  pragma system_header
 #endif // no system header
 
+#if _CCCL_CTK_AT_LEAST(12, 2)
+
 #include <cuda/experimental/__driver/driver_api.cuh>
 #include <cuda/experimental/__graph/graph_builder.cuh>
 #include <cuda/experimental/__graph/graph_builder_ref.cuh>
@@ -84,5 +86,7 @@ _CCCL_HOST_API inline graph_node_ref insert_child_graph(path_builder& __pb, grap
 } // namespace cuda::experimental
 
 #include <cuda/std/__cccl/epilogue.h>
+
+#endif // _CCCL_CTK_AT_LEAST(12, 2)
 
 #endif // _CUDAX__GRAPH_CHILD_GRAPH_CUH

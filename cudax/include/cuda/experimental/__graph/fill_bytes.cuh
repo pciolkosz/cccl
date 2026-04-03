@@ -21,6 +21,8 @@
 #  pragma system_header
 #endif // no system header
 
+#if _CCCL_CTK_AT_LEAST(12, 2)
+
 #include <cuda/__algorithm/common.h>
 #include <cuda/__stream/launch_transform.h>
 #include <cuda/__stream/stream_ref.h>
@@ -128,5 +130,7 @@ _CCCL_HOST_API graph_node_ref fill_bytes(path_builder& __pb, _DstTy&& __dst, ::c
 } // namespace cuda::experimental
 
 #include <cuda/std/__cccl/epilogue.h>
+
+#endif // _CCCL_CTK_AT_LEAST(12, 2)
 
 #endif // _CUDAX__GRAPH_FILL_BYTES_CUH

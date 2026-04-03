@@ -262,6 +262,7 @@ private:
   //! \param __parent The parent graph to which this graph will be added.
   //! \return A `graph_node_ref` representing the added child graph.
   //! \throws cuda::std::cuda_error if `cudaGraphAddChildGraphNode` fails.
+#if _CCCL_CTK_AT_LEAST(12, 2)
   template <size_t _Extent>
   [[nodiscard]] _CCCL_HOST_API auto
   __add_to_graph(cudaGraph_t __parent, ::cuda::std::span<cudaGraphNode_t, _Extent> __deps) -> graph_node_ref
@@ -274,6 +275,7 @@ private:
     __child.__node_ = ::cuda::experimental::__driver::__graphAddNode(__parent, __deps.data(), __deps.size(), &__params);
     return __child;
   }
+#endif // _CCCL_CTK_AT_LEAST(12, 2)
 
   device_ref __dev_; //!< The device on which the graph is built.
   cudaGraph_t __graph_ = nullptr; //!< The underlying CUDA graph handle.

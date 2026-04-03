@@ -8,6 +8,10 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include <cuda/std/__cccl/cuda_toolkit.h>
+
+#if _CCCL_CTK_AT_LEAST(12, 2)
+
 #include <cuda/experimental/graph.cuh>
 #include <cuda/experimental/launch.cuh>
 #include <cuda/experimental/stream.cuh>
@@ -259,6 +263,55 @@ C2H_TEST("graph host_launch can be chained with kernel nodes", "[graph][host_lau
   CUDAX_REQUIRE(mem[0] == 43);
 }
 
+C2H_TEST("graph host_launch can be launched multiple times", "[graph][host_launch]")
+{
+  cudax::stream s{cuda::device_ref{0}};
+  test::pinned_array<int> mem{1};
+  int* ptr = mem.get();
+
+  cudax::graph_builder g;
+  cudax::path_builder pb = cudax::start_path(g);
+
+  // Host callback increments the value each time.
+  cudax::host_launch(pb, [ptr]() {
+    *ptr += 1;
+  });
+
+  auto exec = g.instantiate();
+
+  // Launch 5 times — each launch should increment by 1.
+  for (int i = 0; i < 5; ++i)
+  {
+    exec.launch(s);
+    s.sync();
+    CUDAX_REQUIRE(mem[0] == i + 1);
+  }
+}
+
+C2H_TEST("graph host_launch data is cleaned up when graph is destroyed", "[graph][host_launch]")
+{
+  // Use a shared_ptr as a witness: the weak_ptr expires when all copies are gone.
+  auto witness = ::std::make_shared<int>(42);
+  ::std::weak_ptr<int> weak = witness;
+
+  {
+    cudax::graph_builder g;
+    cudax::path_builder pb = cudax::start_path(g);
+
+    // The lambda captures a copy of the shared_ptr, which gets stored in the graph's user object.
+    cudax::host_launch(pb, [witness]() {
+      (void) witness;
+    });
+
+    // Release our copy — the graph's user object should keep the shared_ptr alive.
+    witness.reset();
+    CUDAX_REQUIRE(!weak.expired());
+  }
+  // graph_builder destroyed — user object destructor should have deleted the callback data,
+  // releasing the last shared_ptr copy.
+  CUDAX_REQUIRE(weak.expired());
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 // event record / wait
 // ────────────────────────────────────────────────────────────────────────────
@@ -498,3 +551,5 @@ C2H_TEST("graph make_if_node with pre-constructed handle", "[graph][conditional]
 }
 
 #endif // _CCCL_CTK_AT_LEAST(12, 4)
+
+#endif // _CCCL_CTK_AT_LEAST(12, 2)

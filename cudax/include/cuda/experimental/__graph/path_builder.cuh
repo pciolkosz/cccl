@@ -126,6 +126,7 @@ struct path_builder
   //! \param __ev Event that graph execution should wait on.
   //! \return A `graph_node_ref` for the newly added event-wait node.
   //! \throws cuda::std::cuda_error if `cudaGraphAddEventWaitNode` fails.
+#if _CCCL_CTK_AT_LEAST(12, 2)
   _CCCL_HOST_API graph_node_ref wait(::cuda::event_ref __ev)
   {
     auto __deps = get_dependencies();
@@ -158,6 +159,7 @@ struct path_builder
     __clear_and_set_dependency_node(__node);
     return graph_node_ref{__node, __graph_};
   }
+#endif // _CCCL_CTK_AT_LEAST(12, 2)
 
   template <typename... Nodes>
   static constexpr bool __all_dependencies = (graph_dependency<Nodes> && ...);

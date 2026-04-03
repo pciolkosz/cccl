@@ -44,6 +44,8 @@ namespace cuda::experimental::__driver
 {
 // ── Graph: polymorphic add node ─────────────────────────────────────────────
 
+#  if _CCCL_CTK_AT_LEAST(12, 2)
+
 [[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode __graphAddNode(
   ::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUgraphNodeParams* __params)
 {
@@ -53,6 +55,8 @@ namespace cuda::experimental::__driver
     __driver_fn, "Failed to add a node to graph", &__node, __graph, __deps, __ndeps, __params);
   return __node;
 }
+
+#  endif // _CCCL_CTK_AT_LEAST(12, 2)
 
 // ── Graph: user object (ref-counted data lifetime tied to graph) ─────────────
 
