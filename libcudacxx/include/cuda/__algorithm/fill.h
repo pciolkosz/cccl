@@ -49,8 +49,6 @@ _CCCL_HOST_API void __fill_bytes_impl(stream_ref __stream, ::cuda::std::span<_Ds
 {
   static_assert(!::cuda::std::is_const_v<_DstTy>, "Fill destination can't be const");
   static_assert(::cuda::std::is_trivially_copyable_v<_DstTy>);
-  static_assert(sizeof(_ValueTy) == 1 || sizeof(_ValueTy) == 2 || sizeof(_ValueTy) == 4,
-                "Fill value must be 1, 2, or 4 bytes (matching CUDA driver memset support)");
 
   const auto __size_bytes = __dst.size_bytes();
   if constexpr (sizeof(_ValueTy) > 1)
