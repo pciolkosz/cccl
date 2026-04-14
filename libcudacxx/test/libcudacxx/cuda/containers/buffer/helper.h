@@ -136,7 +136,7 @@ struct equal_to_value
 };
 
 template <class Buffer>
-bool equal_size_value(const Buffer& buf, const size_t size, const int value)
+bool equal_size_value(const Buffer& buf, const size_t size, const typename Buffer::value_type value)
 {
   if constexpr (Buffer::properties_list::has_property(cuda::mr::host_accessible{}))
   {
