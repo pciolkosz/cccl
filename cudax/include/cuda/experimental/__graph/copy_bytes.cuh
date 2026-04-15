@@ -63,7 +63,7 @@ __copy_bytes_graph_impl(path_builder& __pb, ::cuda::std::span<_SrcTy> __src, ::c
   auto __deps = __pb.get_dependencies();
   ::CUgraphNodeParams __params{};
   __params.type                            = ::CU_GRAPH_NODE_TYPE_MEMCPY;
-  __params.memcpy.copyCtx                  = __pb.get_device().primary_context();
+  __params.memcpy.copyCtx                  = __pb.get_device().__primary_context();
   __params.memcpy.copyParams.srcMemoryType = ::CU_MEMORYTYPE_UNIFIED;
   __params.memcpy.copyParams.srcDevice     = reinterpret_cast<::CUdeviceptr>(__src.data());
   __params.memcpy.copyParams.dstMemoryType = ::CU_MEMORYTYPE_UNIFIED;

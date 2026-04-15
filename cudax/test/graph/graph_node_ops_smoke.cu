@@ -535,7 +535,7 @@ C2H_TEST("graph make_if_node with pre-constructed handle", "[graph][conditional]
   cudax::path_builder pb = cudax::start_path(g);
 
   // User constructs handle directly.
-  cudax::conditional_handle my_handle{g, 1u};
+  cudax::conditional_handle my_handle{g, true};
   auto [cond_node, body_graph, handle] = cudax::make_if_node(pb, my_handle);
 
   {

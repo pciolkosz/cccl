@@ -60,7 +60,7 @@ __fill_bytes_graph_impl(path_builder& __pb, ::cuda::std::span<_DstTy, _DstSize> 
   __params.memset.elementSize = 1;
   __params.memset.width       = __dst.size_bytes();
   __params.memset.height      = 1;
-  __params.memset.ctx         = __pb.get_device().primary_context();
+  __params.memset.ctx         = __pb.get_device().__primary_context();
   auto __node                 = ::cuda::experimental::__driver::__graphAddNode(
     __pb.get_native_graph_handle(), __deps.data(), __deps.size(), &__params);
 

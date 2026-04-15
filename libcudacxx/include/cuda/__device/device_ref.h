@@ -131,8 +131,9 @@ public:
   //! @brief Retrieve the primary context of this device.
   //!
   //! @return The primary CUDA context for this device.
-  [[nodiscard]] _CCCL_HOST_API ::CUcontext primary_context() const; // implemented in <cuda/__device/physical_device.h>
-                                                                    // to avoid circular dependency
+  [[nodiscard]] _CCCL_HOST_API ::CUcontext __primary_context() const; // implemented in
+                                                                      // <cuda/__device/physical_device.h> to avoid
+                                                                      // circular dependency
 
   //! @brief Retrieve the name of this device.
   //!

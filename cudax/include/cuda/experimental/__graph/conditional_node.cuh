@@ -50,17 +50,17 @@ struct conditional_handle
   //! \brief Creates a conditional handle for the given graph.
   //!
   //! \param __graph       Graph in which the conditional node will be inserted.
-  //! \param __default_val Initial value of the handle (1 = execute body, 0 = skip).
+  //! \param __default_val Initial value of the handle (true = execute body, false = skip).
   //! \throws cuda::std::cuda_error if `cudaGraphConditionalHandleCreate` fails.
-  _CCCL_HOST_API explicit conditional_handle(graph_builder_ref __graph, unsigned int __default_val = 1)
+  _CCCL_HOST_API explicit conditional_handle(graph_builder_ref __graph, bool __default_val = true)
       : __handle_(::cuda::experimental::__driver::__graphConditionalHandleCreate(
-          __graph.get(), __graph.get_device().primary_context(), __default_val, ::cudaGraphCondAssignDefault))
+          __graph.get(), __graph.get_device().__primary_context(), __default_val, ::cudaGraphCondAssignDefault))
   {}
 
   //! \brief Sets the runtime value of the conditional handle from device code.
   //!
   //! \param __value Non-zero to execute the body, zero to skip.
-  _CCCL_DEVICE void set_value(unsigned int __value) const noexcept
+  _CCCL_DEVICE void set_value(bool __value) const noexcept
   {
     ::cudaGraphSetConditional(__handle_, __value);
   }
@@ -68,13 +68,13 @@ struct conditional_handle
   //! \brief Convenience: enables execution of the conditional body (sets the handle to 1).
   _CCCL_DEVICE void enable() const noexcept
   {
-    set_value(1u);
+    set_value(true);
   }
 
   //! \brief Convenience: disables execution of the conditional body (sets the handle to 0).
   _CCCL_DEVICE void disable() const noexcept
   {
-    set_value(0u);
+    set_value(false);
   }
 
   //! \brief Returns the underlying `cudaGraphConditionalHandle`.
@@ -108,7 +108,7 @@ __make_conditional_node(path_builder& __pb, conditional_handle __handle, ::CUgra
   __params.conditional.handle = __handle.get();
   __params.conditional.type   = __type;
   __params.conditional.size   = 1;
-  __params.conditional.ctx    = __pb.get_device().primary_context();
+  __params.conditional.ctx    = __pb.get_device().__primary_context();
 
   auto __node = ::cuda::experimental::__driver::__graphAddNode(
     __pb.get_native_graph_handle(), __deps.data(), __deps.size(), &__params);

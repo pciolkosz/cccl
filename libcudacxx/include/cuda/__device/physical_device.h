@@ -159,7 +159,7 @@ _CCCL_HOST_API inline void device_ref::init() const
   (void) ::cuda::__physical_devices()[__id_].__primary_context();
 }
 
-[[nodiscard]] _CCCL_HOST_API inline ::CUcontext device_ref::primary_context() const
+[[nodiscard]] _CCCL_HOST_API inline ::CUcontext device_ref::__primary_context() const
 {
   return ::cuda::__physical_devices()[__id_].__primary_context();
 }
