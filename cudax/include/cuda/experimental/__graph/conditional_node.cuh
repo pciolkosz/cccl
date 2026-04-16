@@ -128,11 +128,11 @@ __make_conditional_node(path_builder& __pb, conditional_handle __handle, ::CUgra
 //! run conditionally before the parent graph is instantiated.
 //!
 //! \param __pb          Path builder to insert the node into.
-//! \param __default_val Initial handle value (1 = execute, 0 = skip). Ignored when
+//! \param __default_val Initial handle value (true = execute, false = skip). Ignored when
 //!                      \p __handle is provided.
 //! \return A `conditional_node_result` containing the node ref, body graph, and handle.
 //! \throws cuda::std::cuda_error if node creation fails.
-_CCCL_HOST_API inline conditional_node_result make_if_node(path_builder& __pb, unsigned int __default_val = 1)
+_CCCL_HOST_API inline conditional_node_result make_if_node(path_builder& __pb, bool __default_val = true)
 {
   conditional_handle __handle{__pb.get_graph(), __default_val};
   return __make_conditional_node(__pb, __handle, ::CU_GRAPH_COND_TYPE_IF);
@@ -155,14 +155,14 @@ _CCCL_HOST_API inline conditional_node_result make_if_node(path_builder& __pb, c
 //! is non-zero at the start of each iteration (including the first).
 //!
 //! The caller must populate the returned `body_graph` before instantiating the parent
-//! graph. The body is responsible for calling `handle.set_value(0) or handle.disable()`
+//! graph. The body is responsible for calling `handle.set_value(false)` or `handle.disable()`
 //! to terminate the loop.
 //!
 //! \param __pb          Path builder to insert the node into.
-//! \param __default_val Initial handle value (1 = enter loop, 0 = skip).
+//! \param __default_val Initial handle value (true = enter loop, false = skip).
 //! \return A `conditional_node_result` containing the node ref, body graph, and handle.
 //! \throws cuda::std::cuda_error if node creation fails.
-_CCCL_HOST_API inline conditional_node_result make_while_node(path_builder& __pb, unsigned int __default_val = 1)
+_CCCL_HOST_API inline conditional_node_result make_while_node(path_builder& __pb, bool __default_val = true)
 {
   conditional_handle __handle{__pb.get_graph(), __default_val};
   return __make_conditional_node(__pb, __handle, ::CU_GRAPH_COND_TYPE_WHILE);
