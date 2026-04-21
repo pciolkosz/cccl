@@ -2,7 +2,7 @@
 # Image Processing Pipeline Example
 
 A multi-file example showcasing the CCCL Runtime and CUB APIs working together
-in a realistic tiled image processing pipeline.
+in a semi-realistic tiled image processing pipeline.
 
 ## What it does
 

@@ -15,7 +15,17 @@
 
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(LIBCUDACXX_EXAMPLES CUDA CXX)
+project(IMAGE_PIPELINE_EXAMPLE CUDA CXX)
+
+# This example requires CUDA 13.1+ for the libcu++ runtime APIs.
+find_package(CUDAToolkit REQUIRED)
+if (CUDAToolkit_VERSION VERSION_LESS 13.1)
+  message(
+    STATUS
+    "Skipping image_pipeline example: requires CUDA 13.1+ (found ${CUDAToolkit_VERSION})"
+  )
+  return()
+endif()
 
 # This example uses the CMake Package Manager (CPM) to simplify fetching CCCL from GitHub
 # For more information, see https://github.com/cpm-cmake/CPM.cmake
