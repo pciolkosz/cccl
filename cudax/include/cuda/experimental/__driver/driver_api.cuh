@@ -95,14 +95,21 @@ struct __graphAddMemAllocNodeResult
 
 // ── Graph: memory free node ─────────────────────────────────────────────────
 
-[[nodiscard]] _CCCL_HOST_API inline ::CUgraphNode
-__graphAddMemFreeNode(::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUdeviceptr __dptr)
+// ── Graph: memory free node (no-throw, for use in noexcept deallocate) ──────
+
+struct __graphAddMemFreeNodeResult
+{
+  ::CUgraphNode __node;
+  ::cudaError_t __status;
+};
+
+[[nodiscard]] _CCCL_HOST_API inline __graphAddMemFreeNodeResult __graphAddMemFreeNodeNoThrow(
+  ::CUgraph __graph, const ::CUgraphNode* __deps, ::cuda::std::size_t __ndeps, ::CUdeviceptr __dptr) noexcept
 {
   static auto __driver_fn = _CUDAX_GET_DRIVER_FUNCTION(cuGraphAddMemFreeNode, 11, 4);
   ::CUgraphNode __node{};
-  ::cuda::__driver::__call_driver_fn(
-    __driver_fn, "Failed to add a memory free node to graph", &__node, __graph, __deps, __ndeps, __dptr);
-  return __node;
+  auto __status = static_cast<::cudaError_t>(__driver_fn(&__node, __graph, __deps, __ndeps, __dptr));
+  return {__node, __status};
 }
 
 // ── Graph: user object (ref-counted data lifetime tied to graph) ─────────────

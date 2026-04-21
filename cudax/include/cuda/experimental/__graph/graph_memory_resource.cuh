@@ -84,7 +84,7 @@ struct graph_memory_resource
     path_builder& __pb,
     void* __ptr,
     ::cuda::std::size_t __size      = 0,
-    ::cuda::std::size_t __alignment = cuda::mr::default_cuda_malloc_alignment)
+    ::cuda::std::size_t __alignment = ::cuda::mr::default_cuda_malloc_alignment) noexcept
   {
     (void) __size;
     (void) __alignment;
@@ -94,9 +94,10 @@ struct graph_memory_resource
       return;
     }
 
-    auto __deps = __pb.get_dependencies();
-    auto __node = ::cuda::experimental::__driver::__graphAddMemFreeNode(
+    auto __deps          = __pb.get_dependencies();
+    auto [__node, __err] = ::cuda::experimental::__driver::__graphAddMemFreeNodeNoThrow(
       __pb.get_native_graph_handle(), __deps.data(), __deps.size(), reinterpret_cast<::CUdeviceptr>(__ptr));
+    _CCCL_ASSERT(__err == ::cudaSuccess, "Failed to add a memory free node to graph");
 
     __pb.__clear_and_set_dependency_node(__node);
   }
@@ -107,7 +108,10 @@ struct graph_memory_resource
   //! @param __size Number of bytes (unused, kept for interface symmetry).
   //! @param __alignment Alignment (unused, kept for interface symmetry).
   _CCCL_HOST_API void deallocate(
-    ::cuda::stream_ref __stream, void* __ptr, ::cuda::std::size_t __size = 0, ::cuda::std::size_t __alignment = 256)
+    ::cuda::stream_ref __stream,
+    void* __ptr,
+    ::cuda::std::size_t __size      = 0,
+    ::cuda::std::size_t __alignment = ::cuda::mr::default_cuda_malloc_alignment)
   {
     (void) __size;
     (void) __alignment;
@@ -125,7 +129,7 @@ struct graph_memory_resource
   }
 
   //! @brief Returns the device this resource allocates on.
-  [[nodiscard]] _CCCL_HOST_API device_ref get_device() const noexcept
+  [[nodiscard]] _CCCL_HOST_API device_ref device() const noexcept
   {
     return __dev_;
   }

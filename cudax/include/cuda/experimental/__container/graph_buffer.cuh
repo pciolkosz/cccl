@@ -80,12 +80,12 @@ public:
 private:
   graph_memory_resource __mr_;
   size_type __count_       = 0;
-  void* __buf_             = nullptr;
+  _Tp* __buf_              = nullptr;
   ::cudaStream_t __stream_ = ::cuda::__invalid_stream();
 
   [[nodiscard]] _CCCL_HOST_API pointer __get_data() const noexcept
   {
-    return static_cast<pointer>(__buf_);
+    return __buf_;
   }
 
   //! @brief Causes the buffer to be treated as a span when passed to cudax::launch.
@@ -109,14 +109,14 @@ public:
   _CCCL_HOST_API graph_buffer(path_builder& __pb, graph_memory_resource __mr, size_type __count, ::cuda::no_init_t)
       : __mr_(::cuda::std::move(__mr))
       , __count_(__count)
-      , __buf_(__count_ == 0 ? nullptr : __mr_.allocate(__pb, __count_ * sizeof(_Tp), alignof(_Tp)))
+      , __buf_(__count_ == 0 ? nullptr : static_cast<_Tp*>(__mr_.allocate(__pb, __count_ * sizeof(_Tp), alignof(_Tp))))
   {}
 
   //! @brief Allocates storage and fills with \p __value.
   _CCCL_HOST_API graph_buffer(path_builder& __pb, graph_memory_resource __mr, size_type __count, const _Tp& __value)
       : __mr_(::cuda::std::move(__mr))
       , __count_(__count)
-      , __buf_(__count_ == 0 ? nullptr : __mr_.allocate(__pb, __count_ * sizeof(_Tp), alignof(_Tp)))
+      , __buf_(__count_ == 0 ? nullptr : static_cast<_Tp*>(__mr_.allocate(__pb, __count_ * sizeof(_Tp), alignof(_Tp))))
   {
     if (__count_ > 0)
     {
@@ -139,7 +139,7 @@ public:
   _CCCL_HOST_API graph_buffer(path_builder& __pb, graph_memory_resource __mr, ::cuda::std::span<const _Tp> __src)
       : __mr_(::cuda::std::move(__mr))
       , __count_(__src.size())
-      , __buf_(__count_ == 0 ? nullptr : __mr_.allocate(__pb, __count_ * sizeof(_Tp), alignof(_Tp)))
+      , __buf_(__count_ == 0 ? nullptr : static_cast<_Tp*>(__mr_.allocate(__pb, __count_ * sizeof(_Tp), alignof(_Tp))))
   {
     if (__count_ > 0)
     {
