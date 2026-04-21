@@ -87,9 +87,9 @@ struct verify_all_zero
 {
   __device__ void operator()(cuda::std::span<const int> buf) const noexcept
   {
-    for (int i = 0; i < static_cast<int>(buf.size()); ++i)
+    for (const auto& val : buf)
     {
-      CUDAX_REQUIRE(buf[i] == 0);
+      CUDAX_REQUIRE(val == 0);
     }
   }
 };
@@ -99,9 +99,9 @@ struct sum_to_ptr
   __device__ void operator()(cuda::std::span<const int> buf, int* out) const noexcept
   {
     int s = 0;
-    for (int i = 0; i < static_cast<int>(buf.size()); ++i)
+    for (const auto& val : buf)
     {
-      s += buf[i];
+      s += val;
     }
     *out = s;
   }
