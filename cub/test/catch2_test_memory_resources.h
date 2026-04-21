@@ -15,7 +15,7 @@ struct device_memory_resource
     : cub::detail::device_memory_resource
     , ::cuda::mr::memory_resource_base<device_memory_resource>
 {
-  cudaStream_t target_stream = 0;
+  cudaStream_t target_stream = nullptr;
   size_t* bytes_allocated    = nullptr;
   size_t* bytes_deallocated  = nullptr;
 
