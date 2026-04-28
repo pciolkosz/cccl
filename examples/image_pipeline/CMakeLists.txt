@@ -61,10 +61,7 @@ endif()
 add_executable(
   image_pipeline
   main.cu
-  device_setup.cu
-  generate_image.cu
-  tile_transfer.cu
-  processing.cu
+  detail.cu
 )
 target_link_libraries(image_pipeline PRIVATE CCCL::CCCL)
 
