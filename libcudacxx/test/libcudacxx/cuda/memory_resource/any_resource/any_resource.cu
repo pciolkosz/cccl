@@ -177,6 +177,36 @@ TEMPLATE_TEST_CASE_METHOD(test_fixture, "any_resource", "[container][resource]",
   // Reset the counters:
   this->counts = Counts();
 
+  SECTION("conversion to resource_ref")
+  {
+    Counts expected{};
+    {
+      cuda::stream stream{cuda::device_ref{0}};
+      cuda::mr::any_resource<::cuda::mr::host_accessible> mr{TestResource{42, this}};
+      expected.new_count += is_big;
+      ++expected.object_count;
+      ++expected.move_count;
+      CHECK(this->counts == expected);
+
+      cuda::mr::resource_ref<::cuda::mr::host_accessible> ref = mr;
+
+      CHECK(this->counts == expected);
+      auto* ptr = ref.allocate(::cuda::stream_ref{stream}, this->bytes(100), this->align(8));
+      CHECK(ptr == this);
+      ++expected.allocate_async_count;
+      CHECK(this->counts == expected);
+      ref.deallocate(::cuda::stream_ref{stream}, ptr, this->bytes(100), this->align(8));
+      ++expected.deallocate_async_count;
+      CHECK(this->counts == expected);
+    }
+    expected.delete_count += is_big;
+    --expected.object_count;
+    CHECK(this->counts == expected);
+  }
+
+  // Reset the counters:
+  this->counts = Counts();
+
   SECTION("conversion to any_synchronous_resource")
   {
     Counts expected{};
