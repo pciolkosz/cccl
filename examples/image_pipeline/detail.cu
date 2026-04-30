@@ -19,8 +19,6 @@
 /// Implementation of supporting details: synthetic image generation and
 /// printing/output helpers.  See detail.h for the interface.
 
-#include <cub/block/block_reduce.cuh>
-
 #include <cuda/algorithm>
 #include <cuda/launch>
 #include <cuda/memory_pool>
@@ -114,9 +112,9 @@ struct generate_kernel
     {
       for (int dx = -1; dx <= 1; ++dx)
       {
-        int scx         = cx + dx * star_grid;
-        int scy         = cy + dy * star_grid;
-        unsigned sh     = pixel_hash(scx, scy, 9999u);
+        int scx     = cx + dx * star_grid;
+        int scy     = cy + dy * star_grid;
+        unsigned sh = pixel_hash(scx, scy, 9999u);
         if (static_cast<float>(sh & 0xFFFF) / 65535.0f < 0.08f)
         {
           float jx     = static_cast<float>((sh >> 4) & 0xFF) / 255.0f - 0.5f;
@@ -134,76 +132,6 @@ struct generate_kernel
     out[tid] = static_cast<pixel_t>(fminf(255.0f, fmaxf(0.0f, val)));
   }
 };
-
-// ── Downscale kernel using CUB BlockReduce ───────────────────────────
-
-struct downscale_kernel
-{
-  template <typename Config>
-  __device__ void
-  operator()(Config config, cuda::std::span<const pixel_t> src, cuda::std::span<pixel_t> dst, int src_width, int scale)
-  {
-    constexpr int block_size = cuda::gpu_thread.count(cuda::block, config);
-    int out_idx              = blockIdx.x;
-    if (out_idx >= static_cast<int>(dst.size()))
-    {
-      return;
-    }
-
-    int dst_width   = src_width / scale;
-    int px          = out_idx % dst_width;
-    int py          = out_idx / dst_width;
-    int total_elems = scale * scale;
-
-    int local_sum = 0;
-    int tid       = threadIdx.x;
-    for (int i = tid; i < total_elems; i += block_size)
-    {
-      int dy = i / scale;
-      int dx = i % scale;
-      local_sum += src[static_cast<cuda::std::size_t>(py * scale + dy) * src_width + (px * scale + dx)];
-    }
-
-    using BlockReduceT = cub::BlockReduce<int, block_size>;
-    __shared__ typename BlockReduceT::TempStorage temp_storage;
-    int block_sum = BlockReduceT(temp_storage).Sum(local_sum);
-
-    if (tid == 0)
-    {
-      dst[out_idx] = static_cast<pixel_t>(block_sum / total_elems);
-    }
-  }
-};
-
-void downscale_tile(
-  cuda::stream_ref stream,
-  tile_buffers& bufs,
-  cuda::std::span<const pixel_t> dev_src,
-  int row_offset,
-  int tile_rows,
-  cuda::std::span<pixel_t> host_preview)
-{
-  int dst_rows   = tile_rows / preview_scale;
-  int dst_cols   = image_width / preview_scale;
-  int dst_pixels = dst_rows * dst_cols;
-  if (dst_pixels == 0)
-  {
-    return;
-  }
-
-  constexpr int block_size = 256;
-  auto config              = cuda::make_config(cuda::block_dims<block_size>(), cuda::grid_dims(dst_pixels));
-
-  cuda::launch(
-    stream, config, downscale_kernel{}, dev_src,
-    bufs.dev_preview.first(static_cast<cuda::std::size_t>(dst_pixels)), image_width, preview_scale);
-
-  int preview_row_offset = row_offset / preview_scale;
-  cuda::copy_bytes(
-    stream,
-    bufs.dev_preview.first(static_cast<cuda::std::size_t>(dst_pixels)),
-    host_preview.subspan(static_cast<cuda::std::size_t>(preview_row_offset) * dst_cols, static_cast<cuda::std::size_t>(dst_pixels)));
-}
 
 // ── Image generation ─────────────────────────────────────────────────
 
@@ -253,7 +181,8 @@ void print_device_info(cuda::device_ref dev, cuda::arch_traits_t traits, cuda::s
   printf("  Max shared memory : %zu bytes\n", traits.max_shared_memory_per_block);
 }
 
-void print_tile_plan(int tile_rows, int tile_alignment, int num_tiles, cuda::std::size_t budget, cuda::std::size_t total_mem)
+void print_tile_plan(
+  int tile_rows, int tile_alignment, int num_tiles, cuda::std::size_t budget, cuda::std::size_t total_mem)
 {
   printf("\nTile plan:\n");
   printf("  Image          : %d x %d (%.0f MB)\n",
@@ -265,7 +194,8 @@ void print_tile_plan(int tile_rows, int tile_alignment, int num_tiles, cuda::std
   printf("  Number of tiles: %d\n\n", num_tiles);
 }
 
-void print_allocation_info(cuda::std::size_t device_total, cuda::std::size_t gpu_budget, cuda::std::size_t tile_pixels, int tile_rows)
+void print_allocation_info(
+  cuda::std::size_t device_total, cuda::std::size_t gpu_budget, cuda::std::size_t tile_pixels, int tile_rows)
 {
   printf("  Device pool: %.1f MB (initial), %.1f MB (max)\n",
          device_total / (1024.0 * 1024.0),
@@ -314,10 +244,10 @@ void print_pass_stats(double ms, long long total_selected, double mean_selected,
 
 void print_sanity_check(iqr_result orig, iqr_result eq)
 {
-  bool ok = eq.span() > orig.span();
+  bool ok = eq.width() > orig.width();
   printf("=== Sanity check ===\n");
-  printf("  Original IQR (25th-75th):   [%d, %d] (span %d)\n", orig.p25, orig.p75, orig.span());
-  printf("  Equalized IQR (25th-75th):  [%d, %d] (span %d)\n", eq.p25, eq.p75, eq.span());
+  printf("  Original IQR (25th-75th):   [%d, %d] (span %d)\n", orig.p25, orig.p75, orig.width());
+  printf("  Equalized IQR (25th-75th):  [%d, %d] (span %d)\n", eq.p25, eq.p75, eq.width());
   printf("  Equalization spread distribution: %s\n\n", ok ? "YES" : "NO");
 }
 

@@ -37,14 +37,16 @@ void generate_image(cuda::stream_ref stream, tile_buffers& bufs, int num_tiles, 
 // ── Printing / output helpers ────────────────────────────────────────
 
 void print_device_info(cuda::device_ref dev, cuda::arch_traits_t traits, cuda::std::size_t total_mem);
-void print_tile_plan(int tile_rows, int tile_alignment, int num_tiles, cuda::std::size_t budget, cuda::std::size_t total_mem);
-void print_allocation_info(cuda::std::size_t device_total, cuda::std::size_t gpu_budget, cuda::std::size_t tile_pixels, int tile_rows);
+void print_tile_plan(
+  int tile_rows, int tile_alignment, int num_tiles, cuda::std::size_t budget, cuda::std::size_t total_mem);
+void print_allocation_info(
+  cuda::std::size_t device_total, cuda::std::size_t gpu_budget, cuda::std::size_t tile_pixels, int tile_rows);
 void print_pool_stats(tile_buffers& bufs, cuda::device_ref device);
 
 struct iqr_result
 {
   int p25, p75;
-  int span() const
+  int width() const
   {
     return p75 - p25;
   }

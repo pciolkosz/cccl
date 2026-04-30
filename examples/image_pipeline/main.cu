@@ -29,6 +29,7 @@
  * Supporting details (image generation, printing) are in detail.cu.
  */
 
+#include <cub/block/block_reduce.cuh>
 #include <cub/device/device_histogram.cuh>
 #include <cub/device/device_reduce.cuh>
 #include <cub/device/device_transform.cuh>
@@ -37,6 +38,7 @@
 #include <cuda/buffer>
 #include <cuda/cmath>
 #include <cuda/devices>
+#include <cuda/launch>
 #include <cuda/memory_pool>
 #include <cuda/memory_resource>
 #include <cuda/std/algorithm>
@@ -60,14 +62,14 @@ static device_plan select_device_and_plan()
 {
   printf("=== Device selection ===\n");
 
-  cuda::device_ref best = cuda::devices[0];
-  cuda::std::size_t best_mem       = 0;
+  cuda::device_ref best      = cuda::devices[0];
+  cuda::std::size_t best_mem = 0;
 
   for (auto dev : cuda::devices)
   {
     cuda::std::size_t total_bytes = dev.attribute(cuda::device_attributes::total_global_memory);
-    int sms            = dev.attribute(cuda::device_attributes::multiprocessor_count);
-    auto name          = dev.name();
+    int sms                       = dev.attribute(cuda::device_attributes::multiprocessor_count);
+    auto name                     = dev.name();
     printf("  [%d] %.*s  %3d SMs  %.0f MB\n",
            dev.get(),
            static_cast<int>(name.size()),
@@ -91,7 +93,7 @@ static device_plan select_device_and_plan()
   cuda::std::size_t overhead        = 128 * 1024 * 1024;
   cuda::std::size_t bytes_per_pixel = 2 * sizeof(pixel_t) + sizeof(pixel_t) + 2 * sizeof(float);
   cuda::std::size_t max_tile_pixels = (budget - overhead) / bytes_per_pixel;
-  int tile_rows          = static_cast<int>(max_tile_pixels / image_width);
+  int tile_rows                     = static_cast<int>(max_tile_pixels / image_width);
 
   constexpr int tile_alignment = 32;
   tile_rows                    = (tile_rows / tile_alignment) * tile_alignment;
@@ -106,8 +108,8 @@ static device_plan select_device_and_plan()
 // Buffer allocation
 // ═════════════════════════════════════════════════════════════════════
 
-static tile_buffers
-allocate_tile_buffers(cuda::stream_ref stream, cuda::device_ref device, int tile_rows, cuda::std::size_t gpu_budget, int num_tiles)
+static tile_buffers allocate_tile_buffers(
+  cuda::stream_ref stream, cuda::device_ref device, int tile_rows, cuda::std::size_t gpu_budget, int num_tiles)
 {
   printf("=== Tile buffer allocation ===\n");
   cuda::std::size_t tile_pixels = static_cast<cuda::std::size_t>(tile_rows) * image_width;
@@ -129,19 +131,20 @@ allocate_tile_buffers(cuda::stream_ref stream, cuda::device_ref device, int tile
     cuda::std::in_place_type<cuda::device_memory_pool>, device, props);
 
   // Device buffers — no_init since kernels/copies write before reading.
-  auto dev_tile_0     = cuda::make_buffer<pixel_t>(stream, device_pool, tile_pixels, cuda::no_init);
-  auto dev_tile_1     = cuda::make_buffer<pixel_t>(stream, device_pool, tile_pixels, cuda::no_init);
-  auto dev_float      = cuda::make_buffer<float>(stream, device_pool, tile_pixels, cuda::no_init);
-  auto dev_hist       = cuda::make_buffer<int>(stream, device_pool, num_bins, cuda::no_init);
-  auto dev_tile_stats = cuda::make_buffer<float4>(stream, device_pool, num_tiles, cuda::no_init);
-  auto dev_lut        = cuda::make_buffer<pixel_t>(stream, device_pool, num_bins, cuda::no_init);
-  auto dev_equalized  = cuda::make_buffer<pixel_t>(stream, device_pool, tile_pixels, cuda::no_init);
+  auto dev_tile_0              = cuda::make_buffer<pixel_t>(stream, device_pool, tile_pixels, cuda::no_init);
+  auto dev_tile_1              = cuda::make_buffer<pixel_t>(stream, device_pool, tile_pixels, cuda::no_init);
+  auto dev_float               = cuda::make_buffer<float>(stream, device_pool, tile_pixels, cuda::no_init);
+  auto dev_hist                = cuda::make_buffer<int>(stream, device_pool, num_bins, cuda::no_init);
+  auto dev_tile_stats          = cuda::make_buffer<float4>(stream, device_pool, num_tiles, cuda::no_init);
+  auto dev_lut                 = cuda::make_buffer<pixel_t>(stream, device_pool, num_bins, cuda::no_init);
+  auto dev_equalized           = cuda::make_buffer<pixel_t>(stream, device_pool, tile_pixels, cuda::no_init);
   cuda::std::size_t preview_px = (tile_rows / preview_scale) * (image_width / preview_scale);
   auto dev_preview             = cuda::make_buffer<pixel_t>(stream, device_pool, preview_px, cuda::no_init);
 
   // Pinned host buffers — make_pinned_buffer uses the default pinned pool.
-  auto host_image      = cuda::make_pinned_buffer<pixel_t>(stream, image_pixels, pixel_t{0});
-  auto host_tile_hists = cuda::make_pinned_buffer<int>(stream, static_cast<cuda::std::size_t>(num_tiles) * num_bins, int{0});
+  auto host_image = cuda::make_pinned_buffer<pixel_t>(stream, image_pixels, pixel_t{0});
+  auto host_tile_hists =
+    cuda::make_pinned_buffer<int>(stream, static_cast<cuda::std::size_t>(num_tiles) * num_bins, int{0});
   auto host_tile_stats = cuda::make_pinned_buffer<float4>(stream, num_tiles, float4{0, 0, 0, 0});
 
   print_allocation_info(device_total, gpu_budget, tile_pixels, tile_rows);
@@ -272,13 +275,23 @@ static void compute_histogram(cuda::stream_ref stream, tile_buffers& bufs, int s
   auto env = make_cub_env(stream, bufs.device_pool);
   check_cub(
     cub::DeviceHistogram::HistogramEven(
-      bufs.dev_tile[slot].first(tile_pixel_count).data(), bufs.dev_histogram.data(), num_levels, 0, num_bins,
-      static_cast<int>(tile_pixel_count), env),
+      bufs.dev_tile[slot].first(tile_pixel_count).data(),
+      bufs.dev_histogram.data(),
+      num_levels,
+      0,
+      num_bins,
+      static_cast<int>(tile_pixel_count),
+      env),
     "HistogramEven (pass 1)");
 }
 
 static void process_tile(
-  cuda::stream_ref stream, tile_buffers& bufs, int slot, int tile_idx, cuda::std::size_t tile_pixel_count, float threshold)
+  cuda::stream_ref stream,
+  tile_buffers& bufs,
+  int slot,
+  int tile_idx,
+  cuda::std::size_t tile_pixel_count,
+  float threshold)
 {
   int n           = static_cast<int>(tile_pixel_count);
   auto pixel_data = bufs.dev_tile[slot].first(tile_pixel_count).data();
@@ -289,9 +302,8 @@ static void process_tile(
   check_cub(cub::DeviceTransform::Transform(pixel_data, eq_data, n, equalize_op{bufs.dev_lut.first(num_bins)}, env),
             "Transform (equalize)");
   check_cub(cub::DeviceTransform::Transform(eq_data, float_data, n, normalize_op{}, env), "Transform (normalize)");
-  check_cub(
-    cub::DeviceHistogram::HistogramEven(eq_data, bufs.dev_histogram.data(), num_levels, 0, num_bins, n, env),
-    "HistogramEven (pass 2)");
+  check_cub(cub::DeviceHistogram::HistogramEven(eq_data, bufs.dev_histogram.data(), num_levels, 0, num_bins, n, env),
+            "HistogramEven (pass 2)");
 
   // Combined threshold + count/min/max/sum in a single pass.
   // Each tile writes to its own slot — no sync needed between tiles.
@@ -299,15 +311,17 @@ static void process_tile(
 
   check_cub(
     cub::DeviceReduce::TransformReduce(
-      float_data, bufs.dev_tile_stats.data() + tile_idx, n, stats_reduce_op{}, threshold_stats_op{threshold}, identity,
+      float_data,
+      bufs.dev_tile_stats.data() + tile_idx,
+      n,
+      stats_reduce_op{},
+      threshold_stats_op{threshold},
+      identity,
       env),
     "TransformReduce");
 
   // D2H copy into this tile's slot — no sync, read after all tiles finish.
-  cuda::copy_bytes(
-    stream,
-    bufs.dev_tile_stats.subspan(tile_idx, 1),
-    bufs.host_tile_stats.subspan(tile_idx, 1));
+  cuda::copy_bytes(stream, bufs.dev_tile_stats.subspan(tile_idx, 1), bufs.host_tile_stats.subspan(tile_idx, 1));
 }
 
 /// Accumulate per-tile stats into a single result after all tiles finish.
@@ -364,8 +378,8 @@ static float compute_otsu_threshold(cuda::std::span<const int> histogram, cuda::
   return static_cast<float>(best_t) / cuda::std::numeric_limits<pixel_t>::max();
 }
 
-static void
-build_equalization_lut(cuda::std::span<const int> histogram, cuda::std::size_t total_pixels, cuda::std::span<pixel_t> lut_out)
+static void build_equalization_lut(
+  cuda::std::span<const int> histogram, cuda::std::size_t total_pixels, cuda::std::span<pixel_t> lut_out)
 {
   constexpr double max_val = cuda::std::numeric_limits<pixel_t>::max();
   double scale             = max_val / static_cast<double>(total_pixels);
@@ -375,6 +389,105 @@ build_equalization_lut(cuda::std::span<const int> histogram, cuda::std::size_t t
     cdf += histogram[i];
     lut_out[i] = static_cast<pixel_t>(cuda::std::min(cdf * scale, max_val));
   }
+}
+
+// ═════════════════════════════════════════════════════════════════════
+// Downscale kernel
+// ═════════════════════════════════════════════════════════════════════
+
+// Each block produces one output pixel by box-averaging a scale×scale
+// source block.  Threads cooperatively load source pixels and sum
+// them locally, then cub::BlockReduce merges the partial sums.
+//
+// The block size is extracted from the launch config at compile time
+// via cuda::gpu_thread.count(cuda::block, config), which is then used
+// as the template parameter for cub::BlockReduce.
+
+struct downscale_kernel
+{
+  template <typename Config>
+  __device__ void
+  operator()(Config config, cuda::std::span<const pixel_t> src, cuda::std::span<pixel_t> dst, int src_width, int scale)
+  {
+    constexpr int block_size = cuda::gpu_thread.count(cuda::block, config);
+    int out_idx              = blockIdx.x;
+    if (out_idx >= static_cast<int>(dst.size()))
+    {
+      return;
+    }
+
+    int dst_width   = src_width / scale;
+    int px          = out_idx % dst_width;
+    int py          = out_idx / dst_width;
+    int total_elems = scale * scale;
+
+    // Each thread sums its share of the scale×scale source block.
+    int local_sum = 0;
+    int tid       = threadIdx.x;
+    for (int i = tid; i < total_elems; i += block_size)
+    {
+      int dy = i / scale;
+      int dx = i % scale;
+      local_sum += src[static_cast<cuda::std::size_t>(py * scale + dy) * src_width + (px * scale + dx)];
+    }
+
+    // cub::BlockReduce sums the per-thread partial sums into a single
+    // block-wide total.  Without CUB, this would be a manual shared-
+    // memory tree reduction:
+    //
+    //   __shared__ int smem[block_size];
+    //   smem[tid] = local_sum;
+    //   __syncthreads();
+    //   for (int s = block_size / 2; s > 0; s >>= 1)
+    //   {
+    //     if (tid < s) smem[tid] += smem[tid + s];
+    //     __syncthreads();
+    //   }
+    //   int block_sum = smem[0];
+    using BlockReduceT = cub::BlockReduce<int, block_size>;
+    __shared__ typename BlockReduceT::TempStorage temp_storage;
+    int block_sum = BlockReduceT(temp_storage).Sum(local_sum);
+
+    if (tid == 0)
+    {
+      dst[out_idx] = static_cast<pixel_t>(block_sum / total_elems);
+    }
+  }
+};
+
+void downscale_tile(
+  cuda::stream_ref stream,
+  tile_buffers& bufs,
+  cuda::std::span<const pixel_t> dev_src,
+  int row_offset,
+  int tile_rows,
+  cuda::std::span<pixel_t> host_preview)
+{
+  int dst_rows   = tile_rows / preview_scale;
+  int dst_cols   = image_width / preview_scale;
+  int dst_pixels = dst_rows * dst_cols;
+  if (dst_pixels == 0)
+  {
+    return;
+  }
+
+  constexpr int block_size = 256;
+  auto config              = cuda::make_config(cuda::block_dims<block_size>(), cuda::grid_dims(dst_pixels));
+
+  cuda::launch(
+    stream,
+    config,
+    downscale_kernel{},
+    dev_src,
+    bufs.dev_preview.first(static_cast<cuda::std::size_t>(dst_pixels)),
+    image_width,
+    preview_scale);
+
+  int preview_row_offset = row_offset / preview_scale;
+  cuda::copy_bytes(stream,
+                   bufs.dev_preview.first(static_cast<cuda::std::size_t>(dst_pixels)),
+                   host_preview.subspan(static_cast<cuda::std::size_t>(preview_row_offset) * dst_cols,
+                                        static_cast<cuda::std::size_t>(dst_pixels)));
 }
 
 // ═════════════════════════════════════════════════════════════════════
@@ -396,9 +509,10 @@ int main()
   auto bufs = allocate_tile_buffers(stream_a, plan.device, plan.tile_rows, plan.gpu_budget, plan.num_tiles);
 
   // ── 3. Generate image and downscale input preview ──────────────────
-  int pw                  = image_width / preview_scale;
-  int ph                  = image_height / preview_scale;
-  auto host_input_preview = cuda::make_pinned_buffer<pixel_t>(stream_a, static_cast<cuda::std::size_t>(pw) * ph, pixel_t{0});
+  int pw = image_width / preview_scale;
+  int ph = image_height / preview_scale;
+  auto host_input_preview =
+    cuda::make_pinned_buffer<pixel_t>(stream_a, static_cast<cuda::std::size_t>(pw) * ph, pixel_t{0});
   generate_image(stream_a, bufs, plan.num_tiles, host_input_preview.subspan(0));
   write_pgm("input_preview.pgm", host_input_preview.subspan(0), pw, ph);
 
@@ -411,7 +525,7 @@ int main()
 
   for (int t = 0; t < plan.num_tiles; ++t)
   {
-    int slot     = t % 2;
+    int slot                = t % 2;
     cuda::std::size_t count = upload_tile(streams[slot], bufs, slot, t, plan.tile_rows);
     compute_histogram(streams[slot], bufs, slot, count);
     download_tile_histogram(streams[slot], bufs, t);
@@ -441,7 +555,8 @@ int main()
   printf("  Equalization LUT uploaded\n\n");
 
   cuda::fill_bytes(stream_a, bufs.host_tile_histograms, cuda::std::uint8_t{0});
-  auto host_eq_preview = cuda::make_pinned_buffer<pixel_t>(stream_a, static_cast<cuda::std::size_t>(pw) * ph, pixel_t{0});
+  auto host_eq_preview =
+    cuda::make_pinned_buffer<pixel_t>(stream_a, static_cast<cuda::std::size_t>(pw) * ph, pixel_t{0});
 
   // stream_b must wait for the setup work on stream_a before starting pass 2.
   stream_b.wait(stream_a);
@@ -488,7 +603,7 @@ int main()
 
   print_sanity_check(orig_iqr, eq_iqr);
 
-  bool ok = eq_iqr.span() > orig_iqr.span();
+  bool ok = eq_iqr.width() > orig_iqr.width();
   print_summary(plan.num_tiles, plan.tile_rows, pass1_ms, pass2_ms, ok);
   return ok ? 0 : 1;
 }
