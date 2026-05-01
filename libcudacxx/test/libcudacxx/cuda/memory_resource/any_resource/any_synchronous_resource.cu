@@ -367,7 +367,7 @@ TEMPLATE_TEST_CASE_METHOD(
   CHECK(ref.allocate_sync(this->bytes(100), this->align(8)) == this);
   CHECK(get_property(ref, get_data{}) == 42);
 
-  ref = std::move(ref2); // move assignment
+  ref = std::move(ref2); // NOLINT(performance-move-const-arg) - test move assignment works
   CHECK(ref.allocate_sync(this->bytes(100), this->align(8)) == this);
   CHECK(get_property(ref, get_data{}) == 43);
 }
