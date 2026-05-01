@@ -1,17 +1,12 @@
-# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-# SPDX-License-Identifier: Apache-2.0
+#===----------------------------------------------------------------------===//
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Part of libcu++, the C++ Standard Library for your entire system,
+# under the Apache License v2.0 with LLVM Exceptions.
+# See https://llvm.org/LICENSE.txt for license information.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
 #
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+#===----------------------------------------------------------------------===//
 
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
@@ -58,12 +53,13 @@ endif()
 # runtime APIs: device selection, memory pools, buffers, copy_bytes,
 # fill_bytes, double-buffered streams, events, timed events, and CUB
 # device-wide operations (histogram, select, reduce, transform).
-add_executable(
-  image_pipeline
-  main.cu
-  detail.cu
-)
+add_executable(image_pipeline main.cu detail.cu)
 target_link_libraries(image_pipeline PRIVATE CCCL::CCCL)
+# Device lambdas (used in CUB transform/reduce ops) require extended lambda support.
+target_compile_options(
+  image_pipeline
+  PRIVATE $<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:--extended-lambda>
+)
 
 # This is only relevant for internal testing and not needed by end users.
 include(CTest)

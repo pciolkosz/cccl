@@ -1,19 +1,12 @@
-/*
- * SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
- * SPDX-License-Identifier: Apache-2.0
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+//===----------------------------------------------------------------------===//
+//
+// Part of libcu++, the C++ Standard Library for your entire system,
+// under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+// SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
+//
+//===----------------------------------------------------------------------===//
 
 /// @file
 /// Implementation of supporting details: synthetic image generation and
@@ -48,13 +41,13 @@ __device__ float hash01(int x, int y, unsigned seed)
 
 __device__ float value_noise(float fx, float fy, float freq, unsigned seed)
 {
-  float sx = fx * freq, sy = fy * freq;
-  int ix = static_cast<int>(floorf(sx)), iy = static_cast<int>(floorf(sy));
+  const float sx = fx * freq, sy = fy * freq;
+  const int ix = static_cast<int>(floorf(sx)), iy = static_cast<int>(floorf(sy));
   float tx = sx - ix, ty = sy - iy;
-  tx      = tx * tx * (3.0f - 2.0f * tx);
-  ty      = ty * ty * (3.0f - 2.0f * ty);
-  float a = hash01(ix, iy, seed) + (hash01(ix + 1, iy, seed) - hash01(ix, iy, seed)) * tx;
-  float b = hash01(ix, iy + 1, seed) + (hash01(ix + 1, iy + 1, seed) - hash01(ix, iy + 1, seed)) * tx;
+  tx            = tx * tx * (3.0f - 2.0f * tx);
+  ty            = ty * ty * (3.0f - 2.0f * ty);
+  const float a = hash01(ix, iy, seed) + (hash01(ix + 1, iy, seed) - hash01(ix, iy, seed)) * tx;
+  const float b = hash01(ix, iy + 1, seed) + (hash01(ix + 1, iy + 1, seed) - hash01(ix, iy + 1, seed)) * tx;
   return a + (b - a) * ty;
 }
 
@@ -76,54 +69,54 @@ struct generate_kernel
   template <typename Config>
   __device__ void operator()(Config config, cuda::std::span<pixel_t> out, int width, int row_offset)
   {
-    auto tid = cuda::gpu_thread.rank(cuda::grid, config);
+    const auto tid = cuda::gpu_thread.rank(cuda::grid, config);
     if (tid >= out.size())
     {
       return;
     }
 
-    int gx   = static_cast<int>(tid) % width;
-    int gy   = static_cast<int>(tid) / width + row_offset;
-    float fx = static_cast<float>(gx) / image_width;
-    float fy = static_cast<float>(gy) / image_height;
+    const int gx   = static_cast<int>(tid) % width;
+    const int gy   = static_cast<int>(tid) / width + row_offset;
+    const float fx = static_cast<float>(gx) / image_width;
+    const float fy = static_cast<float>(gy) / image_height;
 
-    float val   = 4.0f + 3.0f * fy;
-    float noise = (hash01(gx, gy, 0u) - 0.5f) * 6.0f;
+    float val         = 4.0f + 3.0f * fy;
+    const float noise = (hash01(gx, gy, 0u) - 0.5f) * 6.0f;
     val += noise;
 
-    float neb1_d = ((fx - 0.6f) * (fx - 0.6f) + (fy - 0.35f) * (fy - 0.35f)) / 0.06f;
-    float neb1   = 40.0f * expf(-neb1_d);
-    float neb2_d = ((fx - 0.35f) * (fx - 0.35f) + (fy - 0.6f) * (fy - 0.6f)) / 0.03f;
-    float neb2   = 22.0f * expf(-neb2_d);
+    const float neb1_d = ((fx - 0.6f) * (fx - 0.6f) + (fy - 0.35f) * (fy - 0.35f)) / 0.06f;
+    float neb1         = 40.0f * expf(-neb1_d);
+    const float neb2_d = ((fx - 0.35f) * (fx - 0.35f) + (fy - 0.6f) * (fy - 0.6f)) / 0.03f;
+    float neb2         = 22.0f * expf(-neb2_d);
 
-    float tex = fbm(fx, fy, 5, 8.0f, 42u);
+    const float tex = fbm(fx, fy, 5, 8.0f, 42u);
     neb1 *= (0.5f + tex);
     neb2 *= (0.3f + 0.7f * tex);
 
-    float dust      = fbm(fx + 0.1f, fy, 4, 6.0f, 137u);
-    float dust_mask = fmaxf(0.0f, 1.0f - 2.0f * fabsf(dust - 0.5f));
+    const float dust      = fbm(fx + 0.1f, fy, 4, 6.0f, 137u);
+    const float dust_mask = fmaxf(0.0f, 1.0f - 2.0f * fabsf(dust - 0.5f));
     neb1 *= (1.0f - 0.6f * dust_mask * expf(-neb1_d * 2.0f));
     val += neb1 + neb2;
 
     constexpr int star_grid = 64;
-    int cx                  = (gx / star_grid) * star_grid + star_grid / 2;
-    int cy                  = (gy / star_grid) * star_grid + star_grid / 2;
+    const int cx            = (gx / star_grid) * star_grid + star_grid / 2;
+    const int cy            = (gy / star_grid) * star_grid + star_grid / 2;
     for (int dy = -1; dy <= 1; ++dy)
     {
       for (int dx = -1; dx <= 1; ++dx)
       {
-        int scx     = cx + dx * star_grid;
-        int scy     = cy + dy * star_grid;
-        unsigned sh = pixel_hash(scx, scy, 9999u);
+        const int scx     = cx + dx * star_grid;
+        const int scy     = cy + dy * star_grid;
+        const unsigned sh = pixel_hash(scx, scy, 9999u);
         if (static_cast<float>(sh & 0xFFFF) / 65535.0f < 0.08f)
         {
-          float jx     = static_cast<float>((sh >> 4) & 0xFF) / 255.0f - 0.5f;
-          float jy     = static_cast<float>((sh >> 12) & 0xFF) / 255.0f - 0.5f;
-          float sx     = scx + jx * star_grid;
-          float sy     = scy + jy * star_grid;
-          float d2     = (gx - sx) * (gx - sx) + (gy - sy) * (gy - sy);
-          float radius = 2.0f + static_cast<float>((sh >> 20) & 0xF);
-          float bright = 80.0f + static_cast<float>((sh >> 24) & 0x7F);
+          const float jx     = static_cast<float>((sh >> 4) & 0xFF) / 255.0f - 0.5f;
+          const float jy     = static_cast<float>((sh >> 12) & 0xFF) / 255.0f - 0.5f;
+          const float sx     = scx + jx * star_grid;
+          const float sy     = scy + jy * star_grid;
+          const float d2     = (gx - sx) * (gx - sx) + (gy - sy) * (gy - sy);
+          const float radius = 2.0f + static_cast<float>((sh >> 20) & 0xF);
+          const float bright = 80.0f + static_cast<float>((sh >> 24) & 0x7F);
           val += bright * expf(-d2 / (2.0f * radius * radius));
         }
       }
@@ -142,13 +135,13 @@ void generate_image(cuda::stream_ref stream, tile_buffers& bufs, int num_tiles, 
 
   for (int t = 0; t < num_tiles; ++t)
   {
-    cuda::std::size_t offset = static_cast<cuda::std::size_t>(t) * bufs.tile_pixels;
-    cuda::std::size_t count  = cuda::std::min(bufs.tile_pixels, image_pixels - offset);
-    int tile_rows            = static_cast<int>(count / image_width);
-    int row_offset           = t * static_cast<int>(bufs.tile_pixels / image_width);
+    const size_t offset  = static_cast<size_t>(t) * bufs.tile_pixels;
+    const size_t count   = cuda::std::min(bufs.tile_pixels, image_pixels - offset);
+    const int tile_rows  = static_cast<int>(count / image_width);
+    const int row_offset = t * static_cast<int>(bufs.tile_pixels / image_width);
 
     constexpr int block_size = 256;
-    auto config              = cuda::distribute<block_size>(static_cast<int>(count));
+    const auto config        = cuda::distribute<block_size>(static_cast<int>(count));
     cuda::launch(stream, config, generate_kernel{}, bufs.dev_tile[0].first(count), image_width, row_offset);
 
     // Downscale the generated tile for the input preview while it's still on device.
@@ -160,7 +153,7 @@ void generate_image(cuda::stream_ref stream, tile_buffers& bufs, int num_tiles, 
 
   cuda::timed_event gen_end{stream};
   stream.sync();
-  double gen_ms = (gen_end - gen_start).count() / 1e6;
+  const double gen_ms = (gen_end - gen_start).count() / 1e6;
   printf("  Generated %dx%d space observation (%.0f MB) in ~%.1f ms\n\n",
          image_width,
          image_height,
@@ -170,10 +163,10 @@ void generate_image(cuda::stream_ref stream, tile_buffers& bufs, int num_tiles, 
 
 // ── Printing / output helpers ────────────────────────────────────────
 
-void print_device_info(cuda::device_ref dev, cuda::arch_traits_t traits, cuda::std::size_t total_mem)
+void print_device_info(cuda::device_ref dev, cuda::arch_traits_t traits, size_t total_mem)
 {
-  auto name = dev.name();
-  auto cc   = dev.attribute(cuda::device_attributes::compute_capability);
+  const auto name = dev.name();
+  const auto cc   = dev.attribute(cuda::device_attributes::compute_capability);
   printf("\nSelected device %d: %.*s\n", dev.get(), static_cast<int>(name.size()), name.data());
   printf("  Compute capability: %d.%d\n", cc.major_cap(), cc.minor_cap());
   printf("  Total memory      : %.0f MB\n", total_mem / (1024.0 * 1024.0));
@@ -181,8 +174,7 @@ void print_device_info(cuda::device_ref dev, cuda::arch_traits_t traits, cuda::s
   printf("  Max shared memory : %zu bytes\n", traits.max_shared_memory_per_block);
 }
 
-void print_tile_plan(
-  int tile_rows, int tile_alignment, int num_tiles, cuda::std::size_t budget, cuda::std::size_t total_mem)
+void print_tile_plan(int tile_rows, int tile_alignment, int num_tiles, size_t budget, size_t total_mem)
 {
   printf("\nTile plan:\n");
   printf("  Image          : %d x %d (%.0f MB)\n",
@@ -194,8 +186,7 @@ void print_tile_plan(
   printf("  Number of tiles: %d\n\n", num_tiles);
 }
 
-void print_allocation_info(
-  cuda::std::size_t device_total, cuda::std::size_t gpu_budget, cuda::std::size_t tile_pixels, int tile_rows)
+void print_allocation_info(size_t device_total, size_t gpu_budget, size_t tile_pixels, int tile_rows)
 {
   printf("  Device pool: %.1f MB (initial), %.1f MB (max)\n",
          device_total / (1024.0 * 1024.0),
@@ -208,17 +199,17 @@ void print_allocation_info(
 
 void print_pool_stats(tile_buffers& bufs, cuda::device_ref device)
 {
-  auto reserved = bufs.device_pool.get().attribute(cuda::memory_pool_attributes::reserved_mem_current);
-  auto used     = bufs.device_pool.get().attribute(cuda::memory_pool_attributes::used_mem_current);
+  const auto reserved = bufs.device_pool.get().attribute(cuda::memory_pool_attributes::reserved_mem_current);
+  const auto used     = bufs.device_pool.get().attribute(cuda::memory_pool_attributes::used_mem_current);
   printf("  Device pool: reserved=%.1f MB, used=%.1f MB\n", reserved / (1024.0 * 1024.0), used / (1024.0 * 1024.0));
 }
 
-iqr_result compute_iqr(cuda::std::span<const int> hist, cuda::std::size_t total)
+iqr_result compute_iqr(cuda::std::span<const int> hist, size_t total)
 {
   auto find_percentile = [&](float pct) {
-    cuda::std::size_t target     = static_cast<cuda::std::size_t>(total * pct);
-    cuda::std::size_t cumulative = 0;
-    for (cuda::std::size_t i = 0; i < hist.size(); ++i)
+    const size_t target = static_cast<size_t>(total * pct);
+    size_t cumulative   = 0;
+    for (size_t i = 0; i < hist.size(); ++i)
     {
       cumulative += hist[i];
       if (cumulative >= target)
@@ -244,7 +235,7 @@ void print_pass_stats(double ms, long long total_selected, double mean_selected,
 
 void print_sanity_check(iqr_result orig, iqr_result eq)
 {
-  bool ok = eq.width() > orig.width();
+  const bool ok = eq.width() > orig.width();
   printf("=== Sanity check ===\n");
   printf("  Original IQR (25th-75th):   [%d, %d] (span %d)\n", orig.p25, orig.p75, orig.width());
   printf("  Equalized IQR (25th-75th):  [%d, %d] (span %d)\n", eq.p25, eq.p75, eq.width());
@@ -262,14 +253,72 @@ void print_summary(int num_tiles, int tile_rows, double pass1_ms, double pass2_m
   printf("  Result:         %s\n", ok ? "PASSED" : "FAILED");
 }
 
-void write_pgm(const char* filename, cuda::std::span<const pixel_t> data, int width, int height)
+void write_bmp(const char* filename, cuda::std::span<const pixel_t> data, int width, int height)
 {
   std::ofstream file(filename, std::ios::binary);
   if (!file)
   {
     return;
   }
-  file << "P5\n" << width << " " << height << "\n255\n";
-  file.write(reinterpret_cast<const char*>(data.data()), data.size());
+
+  // BMP rows must be padded to a 4-byte boundary.
+  const int row_stride = (width + 3) & ~3;
+  const int pixel_size = row_stride * height;
+  const int file_size  = 54 + 256 * 4 + pixel_size; // header + palette + pixels
+
+  auto put2 = [&](int v) {
+    const char b[2] = {static_cast<char>(v & 0xFF), static_cast<char>((v >> 8) & 0xFF)};
+    file.write(b, 2);
+  };
+  auto put4 = [&](int v) {
+    const char b[4] = {static_cast<char>(v & 0xFF),
+                       static_cast<char>((v >> 8) & 0xFF),
+                       static_cast<char>((v >> 16) & 0xFF),
+                       static_cast<char>((v >> 24) & 0xFF)};
+    file.write(b, 4);
+  };
+
+  // File header (14 bytes).
+  file.put('B');
+  file.put('M');
+  put4(file_size);
+  put4(0); // reserved
+  put4(54 + 256 * 4); // pixel data offset (after header + palette)
+
+  // DIB header (BITMAPINFOHEADER, 40 bytes).
+  put4(40); // header size
+  put4(width);
+  put4(height);
+  put2(1); // color planes
+  put2(8); // bits per pixel (8-bit indexed)
+  put4(0); // no compression
+  put4(pixel_size);
+  put4(2835); // horizontal resolution (72 DPI)
+  put4(2835); // vertical resolution
+  put4(256); // palette entries
+  put4(0); // all colors important
+
+  // Grayscale palette: 256 entries of (B, G, R, 0).
+  for (int i = 0; i < 256; ++i)
+  {
+    const char c = static_cast<char>(i);
+    file.put(c);
+    file.put(c);
+    file.put(c);
+    file.put(0);
+  }
+
+  // Pixel data — BMP stores rows bottom-to-top.
+  const char pad[3]   = {0, 0, 0};
+  const int pad_bytes = row_stride - width;
+  for (int y = height - 1; y >= 0; --y)
+  {
+    file.write(reinterpret_cast<const char*>(&data[static_cast<size_t>(y) * width]), width);
+    if (pad_bytes > 0)
+    {
+      file.write(pad, pad_bytes);
+    }
+  }
+
   printf("  Wrote %s (%d x %d)\n", filename, width, height);
 }
