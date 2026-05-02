@@ -28,6 +28,7 @@
 #  include <cuda/__memory_resource/memory_resource_base.h>
 #  include <cuda/__memory_resource/properties.h>
 #  include <cuda/__runtime/api_wrapper.h>
+#  include <cuda/__utility/no_init.h>
 #  include <cuda/std/__concepts/concept_macros.h>
 
 #  include <cuda/std/__cccl/prologue.h>
@@ -123,6 +124,11 @@ struct device_memory_pool : device_memory_pool_ref
   //! constructed on.
   //! @param __properties Optional, additional properties of the pool to be
   //! created.
+  //! @brief Constructs an empty \c device_memory_pool without an underlying pool.
+  _CCCL_HOST_API explicit device_memory_pool(no_init_t) noexcept
+      : device_memory_pool_ref(::cudaMemPool_t{})
+  {}
+
   _CCCL_HOST_API device_memory_pool(::cuda::device_ref __device_id, memory_pool_properties __properties = {})
       : device_memory_pool_ref(__create_cuda_mempool(
           __properties,
@@ -141,6 +147,16 @@ struct device_memory_pool : device_memory_pool_ref
   _CCCL_HOST_API static device_memory_pool from_native_handle(::cudaMemPool_t __pool) noexcept
   {
     return device_memory_pool(__pool);
+  }
+
+  //! @brief Retrieve the native `cudaMemPool_t` handle and give up ownership.
+  //!
+  //! @return cudaMemPool_t The native handle being held by this object.
+  //!
+  //! @post The memory pool object is in a moved-from state.
+  _CCCL_HOST_API constexpr ::cudaMemPool_t release() noexcept
+  {
+    return ::cuda::std::exchange(__pool_, nullptr);
   }
 
   //! @brief Returns a \c device_memory_pool_ref for this \c device_memory_pool.

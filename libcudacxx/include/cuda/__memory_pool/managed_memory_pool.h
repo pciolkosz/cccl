@@ -26,6 +26,7 @@
 #  include <cuda/__memory_pool/memory_pool_base.h>
 #  include <cuda/__memory_resource/memory_resource_base.h>
 #  include <cuda/__memory_resource/properties.h>
+#  include <cuda/__utility/no_init.h>
 #  include <cuda/std/__concepts/concept_macros.h>
 
 #  include <cuda/std/__cccl/prologue.h>
@@ -115,6 +116,11 @@ struct managed_memory_pool : managed_memory_pool_ref
   //! pool will be released at the next synchronization event.
   //! @param __properties Optional, additional properties of the pool to be
   //! created.
+  //! @brief Constructs an empty \c managed_memory_pool without an underlying pool.
+  _CCCL_HOST_API explicit managed_memory_pool(no_init_t) noexcept
+      : managed_memory_pool_ref(::cudaMemPool_t{})
+  {}
+
   _CCCL_HOST_API managed_memory_pool(memory_pool_properties __properties = {})
       : managed_memory_pool_ref(__create_cuda_mempool(
           __properties, ::CUmemLocation{::CU_MEM_LOCATION_TYPE_NONE, 0}, ::CU_MEM_ALLOCATION_TYPE_MANAGED))
@@ -134,6 +140,16 @@ struct managed_memory_pool : managed_memory_pool_ref
   _CCCL_HOST_API static managed_memory_pool from_native_handle(::cudaMemPool_t __pool) noexcept
   {
     return managed_memory_pool(__pool);
+  }
+
+  //! @brief Retrieve the native `cudaMemPool_t` handle and give up ownership.
+  //!
+  //! @return cudaMemPool_t The native handle being held by this object.
+  //!
+  //! @post The memory pool object is in a moved-from state.
+  _CCCL_HOST_API constexpr ::cudaMemPool_t release() noexcept
+  {
+    return ::cuda::std::exchange(__pool_, nullptr);
   }
 
   //! @brief Returns a \c managed_memory_pool_ref for this \c managed_memory_pool.
