@@ -21,7 +21,10 @@
 #  pragma system_header
 #endif // no system header
 
+#include <cuda/std/__concepts/concept_macros.h>
 #include <cuda/std/__new_>
+#include <cuda/std/__type_traits/is_same.h>
+#include <cuda/std/__type_traits/remove_cvref.h>
 #include <cuda/std/__utility/exchange.h>
 #include <cuda/std/__utility/forward.h>
 #include <cuda/std/__utility/move.h>
@@ -62,9 +65,10 @@ public:
   {}
 
   //! @brief Constructs a new control block, forwarding arguments to the payload.
-  template <class... _Args>
-  _CCCL_HOST_API explicit __shared_block_ptr(_Args&&... __args)
-      : __block_(new __block_t{_Payload{::cuda::std::forward<_Args>(__args)...}, 1})
+  _CCCL_TEMPLATE(class _Arg, class... _Rest)
+  _CCCL_REQUIRES((!::cuda::std::is_same_v<::cuda::std::remove_cvref_t<_Arg>, __shared_block_ptr>) )
+  _CCCL_HOST_API explicit __shared_block_ptr(_Arg&& __arg, _Rest&&... __rest)
+      : __block_(new __block_t{_Payload{::cuda::std::forward<_Arg>(__arg), ::cuda::std::forward<_Rest>(__rest)...}, 1})
   {}
 
   _CCCL_HOST_API __shared_block_ptr(const __shared_block_ptr& __other) noexcept

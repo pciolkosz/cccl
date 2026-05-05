@@ -31,6 +31,9 @@
 
 _CCCL_BEGIN_NAMESPACE_CUDA
 
+_CCCL_DIAG_PUSH
+_CCCL_DIAG_SUPPRESS_CLANG("-Wmissing-braces")
+
 #  if _CCCL_CTK_AT_LEAST(12, 9)
 
 //! @rst
@@ -99,6 +102,8 @@ static_assert(::cuda::mr::resource_with<shared_pinned_memory_pool, ::cuda::mr::d
 static_assert(::cuda::mr::resource_with<shared_pinned_memory_pool, ::cuda::mr::host_accessible>);
 
 #  endif // _CCCL_CTK_AT_LEAST(12, 9)
+
+_CCCL_DIAG_POP
 
 _CCCL_END_NAMESPACE_CUDA
 

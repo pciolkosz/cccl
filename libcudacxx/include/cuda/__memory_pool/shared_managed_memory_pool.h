@@ -30,6 +30,9 @@
 
 _CCCL_BEGIN_NAMESPACE_CUDA
 
+_CCCL_DIAG_PUSH
+_CCCL_DIAG_SUPPRESS_CLANG("-Wmissing-braces")
+
 //! @rst
 //! .. _libcudacxx-memory-pool-shared-managed:
 //!
@@ -80,6 +83,8 @@ private:
 
 static_assert(::cuda::mr::resource_with<shared_managed_memory_pool, ::cuda::mr::device_accessible>);
 static_assert(::cuda::mr::resource_with<shared_managed_memory_pool, ::cuda::mr::host_accessible>);
+
+_CCCL_DIAG_POP
 
 _CCCL_END_NAMESPACE_CUDA
 
