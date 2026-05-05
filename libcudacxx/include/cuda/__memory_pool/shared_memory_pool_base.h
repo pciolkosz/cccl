@@ -77,6 +77,12 @@ class __shared_memory_pool_base
 {
   ::cuda::mr::__shared_block_ptr<__pool_destroyer> __ref_;
 
+  _CCCL_HOST_API void __swap(__shared_memory_pool_base& __other) noexcept
+  {
+    ::cuda::std::swap(__pool_, __other.__pool_);
+    __ref_.swap(__other.__ref_);
+  }
+
 protected:
   _CCCL_HOST_API explicit __shared_memory_pool_base(no_init_t) noexcept
       : __memory_pool_base(::cudaMemPool_t{})
@@ -88,11 +94,35 @@ protected:
   {}
 
 public:
-  __shared_memory_pool_base(const __shared_memory_pool_base&)            = default;
-  __shared_memory_pool_base(__shared_memory_pool_base&&)                 = default;
-  __shared_memory_pool_base& operator=(const __shared_memory_pool_base&) = default;
-  __shared_memory_pool_base& operator=(__shared_memory_pool_base&&)      = default;
-  ~__shared_memory_pool_base()                                           = default;
+  _CCCL_HOST_API __shared_memory_pool_base(const __shared_memory_pool_base& __other) noexcept
+      : __memory_pool_base(__other.__pool_)
+      , __ref_(__other.__ref_)
+  {}
+
+  _CCCL_HOST_API __shared_memory_pool_base(__shared_memory_pool_base&& __other) noexcept
+      : __memory_pool_base(__other.__pool_)
+      , __ref_(::cuda::std::move(__other.__ref_))
+  {}
+
+  _CCCL_HOST_API __shared_memory_pool_base& operator=(const __shared_memory_pool_base& __other) noexcept
+  {
+    if (this != &__other)
+    {
+      __shared_memory_pool_base(__other).__swap(*this);
+    }
+    return *this;
+  }
+
+  _CCCL_HOST_API __shared_memory_pool_base& operator=(__shared_memory_pool_base&& __other) noexcept
+  {
+    if (this != &__other)
+    {
+      __shared_memory_pool_base(::cuda::std::move(__other)).__swap(*this);
+    }
+    return *this;
+  }
+
+  ~__shared_memory_pool_base() = default;
 
   //! @brief ``release()`` is deleted because ownership is shared.
   ::cudaMemPool_t release() = delete;

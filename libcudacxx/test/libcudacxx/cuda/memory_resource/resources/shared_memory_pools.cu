@@ -110,7 +110,7 @@ C2H_CCCLRT_TEST_LIST("shared_memory_pool copy and move", "[memory_resource]", SH
 
   SECTION("Copy construction shares the pool")
   {
-    shared_pool copy(pool);
+    shared_pool copy(pool); // NOLINT(performance-unnecessary-copy-initialization)
     CHECK(copy.get() == handle);
     CHECK(pool.get() == handle);
   }
@@ -141,8 +141,8 @@ C2H_CCCLRT_TEST_LIST("shared_memory_pool copy and move", "[memory_resource]", SH
     shared_pool outer = construct_shared_pool<shared_pool>();
     auto saved_handle = outer.get();
     {
-      shared_pool copy1(outer);
-      shared_pool copy2(outer);
+      shared_pool copy1(outer); // NOLINT(performance-unnecessary-copy-initialization)
+      shared_pool copy2(outer); // NOLINT(performance-unnecessary-copy-initialization)
       CHECK(copy1.get() == saved_handle);
       CHECK(copy2.get() == saved_handle);
       // copy1, copy2 destroyed here — pool should survive
