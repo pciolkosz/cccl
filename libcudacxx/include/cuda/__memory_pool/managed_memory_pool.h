@@ -110,17 +110,17 @@ struct managed_memory_pool : managed_memory_pool_ref
 {
   using reference_type = managed_memory_pool_ref;
 
+  //! @brief Constructs an empty \c managed_memory_pool without an underlying pool.
+  _CCCL_HOST_API explicit managed_memory_pool(no_init_t) noexcept
+      : managed_memory_pool_ref(::cudaMemPool_t{})
+  {}
+
   //! @brief Constructs a \c managed_memory_pool with optional properties.
   //! Properties include the initial pool size and the release threshold. If the
   //! pool size grows beyond the release threshold, unused memory held by the
   //! pool will be released at the next synchronization event.
   //! @param __properties Optional, additional properties of the pool to be
   //! created.
-  //! @brief Constructs an empty \c managed_memory_pool without an underlying pool.
-  _CCCL_HOST_API explicit managed_memory_pool(no_init_t) noexcept
-      : managed_memory_pool_ref(::cudaMemPool_t{})
-  {}
-
   _CCCL_HOST_API managed_memory_pool(memory_pool_properties __properties = {})
       : managed_memory_pool_ref(__create_cuda_mempool(
           __properties, ::CUmemLocation{::CU_MEM_LOCATION_TYPE_NONE, 0}, ::CU_MEM_ALLOCATION_TYPE_MANAGED))

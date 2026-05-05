@@ -39,6 +39,12 @@ _CCCL_BEGIN_NAMESPACE_CUDA_MR
 template <class _Payload>
 struct __shared_control_block
 {
+  template <class... _Args>
+  _CCCL_HOST_API explicit __shared_control_block(_Args&&... __args)
+      : __payload(::cuda::std::forward<_Args>(__args)...)
+      , __ref_count(1)
+  {}
+
   _CCCL_NO_UNIQUE_ADDRESS _Payload __payload;
   ::cuda::std::atomic<int> __ref_count;
 };
@@ -68,7 +74,7 @@ public:
   _CCCL_TEMPLATE(class _Arg, class... _Rest)
   _CCCL_REQUIRES((!::cuda::std::is_same_v<::cuda::std::remove_cvref_t<_Arg>, __shared_block_ptr>) )
   _CCCL_HOST_API explicit __shared_block_ptr(_Arg&& __arg, _Rest&&... __rest)
-      : __block_(new __block_t{_Payload{::cuda::std::forward<_Arg>(__arg), ::cuda::std::forward<_Rest>(__rest)...}, 1})
+      : __block_(new __block_t(::cuda::std::forward<_Arg>(__arg), ::cuda::std::forward<_Rest>(__rest)...))
   {}
 
   _CCCL_HOST_API __shared_block_ptr(const __shared_block_ptr& __other) noexcept

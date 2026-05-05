@@ -114,6 +114,11 @@ struct device_memory_pool : device_memory_pool_ref
 {
   using reference_type = device_memory_pool_ref;
 
+  //! @brief Constructs an empty \c device_memory_pool without an underlying pool.
+  _CCCL_HOST_API explicit device_memory_pool(no_init_t) noexcept
+      : device_memory_pool_ref(::cudaMemPool_t{})
+  {}
+
   //! @brief Constructs a \c device_memory_pool with the optionally specified
   //! initial pool size and release threshold. If the pool size grows beyond the
   //! release threshold, unused memory held by the pool will be released at the
@@ -124,11 +129,6 @@ struct device_memory_pool : device_memory_pool_ref
   //! constructed on.
   //! @param __properties Optional, additional properties of the pool to be
   //! created.
-  //! @brief Constructs an empty \c device_memory_pool without an underlying pool.
-  _CCCL_HOST_API explicit device_memory_pool(no_init_t) noexcept
-      : device_memory_pool_ref(::cudaMemPool_t{})
-  {}
-
   _CCCL_HOST_API device_memory_pool(::cuda::device_ref __device_id, memory_pool_properties __properties = {})
       : device_memory_pool_ref(__create_cuda_mempool(
           __properties,
