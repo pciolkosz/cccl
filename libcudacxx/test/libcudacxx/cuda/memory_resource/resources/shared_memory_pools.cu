@@ -89,7 +89,7 @@ C2H_CCCLRT_TEST_LIST("shared_memory_pool construction", "[memory_resource]", SHA
   {
     // Create an owning pool, release the handle, and wrap it via from_native_handle.
     cuda::device_memory_pool owning_pool{cuda::device_ref{0}};
-    ::cudaMemPool_t raw = owning_pool.release();
+    cudaMemPool_t raw    = owning_pool.release();
     shared_pool from_raw = shared_pool::from_native_handle(raw);
     CHECK(from_raw.get() == raw);
     // from_raw owns the handle and will destroy it on scope exit.
