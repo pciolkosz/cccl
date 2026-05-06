@@ -47,6 +47,20 @@ _CCCL_DIAG_SUPPRESS_CLANG("-Wmissing-braces")
 //! @endrst
 struct shared_device_memory_pool : __shared_memory_pool_base<shared_device_memory_pool>
 {
+  // _CCCL_EXEC_CHECK_DISABLE suppresses nvcc's spurious host/device warnings
+  // when the type is used inside any_resource's type-erasure vtables.
+  _CCCL_EXEC_CHECK_DISABLE
+  _CCCL_HOST_API shared_device_memory_pool(const shared_device_memory_pool& __other)
+      : __shared_memory_pool_base(__other)
+  {}
+  _CCCL_EXEC_CHECK_DISABLE
+  _CCCL_HOST_API shared_device_memory_pool(shared_device_memory_pool&& __other)
+      : __shared_memory_pool_base(static_cast<__shared_memory_pool_base&&>(__other))
+  {}
+  shared_device_memory_pool& operator=(const shared_device_memory_pool&) = default;
+  shared_device_memory_pool& operator=(shared_device_memory_pool&&)      = default;
+  ~shared_device_memory_pool()                                           = default;
+
   //! @brief Constructs an empty shared device memory pool.
   _CCCL_HOST_API explicit shared_device_memory_pool(no_init_t) noexcept
       : __shared_memory_pool_base(no_init)
