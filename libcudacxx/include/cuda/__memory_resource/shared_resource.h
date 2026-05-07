@@ -80,34 +80,22 @@ struct shared_resource
       : __block_(::cuda::std::move(__other.__block_))
   {}
 
-  //! @brief Releases the reference held by this \c shared_resource object. If this is the
-  //! last reference to the wrapped resource, the resource is deleted.
-  ~shared_resource() = default;
-
-  //! @brief Copy-assigns from \c __other. Self-assignment is a no-op. Otherwise, the reference
-  //! held by this \c shared_resource object is released and a new reference is acquired to the
-  //! wrapped resource of \c __other, if any.
+  //! @brief Copy-assigns from \c __other. The reference held by this \c shared_resource
+  //! object is released and a new reference is acquired to the wrapped resource of \c __other.
   //! @param __other The \c shared_resource object to copy from.
   _CCCL_HOST_API shared_resource& operator=(const shared_resource& __other) noexcept
   {
-    if (this != &__other)
-    {
-      shared_resource(__other).swap(*this);
-    }
+    shared_resource(__other).swap(*this);
     return *this;
   }
 
-  //! @brief Move-assigns from \c __other. Self-assignment is a no-op. Otherwise, the reference
-  //! held by this \c shared_resource object is released, while the reference held by \c __other
-  //! is transferred to this object.
+  //! @brief Move-assigns from \c __other. The reference held by this \c shared_resource
+  //! object is released, while the reference held by \c __other is transferred to this object.
   //! @param __other The \c shared_resource object to move from.
   //! @post \c __other is left in a valid but unspecified state.
   _CCCL_HOST_API shared_resource& operator=(shared_resource&& __other) noexcept
   {
-    if (this != &__other)
-    {
-      shared_resource(::cuda::std::move(__other)).swap(*this);
-    }
+    shared_resource(::cuda::std::move(__other)).swap(*this);
     return *this;
   }
 

@@ -23,16 +23,13 @@
 
 #if _CCCL_HAS_CTK()
 
-#  include <cuda/__device/all_devices.h>
+#  include <cuda/__memory_pool/pinned_memory_pool.h>
 #  include <cuda/__memory_pool/shared_memory_pool_base.h>
 #  include <cuda/__memory_resource/properties.h>
 
 #  include <cuda/std/__cccl/prologue.h>
 
 _CCCL_BEGIN_NAMESPACE_CUDA
-
-_CCCL_DIAG_PUSH
-_CCCL_DIAG_SUPPRESS_CLANG("-Wmissing-braces")
 
 #  if _CCCL_CTK_AT_LEAST(12, 9)
 
@@ -48,19 +45,21 @@ _CCCL_DIAG_SUPPRESS_CLANG("-Wmissing-braces")
 //! ``any_resource`` and other contexts that require copyable resources.
 //!
 //! @endrst
-struct shared_pinned_memory_pool : __shared_memory_pool_base<shared_pinned_memory_pool>
+class shared_pinned_memory_pool : public __shared_memory_pool_base<shared_pinned_memory_pool>
 {
+public:
   _CCCL_EXEC_CHECK_DISABLE
-  _CCCL_HOST_API shared_pinned_memory_pool(const shared_pinned_memory_pool& __other)
+  _CCCL_HOST_API shared_pinned_memory_pool( // NOLINT(modernize-use-equals-default)
+    const shared_pinned_memory_pool& __other) noexcept
       : __shared_memory_pool_base(__other)
   {}
   _CCCL_EXEC_CHECK_DISABLE
-  _CCCL_HOST_API shared_pinned_memory_pool(shared_pinned_memory_pool&& __other)
-      : __shared_memory_pool_base(static_cast<__shared_memory_pool_base&&>(__other))
+  _CCCL_HOST_API shared_pinned_memory_pool( // NOLINT(modernize-use-equals-default)
+    shared_pinned_memory_pool&& __other) noexcept
+      : __shared_memory_pool_base(::cuda::std::move(__other))
   {}
   shared_pinned_memory_pool& operator=(const shared_pinned_memory_pool&) = default;
   shared_pinned_memory_pool& operator=(shared_pinned_memory_pool&&)      = default;
-  ~shared_pinned_memory_pool()                                           = default;
 
   //! @brief Constructs an empty shared pinned memory pool.
   _CCCL_HOST_API explicit shared_pinned_memory_pool(no_init_t) noexcept
@@ -71,22 +70,16 @@ struct shared_pinned_memory_pool : __shared_memory_pool_base<shared_pinned_memor
   //! @brief Constructs a shared pinned memory pool.
   //! @param __properties Optional pool creation properties.
   _CCCL_HOST_API explicit shared_pinned_memory_pool(memory_pool_properties __properties = {})
-      : __shared_memory_pool_base(__create_cuda_mempool(
-          __properties, ::CUmemLocation{::CU_MEM_LOCATION_TYPE_HOST, 0}, ::CU_MEM_ALLOCATION_TYPE_PINNED))
-  {
-    enable_access_from(cuda::devices);
-  }
+      : __shared_memory_pool_base(pinned_memory_pool(__properties).release())
+  {}
 #    endif // _CCCL_CTK_AT_LEAST(13, 0)
 
   //! @brief Constructs a shared pinned memory pool on a specific NUMA node.
   //! @param __numa_id The NUMA node id.
   //! @param __properties Optional pool creation properties.
   _CCCL_HOST_API explicit shared_pinned_memory_pool(int __numa_id, memory_pool_properties __properties = {})
-      : __shared_memory_pool_base(__create_cuda_mempool(
-          __properties, ::CUmemLocation{::CU_MEM_LOCATION_TYPE_HOST_NUMA, __numa_id}, ::CU_MEM_ALLOCATION_TYPE_PINNED))
-  {
-    enable_access_from(cuda::devices);
-  }
+      : __shared_memory_pool_base(pinned_memory_pool(__numa_id, __properties).release())
+  {}
 
   //! @brief Constructs a shared pinned memory pool from an existing native handle.
   //! @param __pool The ``cudaMemPool_t`` to take shared ownership of.
@@ -96,10 +89,10 @@ struct shared_pinned_memory_pool : __shared_memory_pool_base<shared_pinned_memor
   }
 
   _CCCL_HOST_API friend constexpr void
-  get_property(shared_pinned_memory_pool const&, ::cuda::mr::device_accessible) noexcept
+  get_property(const shared_pinned_memory_pool&, ::cuda::mr::device_accessible) noexcept
   {}
   _CCCL_HOST_API friend constexpr void
-  get_property(shared_pinned_memory_pool const&, ::cuda::mr::host_accessible) noexcept
+  get_property(const shared_pinned_memory_pool&, ::cuda::mr::host_accessible) noexcept
   {}
 
   using default_queries = ::cuda::mr::properties_list<::cuda::mr::device_accessible, ::cuda::mr::host_accessible>;
@@ -114,8 +107,6 @@ static_assert(::cuda::mr::resource_with<shared_pinned_memory_pool, ::cuda::mr::d
 static_assert(::cuda::mr::resource_with<shared_pinned_memory_pool, ::cuda::mr::host_accessible>);
 
 #  endif // _CCCL_CTK_AT_LEAST(12, 9)
-
-_CCCL_DIAG_POP
 
 _CCCL_END_NAMESPACE_CUDA
 

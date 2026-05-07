@@ -42,11 +42,10 @@ struct __shared_control_block
   template <class... _Args>
   _CCCL_HOST_API explicit __shared_control_block(_Args&&... __args)
       : __payload(::cuda::std::forward<_Args>(__args)...)
-      , __ref_count(1)
   {}
 
   _CCCL_NO_UNIQUE_ADDRESS _Payload __payload;
-  ::cuda::std::atomic<int> __ref_count;
+  ::cuda::std::atomic<int> __ref_count{1};
 };
 
 //! @brief A ref-counted smart pointer to a ``__shared_control_block<_Payload>``.
@@ -62,13 +61,11 @@ class __shared_block_ptr
 {
   using __block_t = __shared_control_block<_Payload>;
 
-  __block_t* __block_;
+  __block_t* __block_ = nullptr;
 
 public:
   //! @brief Constructs a null ``__shared_block_ptr`` with no control block.
-  _CCCL_HOST_API __shared_block_ptr() noexcept
-      : __block_(nullptr)
-  {}
+  __shared_block_ptr() = default;
 
   //! @brief Constructs a new control block, forwarding arguments to the payload.
   _CCCL_TEMPLATE(class _Arg, class... _Rest)
@@ -92,26 +89,21 @@ public:
 
   _CCCL_HOST_API __shared_block_ptr& operator=(const __shared_block_ptr& __other) noexcept
   {
-    if (this != &__other)
-    {
-      __shared_block_ptr(__other).swap(*this);
-    }
+    __shared_block_ptr(__other).swap(*this);
     return *this;
   }
 
   _CCCL_HOST_API __shared_block_ptr& operator=(__shared_block_ptr&& __other) noexcept
   {
-    if (this != &__other)
-    {
-      __shared_block_ptr(::cuda::std::move(__other)).swap(*this);
-    }
+    __shared_block_ptr(::cuda::std::move(__other)).swap(*this);
     return *this;
   }
 
   _CCCL_HOST_API ~__shared_block_ptr()
   {
-    if (__block_ && __block_->__ref_count.fetch_sub(1, ::cuda::std::memory_order_acq_rel) == 1)
+    if (__block_ && __block_->__ref_count.fetch_sub(1, ::cuda::std::memory_order_release) == 1)
     {
+      ::cuda::std::atomic_thread_fence(::cuda::std::memory_order_acquire);
       delete __block_;
     }
   }
@@ -128,11 +120,13 @@ public:
 
   [[nodiscard]] _CCCL_HOST_API _Payload& __payload() noexcept
   {
+    _CCCL_ASSERT(__block_, "dereferencing a null __shared_block_ptr");
     return __block_->__payload;
   }
 
   [[nodiscard]] _CCCL_HOST_API const _Payload& __payload() const noexcept
   {
+    _CCCL_ASSERT(__block_, "dereferencing a null __shared_block_ptr");
     return __block_->__payload;
   }
 

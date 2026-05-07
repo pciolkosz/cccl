@@ -102,7 +102,6 @@ public:
 
   __shared_memory_pool_base& operator=(const __shared_memory_pool_base&) = default;
   __shared_memory_pool_base& operator=(__shared_memory_pool_base&&)      = default;
-  ~__shared_memory_pool_base()                                           = default;
 
   //! @brief ``release()`` is deleted because ownership is shared.
   ::cudaMemPool_t release() = delete;

@@ -23,15 +23,13 @@
 
 #if _CCCL_CTK_AT_LEAST(13, 0)
 
+#  include <cuda/__memory_pool/managed_memory_pool.h>
 #  include <cuda/__memory_pool/shared_memory_pool_base.h>
 #  include <cuda/__memory_resource/properties.h>
 
 #  include <cuda/std/__cccl/prologue.h>
 
 _CCCL_BEGIN_NAMESPACE_CUDA
-
-_CCCL_DIAG_PUSH
-_CCCL_DIAG_SUPPRESS_CLANG("-Wmissing-braces")
 
 //! @rst
 //! .. _libcudacxx-memory-pool-shared-managed:
@@ -45,19 +43,21 @@ _CCCL_DIAG_SUPPRESS_CLANG("-Wmissing-braces")
 //! ``any_resource`` and other contexts that require copyable resources.
 //!
 //! @endrst
-struct shared_managed_memory_pool : __shared_memory_pool_base<shared_managed_memory_pool>
+class shared_managed_memory_pool : public __shared_memory_pool_base<shared_managed_memory_pool>
 {
+public:
   _CCCL_EXEC_CHECK_DISABLE
-  _CCCL_HOST_API shared_managed_memory_pool(const shared_managed_memory_pool& __other)
+  _CCCL_HOST_API shared_managed_memory_pool( // NOLINT(modernize-use-equals-default)
+    const shared_managed_memory_pool& __other) noexcept
       : __shared_memory_pool_base(__other)
   {}
   _CCCL_EXEC_CHECK_DISABLE
-  _CCCL_HOST_API shared_managed_memory_pool(shared_managed_memory_pool&& __other)
-      : __shared_memory_pool_base(static_cast<__shared_memory_pool_base&&>(__other))
+  _CCCL_HOST_API shared_managed_memory_pool( // NOLINT(modernize-use-equals-default)
+    shared_managed_memory_pool&& __other) noexcept
+      : __shared_memory_pool_base(::cuda::std::move(__other))
   {}
   shared_managed_memory_pool& operator=(const shared_managed_memory_pool&) = default;
   shared_managed_memory_pool& operator=(shared_managed_memory_pool&&)      = default;
-  ~shared_managed_memory_pool()                                            = default;
 
   //! @brief Constructs an empty shared managed memory pool.
   _CCCL_HOST_API explicit shared_managed_memory_pool(no_init_t) noexcept
@@ -67,8 +67,7 @@ struct shared_managed_memory_pool : __shared_memory_pool_base<shared_managed_mem
   //! @brief Constructs a shared managed memory pool.
   //! @param __properties Optional pool creation properties.
   _CCCL_HOST_API explicit shared_managed_memory_pool(memory_pool_properties __properties = {})
-      : __shared_memory_pool_base(__create_cuda_mempool(
-          __properties, ::CUmemLocation{::CU_MEM_LOCATION_TYPE_NONE, 0}, ::CU_MEM_ALLOCATION_TYPE_MANAGED))
+      : __shared_memory_pool_base(managed_memory_pool(__properties).release())
   {}
 
   //! @brief Constructs a shared managed memory pool from an existing native handle.
@@ -79,10 +78,10 @@ struct shared_managed_memory_pool : __shared_memory_pool_base<shared_managed_mem
   }
 
   _CCCL_HOST_API friend constexpr void
-  get_property(shared_managed_memory_pool const&, ::cuda::mr::device_accessible) noexcept
+  get_property(const shared_managed_memory_pool&, ::cuda::mr::device_accessible) noexcept
   {}
   _CCCL_HOST_API friend constexpr void
-  get_property(shared_managed_memory_pool const&, ::cuda::mr::host_accessible) noexcept
+  get_property(const shared_managed_memory_pool&, ::cuda::mr::host_accessible) noexcept
   {}
 
   using default_queries = ::cuda::mr::properties_list<::cuda::mr::device_accessible, ::cuda::mr::host_accessible>;
@@ -95,8 +94,6 @@ private:
 
 static_assert(::cuda::mr::resource_with<shared_managed_memory_pool, ::cuda::mr::device_accessible>);
 static_assert(::cuda::mr::resource_with<shared_managed_memory_pool, ::cuda::mr::host_accessible>);
-
-_CCCL_DIAG_POP
 
 _CCCL_END_NAMESPACE_CUDA
 
