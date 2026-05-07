@@ -24,11 +24,14 @@
 #include <cuda/__utility/in_range.h>
 #include <cuda/std/__concepts/concept_macros.h>
 #include <cuda/std/__fwd/simd.h>
+#include <cuda/std/__iterator/default_sentinel.h>
 #include <cuda/std/__ranges/concepts.h>
 #include <cuda/std/__ranges/data.h>
 #include <cuda/std/__simd/basic_mask.h>
 #include <cuda/std/__simd/concepts.h>
 #include <cuda/std/__simd/flag.h>
+#include <cuda/std/__simd/iterator.h>
+#include <cuda/std/__simd/specializations/fixed_size_float_vec.h>
 #include <cuda/std/__simd/specializations/fixed_size_vec.h>
 #include <cuda/std/__simd/utility.h>
 #include <cuda/std/__type_traits/enable_if.h>
@@ -99,15 +102,33 @@ private:
 public:
   using abi_type = _Abi;
 
-  // TODO(fbusato): add simd-iterator
-  // using iterator       = simd-iterator<basic_vec>;
-  // using const_iterator = simd-iterator<const basic_vec>;
+  using iterator       = __simd_iterator<basic_vec>;
+  using const_iterator = __simd_iterator<const basic_vec>;
 
-  // constexpr iterator begin() noexcept { return {*this, 0}; }
-  // constexpr const_iterator begin() const noexcept { return {*this, 0}; }
-  // constexpr const_iterator cbegin() const noexcept { return {*this, 0}; }
-  // constexpr default_sentinel_t end() const noexcept { return {}; }
-  // constexpr default_sentinel_t cend() const noexcept { return {}; }
+  [[nodiscard]] _CCCL_API constexpr iterator begin() noexcept
+  {
+    return {*this, 0};
+  }
+
+  [[nodiscard]] _CCCL_API constexpr const_iterator begin() const noexcept
+  {
+    return {*this, 0};
+  }
+
+  [[nodiscard]] _CCCL_API constexpr const_iterator cbegin() const noexcept
+  {
+    return {*this, 0};
+  }
+
+  [[nodiscard]] _CCCL_API constexpr default_sentinel_t end() const noexcept
+  {
+    return {};
+  }
+
+  [[nodiscard]] _CCCL_API constexpr default_sentinel_t cend() const noexcept
+  {
+    return {};
+  }
 
   static constexpr integral_constant<__simd_size_type, __simd_size_v<value_type, abi_type>> size{};
 
@@ -519,7 +540,7 @@ public:
 _CCCL_TEMPLATE(typename _Range, typename... _Ts)
 _CCCL_REQUIRES(
   ranges::contiguous_range<_Range> _CCCL_AND ranges::sized_range<_Range> _CCCL_AND __has_static_size<_Range>)
-_CCCL_HOST_DEVICE basic_vec(_Range&&, _Ts...)
+_CCCL_DEDUCTION_GUIDE_ATTRIBUTES basic_vec(_Range&&, _Ts...)
   -> basic_vec<ranges::range_value_t<_Range>,
                __deduce_abi_t<ranges::range_value_t<_Range>, __static_range_size_v<_Range>>>;
 
@@ -531,7 +552,7 @@ _CCCL_HOST_DEVICE basic_vec(_Range&&, _Ts...)
 // The deduced type is equivalent to decltype(+k), i.e. basic_vec<__integer_from<Bytes>, Abi>
 _CCCL_TEMPLATE(size_t _Bytes, typename _Abi)
 _CCCL_REQUIRES(__has_unary_plus<basic_mask<_Bytes, _Abi>>)
-_CCCL_HOST_DEVICE basic_vec(basic_mask<_Bytes, _Abi>) -> basic_vec<__integer_from<_Bytes>, _Abi>;
+_CCCL_DEDUCTION_GUIDE_ATTRIBUTES basic_vec(basic_mask<_Bytes, _Abi>) -> basic_vec<__integer_from<_Bytes>, _Abi>;
 
 _CCCL_END_NAMESPACE_CUDA_STD_SIMD
 

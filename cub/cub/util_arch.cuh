@@ -25,7 +25,6 @@
 
 #include <cuda/__cmath/ceil_div.h>
 #include <cuda/__cmath/round_up.h>
-#include <cuda/__device/arch_id.h>
 #include <cuda/__device/compute_capability.h>
 #include <cuda/std/__algorithm/clamp.h>
 #include <cuda/std/__algorithm/max.h>
@@ -124,97 +123,86 @@ inline constexpr int largest_atomic_message_size = 16;
 struct scaling_result
 {
   int items_per_thread;
-  int block_threads;
+  int threads_per_block;
 };
 
 [[nodiscard]] _CCCL_API inline constexpr auto
-scale_reg_bound(int nominal_4B_block_threads, int nominal_4B_items_per_thread, int target_type_size) -> scaling_result
+scale_reg_bound(int nominal_4B_threads_per_block, int nominal_4B_items_per_thread, int target_type_size)
+  -> scaling_result
 {
   const int items_per_thread =
     (::cuda::std::max) (1, nominal_4B_items_per_thread * 4 / (::cuda::std::max) (4, target_type_size));
-  const int block_threads =
-    (::cuda::std::min) (nominal_4B_block_threads,
+  const int threads_per_block =
+    (::cuda::std::min) (nominal_4B_threads_per_block,
                         ::cuda::ceil_div(int{max_smem_per_block} / (target_type_size * items_per_thread), 32) * 32);
-  return {items_per_thread, block_threads};
+  return {items_per_thread, threads_per_block};
 }
 
-template <int Nominal4ByteBlockThreads, int Nominal4ByteItemsPerThread, typename T>
+template <int Nominal4ByteThreadsPerBlock, int Nominal4ByteItemsPerThread, typename T>
 struct RegBoundScaling
 {
 private:
-  static constexpr auto result = scale_reg_bound(Nominal4ByteBlockThreads, Nominal4ByteItemsPerThread, int{sizeof(T)});
+  static constexpr auto result =
+    scale_reg_bound(Nominal4ByteThreadsPerBlock, Nominal4ByteItemsPerThread, int{sizeof(T)});
 
 public:
   static constexpr int ITEMS_PER_THREAD = result.items_per_thread;
-  static constexpr int BLOCK_THREADS    = result.block_threads;
+  static constexpr int BLOCK_THREADS    = result.threads_per_block;
 };
 
 [[nodiscard]] _CCCL_API inline constexpr auto
-scale_mem_bound(int nominal_4B_block_threads, int nominal_4B_items_per_thread, int target_type_size) -> scaling_result
+scale_mem_bound(int nominal_4B_threads_per_block, int nominal_4B_items_per_thread, int target_type_size)
+  -> scaling_result
 {
   const int items_per_thread =
     ::cuda::std::clamp(nominal_4B_items_per_thread * 4 / target_type_size, 1, nominal_4B_items_per_thread * 2);
-  const int block_threads =
-    (::cuda::std::min) (nominal_4B_block_threads,
+  const int threads_per_block =
+    (::cuda::std::min) (nominal_4B_threads_per_block,
                         ::cuda::round_up(int{max_smem_per_block} / (target_type_size * items_per_thread), 32));
-  return {items_per_thread, block_threads};
+  return {items_per_thread, threads_per_block};
 }
 
-template <int Nominal4ByteBlockThreads, int Nominal4ByteItemsPerThread, typename T>
+template <int Nominal4ByteThreadsPerBlock, int Nominal4ByteItemsPerThread, typename T>
 struct MemBoundScaling
 {
 private:
-  static constexpr auto result = scale_mem_bound(Nominal4ByteBlockThreads, Nominal4ByteItemsPerThread, int{sizeof(T)});
+  static constexpr auto result =
+    scale_mem_bound(Nominal4ByteThreadsPerBlock, Nominal4ByteItemsPerThread, int{sizeof(T)});
 
 public:
   static constexpr int ITEMS_PER_THREAD = result.items_per_thread;
-  static constexpr int BLOCK_THREADS    = result.block_threads;
+  static constexpr int BLOCK_THREADS    = result.threads_per_block;
 };
 
-template <int Nominal4ByteBlockThreads, int Nominal4ByteItemsPerThread, typename = void>
+template <int Nominal4ByteThreadsPerBlock, int Nominal4ByteItemsPerThread, typename = void>
 struct NoScaling
 {
   static constexpr int ITEMS_PER_THREAD = Nominal4ByteItemsPerThread;
-  static constexpr int BLOCK_THREADS    = Nominal4ByteBlockThreads;
+  static constexpr int BLOCK_THREADS    = Nominal4ByteThreadsPerBlock;
 };
 
-// Gets the current tuning architecture. Compared to CUB_PTX_ARCH, it can result in arch-specific architecture id. When
-// compiling with nvc++, it always results in ordinary arch id for __NVCOMPILER_CUDA_ARCH__.
-[[nodiscard]] _CCCL_API constexpr ::cuda::arch_id current_tuning_arch() noexcept
+[[nodiscard]] _CCCL_API constexpr ::cuda::compute_capability current_tuning_cc() noexcept
 {
 #  if _CCCL_CUDA_COMPILER(NVHPC)
-  return ::cuda::to_arch_id(::cuda::compute_capability(__NVCOMPILER_CUDA_ARCH__ / 10));
+  return ::cuda::compute_capability(__NVCOMPILER_CUDA_ARCH__ / 10);
 #  elif _CCCL_DEVICE_COMPILATION()
-  return ::cuda::device::current_arch_id();
-#  else // _CCCL_HOST_COMPILATION()
-  return ::cuda::arch_id{};
+  return ::cuda::device::current_compute_capability();
+#  else
+  return {};
 #  endif
 }
 
-// Selects the tuning policy for a given architecture id.
 _CCCL_EXEC_CHECK_DISABLE
 template <class PolicySelector>
-[[nodiscard]] _CCCL_API constexpr auto select_policy(::cuda::arch_id arch_id)
+[[nodiscard]] _CCCL_API constexpr auto select_policy(::cuda::compute_capability cc)
 {
-  // todo(dabayer): enable this once current policies are rewritten to work with cuda::compute_capability
-  // if constexpr (::cuda::std::is_invocable_v<PolicySelector, ::cuda::arch_id>)
-  // {
-  //   return PolicySelector{}(arch_id);
-  // }
-  // else
-  // {
-  //   return PolicySelector{}(::cuda::compute_capability{arch_id});
-  // }
-  //
-  // Just convert arch-specific architectures to ordinary archs for now.
-  return PolicySelector{}(::cuda::arch_id{::cuda::compute_capability{arch_id}.get()});
+  return PolicySelector{}(cc);
 }
 
-// Selects the tuning policy for the current_tuning_arch() architecture.
 template <class PolicySelector>
-[[nodiscard]] _CCCL_API constexpr auto current_policy()
+[[nodiscard]] _CCCL_DEVICE_API constexpr auto current_policy()
 {
-  return select_policy<PolicySelector>(current_tuning_arch());
+  return select_policy<PolicySelector>(current_tuning_cc());
 }
 } // namespace detail
 #endif // Do not document

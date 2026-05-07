@@ -14,7 +14,7 @@
 #endif // no system header
 
 #include <cub/agent/agent_merge_sort.cuh>
-#include <cub/detail/arch_dispatch.cuh>
+#include <cub/detail/cc_dispatch.cuh>
 #include <cub/device/dispatch/kernels/kernel_merge_sort.cuh>
 #include <cub/device/dispatch/tuning/tuning_merge_sort.cuh>
 #include <cub/util_device.cuh>
@@ -279,7 +279,7 @@ public:
     auto keys_buffer      = static_cast<KeyT*>(allocations[1]);
     auto items_buffer     = static_cast<ValueT*>(allocations[2]);
 
-    const int block_threads =
+    const int threads_per_block =
       detail::merge_sort::merge_sort_vsmem_helper_t<
         policy_getter<ActivePolicyT>,
         KeyInputIteratorT,
@@ -289,10 +289,10 @@ public:
         OffsetT,
         CompareOpT,
         KeyT,
-        ValueT>::policy.block_threads;
+        ValueT>::policy.threads_per_block;
 
     // Invoke DeviceMergeSortBlockSortKernel
-    launcher_factory(static_cast<int>(num_tiles), block_threads, 0, stream, true)
+    launcher_factory(static_cast<int>(num_tiles), threads_per_block, 0, stream, true)
       .doit(kernel_source.MergeSortBlockSortKernel(),
             ping,
             d_input_keys,
@@ -360,7 +360,7 @@ public:
       }
 
       // Merge
-      launcher_factory(static_cast<int>(num_tiles), block_threads, 0, stream, true)
+      launcher_factory(static_cast<int>(num_tiles), threads_per_block, 0, stream, true)
         .doit(kernel_source.MergeSortMergeKernel(),
               ping,
               d_output_keys,
@@ -484,13 +484,13 @@ CUB_RUNTIME_FUNCTION _CCCL_FORCEINLINE auto dispatch(
     return cudaSuccess;
   }
 
-  ::cuda::arch_id arch_id{};
-  if (const auto error = CubDebug(launcher_factory.PtxArchId(arch_id)))
+  ::cuda::compute_capability cc{};
+  if (const auto error = CubDebug(launcher_factory.PtxComputeCap(cc)))
   {
     return error;
   }
 
-  return detail::dispatch_arch(policy_selector, arch_id, [&](auto policy_getter) -> cudaError_t {
+  return detail::dispatch_compute_cap(policy_selector, cc, [&](auto policy_getter) -> cudaError_t {
 #ifdef CUB_DEFINE_RUNTIME_POLICIES
     const merge_sort_policy active_policy = policy_getter();
 #else // CUB_DEFINE_RUNTIME_POLICIES
@@ -511,7 +511,10 @@ CUB_RUNTIME_FUNCTION _CCCL_FORCEINLINE auto dispatch(
     NV_IF_TARGET(NV_IS_HOST, ({
                    std::stringstream ss;
                    ss << active_policy;
-                   _CubLog("Dispatching DeviceMergeSort to arch %d with tuning: %s\n", (int) arch_id, ss.str().c_str());
+                   _CubLog("Dispatching DeviceMergeSort to compute capability %d.%d with tuning: %s\n",
+                           cc.major_cap(),
+                           cc.minor_cap(),
+                           ss.str().c_str());
                  }))
 #endif // _CCCL_HOSTED() && defined(CUB_DEBUG_LOG)
 
@@ -555,7 +558,7 @@ CUB_RUNTIME_FUNCTION _CCCL_FORCEINLINE auto dispatch(
     auto items_buffer     = static_cast<ValueT*>(allocations[2]);
 
     if (const auto error = CubDebug(
-          launcher_factory(static_cast<int>(num_tiles), active_policy.block_threads, 0, stream, true)
+          launcher_factory(static_cast<int>(num_tiles), active_policy.threads_per_block, 0, stream, true)
             .doit(kernel_source.MergeSortBlockSortKernel(),
                   ping,
                   d_input_keys,
@@ -620,7 +623,7 @@ CUB_RUNTIME_FUNCTION _CCCL_FORCEINLINE auto dispatch(
         return error;
       }
       if (const auto error = CubDebug(
-            launcher_factory(static_cast<int>(num_tiles), active_policy.block_threads, 0, stream, true)
+            launcher_factory(static_cast<int>(num_tiles), active_policy.threads_per_block, 0, stream, true)
               .doit(kernel_source.MergeSortMergeKernel(),
                     ping,
                     d_output_keys,

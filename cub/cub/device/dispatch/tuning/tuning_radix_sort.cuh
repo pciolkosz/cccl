@@ -23,7 +23,7 @@
 #include <cub/device/dispatch/tuning/tuning_scan.cuh>
 #include <cub/util_device.cuh>
 
-#include <cuda/__device/arch_id.h>
+#include <cuda/__device/compute_capability.h>
 #include <cuda/std/__host_stdlib/ostream>
 #include <cuda/std/optional>
 
@@ -38,7 +38,7 @@ using detail::scan::scan_warpspeed_policy;
 
 struct radix_sort_histogram_policy
 {
-  int block_threads;
+  int threads_per_block;
   int items_per_thread;
   int num_parts;
   int radix_bits;
@@ -46,7 +46,7 @@ struct radix_sort_histogram_policy
   _CCCL_API constexpr friend bool
   operator==(const radix_sort_histogram_policy& lhs, const radix_sort_histogram_policy& rhs)
   {
-    return lhs.block_threads == rhs.block_threads && lhs.items_per_thread == rhs.items_per_thread
+    return lhs.threads_per_block == rhs.threads_per_block && lhs.items_per_thread == rhs.items_per_thread
         && lhs.num_parts == rhs.num_parts && lhs.radix_bits == rhs.radix_bits;
   }
 
@@ -59,21 +59,22 @@ struct radix_sort_histogram_policy
 #if _CCCL_HOSTED()
   friend ::std::ostream& operator<<(::std::ostream& os, const radix_sort_histogram_policy& p)
   {
-    return os << "radix_sort_histogram_policy { .block_threads = " << p.block_threads << ", .items_per_thread = "
-              << p.items_per_thread << ", .num_parts = " << p.num_parts << ", .radix_bits = " << p.radix_bits << " }";
+    return os
+        << "radix_sort_histogram_policy { .threads_per_block = " << p.threads_per_block << ", .items_per_thread = "
+        << p.items_per_thread << ", .num_parts = " << p.num_parts << ", .radix_bits = " << p.radix_bits << " }";
   }
 #endif // _CCCL_HOSTED()
 };
 
 struct radix_sort_exclusive_sum_policy
 {
-  int block_threads;
+  int threads_per_block;
   int radix_bits;
 
   _CCCL_API constexpr friend bool
   operator==(const radix_sort_exclusive_sum_policy& lhs, const radix_sort_exclusive_sum_policy& rhs)
   {
-    return lhs.block_threads == rhs.block_threads && lhs.radix_bits == rhs.radix_bits;
+    return lhs.threads_per_block == rhs.threads_per_block && lhs.radix_bits == rhs.radix_bits;
   }
 
   _CCCL_API constexpr friend bool
@@ -85,7 +86,7 @@ struct radix_sort_exclusive_sum_policy
 #if _CCCL_HOSTED()
   friend ::std::ostream& operator<<(::std::ostream& os, const radix_sort_exclusive_sum_policy& p)
   {
-    return os << "radix_sort_exclusive_sum_policy { .block_threads = " << p.block_threads
+    return os << "radix_sort_exclusive_sum_policy { .threads_per_block = " << p.threads_per_block
               << ", .radix_bits = " << p.radix_bits << " }";
   }
 #endif // _CCCL_HOSTED()
@@ -93,7 +94,7 @@ struct radix_sort_exclusive_sum_policy
 
 struct radix_sort_onesweep_policy
 {
-  int block_threads;
+  int threads_per_block;
   int items_per_thread;
   int rank_num_parts;
   int radix_bits;
@@ -104,7 +105,7 @@ struct radix_sort_onesweep_policy
   _CCCL_API constexpr friend bool
   operator==(const radix_sort_onesweep_policy& lhs, const radix_sort_onesweep_policy& rhs)
   {
-    return lhs.block_threads == rhs.block_threads && lhs.items_per_thread == rhs.items_per_thread
+    return lhs.threads_per_block == rhs.threads_per_block && lhs.items_per_thread == rhs.items_per_thread
         && lhs.rank_num_parts == rhs.rank_num_parts && lhs.radix_bits == rhs.radix_bits
         && lhs.rank_algorith == rhs.rank_algorith && lhs.scan_algorithm == rhs.scan_algorithm
         && lhs.store_algorithm == rhs.store_algorithm;
@@ -120,7 +121,7 @@ struct radix_sort_onesweep_policy
   friend ::std::ostream& operator<<(::std::ostream& os, const radix_sort_onesweep_policy& p)
   {
     return os
-        << "radix_sort_onesweep_policy { .block_threads = " << p.block_threads
+        << "radix_sort_onesweep_policy { .threads_per_block = " << p.threads_per_block
         << ", .items_per_thread = " << p.items_per_thread << ", .rank_num_parts = " << p.rank_num_parts
         << ", .radix_bits = " << p.radix_bits << ", .rank_algorith = " << p.rank_algorith
         << ", .scan_algorithm = " << p.scan_algorithm << ", .store_algorithm = " << p.store_algorithm << " }";
@@ -129,7 +130,7 @@ struct radix_sort_onesweep_policy
 };
 
 _CCCL_API constexpr auto make_reg_scaled_radix_sort_onesweep_policy(
-  int nominal_4b_block_threads,
+  int nominal_4b_threads_per_block,
   int nominal_4b_items_per_thread,
   int compute_t_size,
   int rank_num_parts,
@@ -138,9 +139,9 @@ _CCCL_API constexpr auto make_reg_scaled_radix_sort_onesweep_policy(
   BlockScanAlgorithm scan_algorithm,
   RadixSortStoreAlgorithm store_algorithm) -> radix_sort_onesweep_policy
 {
-  const auto scaled = scale_reg_bound(nominal_4b_block_threads, nominal_4b_items_per_thread, compute_t_size);
+  const auto scaled = scale_reg_bound(nominal_4b_threads_per_block, nominal_4b_items_per_thread, compute_t_size);
   return radix_sort_onesweep_policy{
-    scaled.block_threads,
+    scaled.threads_per_block,
     scaled.items_per_thread,
     rank_num_parts,
     radix_bits,
@@ -151,7 +152,7 @@ _CCCL_API constexpr auto make_reg_scaled_radix_sort_onesweep_policy(
 
 struct radix_sort_downsweep_policy
 {
-  int block_threads;
+  int threads_per_block;
   int items_per_thread;
   int radix_bits;
   BlockLoadAlgorithm load_algorithm;
@@ -162,7 +163,7 @@ struct radix_sort_downsweep_policy
   _CCCL_API constexpr friend bool
   operator==(const radix_sort_downsweep_policy& lhs, const radix_sort_downsweep_policy& rhs)
   {
-    return lhs.block_threads == rhs.block_threads && lhs.items_per_thread == rhs.items_per_thread
+    return lhs.threads_per_block == rhs.threads_per_block && lhs.items_per_thread == rhs.items_per_thread
         && lhs.radix_bits == rhs.radix_bits && lhs.load_algorithm == rhs.load_algorithm
         && lhs.load_modifier == rhs.load_modifier && lhs.rank_algorithm == rhs.rank_algorithm
         && lhs.scan_algorithm == rhs.scan_algorithm;
@@ -178,7 +179,7 @@ struct radix_sort_downsweep_policy
   friend ::std::ostream& operator<<(::std::ostream& os, const radix_sort_downsweep_policy& p)
   {
     return os
-        << "radix_sort_downsweep_policy { .block_threads = " << p.block_threads
+        << "radix_sort_downsweep_policy { .threads_per_block = " << p.threads_per_block
         << ", .items_per_thread = " << p.items_per_thread << ", .radix_bits = " << p.radix_bits
         << ", .load_algorithm = " << p.load_algorithm << ", .load_modifier = " << p.load_modifier
         << ", .rank_algorithm = " << p.rank_algorithm << ", .scan_algorithm = " << p.scan_algorithm << " }";
@@ -187,7 +188,7 @@ struct radix_sort_downsweep_policy
 };
 
 _CCCL_API constexpr auto make_reg_scaled_radix_sort_downsweep_policy(
-  int nominal_4b_block_threads,
+  int nominal_4b_threads_per_block,
   int nominal_4b_items_per_thread,
   int compute_t_size,
   int radix_bits,
@@ -196,9 +197,9 @@ _CCCL_API constexpr auto make_reg_scaled_radix_sort_downsweep_policy(
   RadixRankAlgorithm rank_algorithm,
   BlockScanAlgorithm scan_algorithm) -> radix_sort_downsweep_policy
 {
-  const auto scaled = scale_reg_bound(nominal_4b_block_threads, nominal_4b_items_per_thread, compute_t_size);
+  const auto scaled = scale_reg_bound(nominal_4b_threads_per_block, nominal_4b_items_per_thread, compute_t_size);
   return radix_sort_downsweep_policy{
-    scaled.block_threads,
+    scaled.threads_per_block,
     scaled.items_per_thread,
     radix_bits,
     load_algorithm,
@@ -209,14 +210,14 @@ _CCCL_API constexpr auto make_reg_scaled_radix_sort_downsweep_policy(
 
 struct radix_sort_upsweep_policy
 {
-  int block_threads;
+  int threads_per_block;
   int items_per_thread;
   int radix_bits;
   CacheLoadModifier load_modifier;
 
   _CCCL_API constexpr friend bool operator==(const radix_sort_upsweep_policy& lhs, const radix_sort_upsweep_policy& rhs)
   {
-    return lhs.block_threads == rhs.block_threads && lhs.items_per_thread == rhs.items_per_thread
+    return lhs.threads_per_block == rhs.threads_per_block && lhs.items_per_thread == rhs.items_per_thread
         && lhs.radix_bits == rhs.radix_bits && lhs.load_modifier == rhs.load_modifier;
   }
 
@@ -229,21 +230,21 @@ struct radix_sort_upsweep_policy
   friend ::std::ostream& operator<<(::std::ostream& os, const radix_sort_upsweep_policy& p)
   {
     return os
-        << "radix_sort_upsweep_policy { .block_threads = " << p.block_threads << ", .items_per_thread = "
+        << "radix_sort_upsweep_policy { .threads_per_block = " << p.threads_per_block << ", .items_per_thread = "
         << p.items_per_thread << ", .radix_bits = " << p.radix_bits << ", .load_modifier = " << p.load_modifier << " }";
   }
 #endif // _CCCL_HOSTED()
 };
 
 _CCCL_API constexpr auto make_reg_scaled_radix_sort_upsweep_policy(
-  int nominal_4b_block_threads,
+  int nominal_4b_threads_per_block,
   int nominal_4b_items_per_thread,
   int compute_t_size,
   int radix_bits,
   CacheLoadModifier load_modifier) -> radix_sort_upsweep_policy
 {
-  const auto scaled = scale_reg_bound(nominal_4b_block_threads, nominal_4b_items_per_thread, compute_t_size);
-  return radix_sort_upsweep_policy{scaled.block_threads, scaled.items_per_thread, radix_bits, load_modifier};
+  const auto scaled = scale_reg_bound(nominal_4b_threads_per_block, nominal_4b_items_per_thread, compute_t_size);
+  return radix_sort_upsweep_policy{scaled.threads_per_block, scaled.items_per_thread, radix_bits, load_modifier};
 }
 
 struct radix_sort_policy
@@ -827,7 +828,7 @@ struct RadixSortPolicyWrapper<
   }
 
   template <typename PolicyT>
-  _CCCL_HOST_DEVICE static constexpr int BlockThreads(PolicyT /*policy*/)
+  _CCCL_HOST_DEVICE static constexpr int ThreadsPerBlock(PolicyT /*policy*/)
   {
     return PolicyT::BLOCK_THREADS;
   }
@@ -944,7 +945,7 @@ _CCCL_API _CCCL_FORCEINLINE constexpr auto convert_policy(RadixSortPolicyWrapper
 template <typename PolicyHub>
 struct policy_selector_from_hub
 {
-  _CCCL_DEVICE_API constexpr auto operator()(::cuda::arch_id /*arch*/) const -> radix_sort_policy
+  _CCCL_DEVICE_API constexpr auto operator()(::cuda::compute_capability) const -> radix_sort_policy
   {
     return convert_policy<typename PolicyHub::MaxPolicy::ActivePolicy>();
   }
@@ -1819,21 +1820,21 @@ struct policy_selector
       alt_segmented};
   }
 
-  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::arch_id arch) const -> radix_sort_policy
+  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::compute_capability cc) const -> radix_sort_policy
   {
     // TODO(bgruber): we should probably separate the segmented policies and move them somewhere else
 
-    if (arch >= ::cuda::arch_id::sm_100)
+    if (cc >= ::cuda::compute_capability{10, 0})
     {
       return make_onesweep_small_key_policy(get_sm100_tuning(key_size, value_size, offset_size, key_type));
     }
 
-    if (arch >= ::cuda::arch_id::sm_90)
+    if (cc >= ::cuda::compute_capability{9, 0})
     {
       return make_onesweep_small_key_policy(get_sm90_tuning(key_size, value_size, offset_size));
     }
 
-    if (arch >= ::cuda::arch_id::sm_80)
+    if (cc >= ::cuda::compute_capability{8, 0})
     {
       const int primary_radix_bits     = (key_size > 1) ? 7 : 5;
       const int single_tile_radix_bits = (key_size > 1) ? 6 : 5;
@@ -1937,7 +1938,7 @@ struct policy_selector
         alt_segmented};
     }
 
-    if (arch >= ::cuda::arch_id::sm_70)
+    if (cc >= ::cuda::compute_capability{7, 0})
     {
       const int primary_radix_bits     = (key_size > 1) ? 7 : 5; // 7.62B 32b keys/s (GV100)
       const int single_tile_radix_bits = (key_size > 1) ? 6 : 5;
@@ -2041,7 +2042,7 @@ struct policy_selector
         alt_segmented};
     }
 
-    if (static_cast<int>(arch) >= 62) // TODO(bgruber): add ::cuda::arch_id::sm_62
+    if (cc >= ::cuda::compute_capability{6, 2})
     {
       const int primary_radix_bits  = 5;
       const int alt_radix_bits      = primary_radix_bits - 1;
@@ -2092,10 +2093,10 @@ struct policy_selector
         BLOCK_SCAN_RAKING_MEMOIZE);
 
       const auto upsweep = radix_sort_upsweep_policy{
-        downsweep.block_threads, downsweep.items_per_thread, downsweep.radix_bits, downsweep.load_modifier};
+        downsweep.threads_per_block, downsweep.items_per_thread, downsweep.radix_bits, downsweep.load_modifier};
 
       const auto alt_upsweep = radix_sort_upsweep_policy{
-        alt_downsweep.block_threads,
+        alt_downsweep.threads_per_block,
         alt_downsweep.items_per_thread,
         alt_downsweep.radix_bits,
         alt_downsweep.load_modifier};
@@ -2129,7 +2130,7 @@ struct policy_selector
         alt_segmented};
     }
 
-    if (arch >= ::cuda::arch_id::sm_61)
+    if (cc >= ::cuda::compute_capability{6, 1})
     {
       const int primary_radix_bits     = (key_size > 1) ? 7 : 5; // 3.4B 32b keys/s, 1.83B 32b pairs/s (1080)
       const int single_tile_radix_bits = (key_size > 1) ? 6 : 5;
@@ -2232,7 +2233,7 @@ struct policy_selector
         alt_segmented};
     }
 
-    if (arch >= ::cuda::arch_id::sm_60)
+    if (cc >= ::cuda::compute_capability{6, 0})
     {
       const int primary_radix_bits     = (key_size > 1) ? 7 : 5; // 6.9B 32b keys/s (Quadro P100)
       const int single_tile_radix_bits = (key_size > 1) ? 6 : 5;
@@ -2285,10 +2286,10 @@ struct policy_selector
         BLOCK_SCAN_WARP_SCANS);
 
       const auto upsweep = radix_sort_upsweep_policy{
-        downsweep.block_threads, downsweep.items_per_thread, downsweep.radix_bits, downsweep.load_modifier};
+        downsweep.threads_per_block, downsweep.items_per_thread, downsweep.radix_bits, downsweep.load_modifier};
 
       const auto alt_upsweep = radix_sort_upsweep_policy{
-        alt_downsweep.block_threads,
+        alt_downsweep.threads_per_block,
         alt_downsweep.items_per_thread,
         alt_downsweep.radix_bits,
         alt_downsweep.load_modifier};
@@ -2390,10 +2391,10 @@ struct policy_selector
       BLOCK_SCAN_RAKING_MEMOIZE);
 
     const auto upsweep = radix_sort_upsweep_policy{
-      downsweep.block_threads, downsweep.items_per_thread, downsweep.radix_bits, downsweep.load_modifier};
+      downsweep.threads_per_block, downsweep.items_per_thread, downsweep.radix_bits, downsweep.load_modifier};
 
     const auto alt_upsweep = radix_sort_upsweep_policy{
-      alt_downsweep.block_threads,
+      alt_downsweep.threads_per_block,
       alt_downsweep.items_per_thread,
       alt_downsweep.radix_bits,
       alt_downsweep.load_modifier};
@@ -2452,14 +2453,14 @@ static_assert(radix_sort_policy_selector<policy_selector>);
 template <typename KeyT, typename ValueT, typename OffsetT>
 struct policy_selector_from_types
 {
-  [[nodiscard]] _CCCL_API constexpr auto operator()(cuda::arch_id arch) const -> radix_sort_policy
+  [[nodiscard]] _CCCL_API constexpr auto operator()(cuda::compute_capability cc) const -> radix_sort_policy
   {
     constexpr auto policies = policy_selector{
       int{sizeof(KeyT)},
       ::cuda::std::is_same_v<ValueT, NullType> ? 0 : int{sizeof(ValueT)},
       int{sizeof(OffsetT)},
       classify_type<KeyT>};
-    return policies(arch);
+    return policies(cc);
   }
 };
 } // namespace detail::radix_sort

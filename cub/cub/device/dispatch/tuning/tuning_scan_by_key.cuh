@@ -25,10 +25,10 @@
 #include <cub/util_math.cuh>
 #include <cub/util_type.cuh>
 
-#include <cuda/__device/arch_id.h>
+#include <cuda/__device/compute_capability.h>
+#include <cuda/__type_traits/is_trivially_copyable.h>
 #include <cuda/std/__algorithm/max.h>
 #include <cuda/std/__host_stdlib/ostream>
-#include <cuda/std/__type_traits/is_trivially_copyable.h>
 
 CUB_NAMESPACE_BEGIN
 
@@ -36,7 +36,7 @@ namespace detail::scan_by_key
 {
 struct scan_by_key_policy
 {
-  int block_threads;
+  int threads_per_block;
   int items_per_thread;
   BlockLoadAlgorithm load_algorithm;
   CacheLoadModifier load_modifier;
@@ -46,7 +46,7 @@ struct scan_by_key_policy
 
   _CCCL_API constexpr friend bool operator==(const scan_by_key_policy& lhs, const scan_by_key_policy& rhs)
   {
-    return lhs.block_threads == rhs.block_threads && lhs.items_per_thread == rhs.items_per_thread
+    return lhs.threads_per_block == rhs.threads_per_block && lhs.items_per_thread == rhs.items_per_thread
         && lhs.load_algorithm == rhs.load_algorithm && lhs.load_modifier == rhs.load_modifier
         && lhs.store_algorithm == rhs.store_algorithm && lhs.scan_algorithm == rhs.scan_algorithm
         && lhs.delay_constructor == rhs.delay_constructor;
@@ -61,10 +61,10 @@ struct scan_by_key_policy
   friend ::std::ostream& operator<<(::std::ostream& os, const scan_by_key_policy& p)
   {
     return os
-        << "scan_by_key_policy { .block_threads = " << p.block_threads << ", .items_per_thread = " << p.items_per_thread
-        << ", .load_algorithm = " << p.load_algorithm << ", .load_modifier = " << p.load_modifier
-        << ", .store_algorithm = " << p.store_algorithm << ", .scan_algorithm = " << p.scan_algorithm
-        << ", .delay_constructor = " << p.delay_constructor << " }";
+        << "scan_by_key_policy { .threads_per_block = " << p.threads_per_block
+        << ", .items_per_thread = " << p.items_per_thread << ", .load_algorithm = " << p.load_algorithm
+        << ", .load_modifier = " << p.load_modifier << ", .store_algorithm = " << p.store_algorithm
+        << ", .scan_algorithm = " << p.scan_algorithm << ", .delay_constructor = " << p.delay_constructor << " }";
   }
 #endif // _CCCL_HOSTED()
 };
@@ -1047,31 +1047,10 @@ _CCCL_API constexpr auto convert_policy() -> scan_by_key_policy
 template <typename PolicyHub>
 struct policy_selector_from_hub
 {
-private:
-  struct extract_policy_dispatch_t
+  [[nodiscard]] _CCCL_DEVICE_API constexpr auto operator()(::cuda::compute_capability /*cc*/) const
+    -> scan_by_key_policy
   {
-    scan_by_key_policy& policy;
-
-    template <typename ActivePolicyT>
-    _CCCL_API constexpr cudaError_t Invoke()
-    {
-      policy = convert_policy<ActivePolicyT>();
-      return cudaSuccess;
-    }
-  };
-
-public:
-  _CCCL_API constexpr auto operator()(::cuda::arch_id arch) const -> scan_by_key_policy
-  {
-    NV_IF_ELSE_TARGET(NV_IS_HOST,
-                      ({
-                        const int ptx_version = static_cast<int>(::cuda::compute_capability{arch});
-                        scan_by_key_policy policy{};
-                        extract_policy_dispatch_t dispatch{policy};
-                        PolicyHub::MaxPolicy::Invoke(ptx_version, dispatch);
-                        return policy;
-                      }),
-                      ({ return convert_policy<typename PolicyHub::MaxPolicy::ActivePolicy>(); }));
+    return convert_policy<typename PolicyHub::MaxPolicy::ActivePolicy>();
   }
 };
 
@@ -1087,7 +1066,7 @@ struct policy_selector
   type_t accum_type;
   op_kind_t operation_t;
 
-  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::arch_id arch) const -> scan_by_key_policy
+  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::compute_capability cc) const -> scan_by_key_policy
   {
     const bool value_is_primitive_or_trivially_copyable = value_is_primitive || value_is_trivially_copyable;
     const bool primitive_accum =
@@ -1107,7 +1086,7 @@ struct policy_selector
         ? 6
         : Nominal4BItemsToItemsCombined(/* nominal_4b_items_per_thread */ 6, combined_input_bytes);
 
-    if (arch >= ::cuda::arch_id::sm_100)
+    if (cc >= ::cuda::compute_capability{10, 0})
     {
       if (primitive_op && primitive_value)
       {
@@ -1292,7 +1271,7 @@ struct policy_selector
       }
     }
 
-    if (arch >= ::cuda::arch_id::sm_90)
+    if (cc >= ::cuda::compute_capability{9, 0})
     {
       if (primitive_op)
       {
@@ -1601,7 +1580,7 @@ struct policy_selector
                 sizeof(int), value_size, true, value_is_primitive_or_trivially_copyable)};
     }
 
-    if (arch >= ::cuda::arch_id::sm_86) // && arch < ::cuda::arch_id::sm_90
+    if (cc >= ::cuda::compute_capability{8, 6}) // && cc < ::cuda::compute_capability{9, 0}
     {
       return {256,
               default_items,
@@ -1612,7 +1591,7 @@ struct policy_selector
               default_reduce_by_key_delay_constructor_policy(sizeof(int), accum_size, true, primitive_accum)};
     }
 
-    if (arch >= ::cuda::arch_id::sm_80)
+    if (cc >= ::cuda::compute_capability{8, 0})
     {
       if (primitive_op)
       {
@@ -1921,7 +1900,7 @@ struct policy_selector
                 sizeof(int), value_size, true, value_is_primitive_or_trivially_copyable)};
     }
 
-    if (arch >= ::cuda::arch_id::sm_60)
+    if (cc >= ::cuda::compute_capability{6, 0})
     {
       return {256,
               default_items,
@@ -1945,18 +1924,18 @@ struct policy_selector
 template <typename KeyT, typename AccumT, typename ValueT, typename ScanOpT>
 struct policy_selector_from_types
 {
-  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::arch_id arch) const -> scan_by_key_policy
+  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::compute_capability cc) const -> scan_by_key_policy
   {
     return policy_selector{
       static_cast<int>(sizeof(KeyT)),
       static_cast<int>(sizeof(ValueT)),
       static_cast<int>(sizeof(AccumT)),
       is_primitive<ValueT>::value,
-      ::cuda::std::is_trivially_copyable_v<ValueT>,
+      ::cuda::is_trivially_copyable_v<ValueT>,
       classify_type<KeyT>,
       classify_type<ValueT>,
       classify_type<AccumT>,
-      classify_op<ScanOpT>}(arch);
+      classify_op<ScanOpT>}(cc);
   }
 };
 } // namespace detail::scan_by_key

@@ -13,18 +13,21 @@
 // %RANGE% TUNE_ITEMS_PER_VEC_LOAD_POW2 ipv 1:2:1
 
 #if !TUNE_BASE
+template <typename AccumT>
 struct policy_selector
 {
-  _CCCL_API constexpr auto operator()(cuda::arch_id) const -> ::cub::reduce_policy
+  [[nodiscard]] _CCCL_HOST_DEVICE constexpr auto operator()(cuda::compute_capability) const
+    -> cub::detail::reduce_nondeterministic::reduce_nondeterministic_policy
   {
-    const auto [items, threads] = cub::detail::scale_mem_bound(TUNE_THREADS_PER_BLOCK, TUNE_ITEMS_PER_THREAD);
-    const auto policy           = cub::agent_reduce_policy{
+    const auto [items, threads] =
+      cub::detail::scale_mem_bound(TUNE_THREADS_PER_BLOCK, TUNE_ITEMS_PER_THREAD, int{sizeof(AccumT)});
+    const auto policy = cub::detail::reduce::agent_reduce_policy{
       threads,
       items,
       1 << TUNE_ITEMS_PER_VEC_LOAD_POW2,
       cub::BLOCK_REDUCE_WARP_REDUCTIONS_NONDETERMINISTIC,
       cub::LOAD_DEFAULT};
-    return {{}, {}, {}, policy}; // Only reduce_nondeterministic is used
+    return {policy};
   }
 };
 #endif // !TUNE_BASE
@@ -54,7 +57,7 @@ void nondeterministic_sum(nvbench::state& state, nvbench::type_list<T, OffsetT>)
 
   // Allocate temporary storage:
   std::size_t temp_size;
-  cub::detail::reduce::dispatch_nondeterministic</* OverrideAccumT = */ T>(
+  cub::detail::reduce_nondeterministic::dispatch</* OverrideAccumT = */ T>(
     nullptr,
     temp_size,
     d_in,
@@ -66,7 +69,7 @@ void nondeterministic_sum(nvbench::state& state, nvbench::type_list<T, OffsetT>)
     transform_op
 #if !TUNE_BASE
     ,
-    policy_selector{}
+    policy_selector<T>{}
 #endif
   );
 
@@ -74,7 +77,7 @@ void nondeterministic_sum(nvbench::state& state, nvbench::type_list<T, OffsetT>)
   auto* temp_storage = thrust::raw_pointer_cast(temp.data());
 
   state.exec(nvbench::exec_tag::gpu | nvbench::exec_tag::no_batch, [&](nvbench::launch& launch) {
-    cub::detail::reduce::dispatch_nondeterministic</* OverrideAccumT = */ T>(
+    cub::detail::reduce_nondeterministic::dispatch</* OverrideAccumT = */ T>(
       temp_storage,
       temp_size,
       d_in,

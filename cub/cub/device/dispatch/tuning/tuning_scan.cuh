@@ -30,7 +30,8 @@
 
 #include <thrust/type_traits/is_contiguous_iterator.h>
 
-#include <cuda/__device/arch_id.h>
+#include <cuda/__device/compute_capability.h>
+#include <cuda/__type_traits/is_trivially_copyable.h>
 #include <cuda/std/__algorithm/max.h>
 #include <cuda/std/__functional/invoke.h>
 #include <cuda/std/__functional/operations.h>
@@ -548,7 +549,7 @@ struct policy_hub
 
 struct scan_lookback_policy
 {
-  int block_threads;
+  int threads_per_block;
   int items_per_thread;
   BlockLoadAlgorithm load_algorithm;
   CacheLoadModifier load_modifier;
@@ -558,7 +559,7 @@ struct scan_lookback_policy
 
   _CCCL_API constexpr friend bool operator==(const scan_lookback_policy& lhs, const scan_lookback_policy& rhs)
   {
-    return lhs.block_threads == rhs.block_threads && lhs.items_per_thread == rhs.items_per_thread
+    return lhs.threads_per_block == rhs.threads_per_block && lhs.items_per_thread == rhs.items_per_thread
         && lhs.load_algorithm == rhs.load_algorithm && lhs.load_modifier == rhs.load_modifier
         && lhs.store_algorithm == rhs.store_algorithm && lhs.scan_algorithm == rhs.scan_algorithm
         && lhs.delay_constructor == rhs.delay_constructor;
@@ -573,7 +574,7 @@ struct scan_lookback_policy
   friend ::std::ostream& operator<<(::std::ostream& os, const scan_lookback_policy& p)
   {
     return os
-        << "scan_lookback_policy { .block_threads = " << p.block_threads
+        << "scan_lookback_policy { .threads_per_block = " << p.threads_per_block
         << ", .items_per_thread = " << p.items_per_thread << ", .load_algorithm = " << p.load_algorithm
         << ", .load_modifier = " << p.load_modifier << ", .store_algorithm = " << p.store_algorithm
         << ", .scan_algorithm = " << p.scan_algorithm << ", .delay_constructor = " << p.delay_constructor << " }";
@@ -666,7 +667,7 @@ concept scan_policy_selector = policy_selector<T, scan_policy>;
 #endif // _CCCL_HAS_CONCEPTS()
 
 _CCCL_API constexpr auto make_mem_scaled_lookback_scan_policy(
-  int nominal_4b_block_threads,
+  int nominal_4b_threads_per_block,
   int nominal_4b_items_per_thread,
   int compute_t_size,
   BlockLoadAlgorithm load_algorithm,
@@ -675,11 +676,11 @@ _CCCL_API constexpr auto make_mem_scaled_lookback_scan_policy(
   BlockScanAlgorithm scan_algorithm,
   delay_constructor_policy delay_constructor = {delay_constructor_kind::fixed_delay, 350, 450}) -> scan_policy
 {
-  const auto scaled = scale_mem_bound(nominal_4b_block_threads, nominal_4b_items_per_thread, compute_t_size);
+  const auto scaled = scale_mem_bound(nominal_4b_threads_per_block, nominal_4b_items_per_thread, compute_t_size);
   return scan_policy{
     scan_algorithm::lookback,
     scan_lookback_policy{
-      scaled.block_threads,
+      scaled.threads_per_block,
       scaled.items_per_thread,
       load_algorithm,
       load_modifier,
@@ -922,14 +923,14 @@ struct policy_selector
     return policy;
   }
 
-  _CCCL_API constexpr auto get_warpspeed_policy(::cuda::arch_id arch) const
+  _CCCL_API constexpr auto get_warpspeed_policy(::cuda::compute_capability cc) const
     -> ::cuda::std::optional<scan_warpspeed_policy>
   {
-    if (arch >= ::cuda::arch_id::sm_120)
+    if (cc >= ::cuda::compute_capability{12, 0})
     {
       return get_sm120_fallback_warpspeed_policy();
     }
-    if (arch >= ::cuda::arch_id::sm_100)
+    if (cc >= ::cuda::compute_capability{10, 0})
     {
       // tunings from cub/benchmarks/bench/scan/exclusive/sum.warpspeed.cu
       if (operation_t == op_kind_t::plus && accum_is_primitive_or_trivially_copy_constructible)
@@ -1013,11 +1014,11 @@ struct policy_selector
 #endif
   }
 
-  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::arch_id arch) const -> scan_policy
+  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::compute_capability cc) const -> scan_policy
   {
     // we first try to get the valid warpspeed implementation. if we can't run it, fall back to the old scan impl.
     {
-      const auto warpspeed_policy_opt = get_warpspeed_policy(arch);
+      const auto warpspeed_policy_opt = get_warpspeed_policy(cc);
       if (warpspeed_policy_opt && can_use_warpspeed(*warpspeed_policy_opt))
       {
         return {scan_algorithm::warpspeed, scan_lookback_policy{}, *warpspeed_policy_opt};
@@ -1035,7 +1036,7 @@ struct policy_selector
       large_values ? BLOCK_STORE_WARP_TRANSPOSE_TIMESLICED : BLOCK_STORE_WARP_TRANSPOSE;
     const auto default_delay = default_delay_constructor_policy(accum_is_primitive_or_trivially_copy_constructible);
 
-    if (arch >= ::cuda::arch_id::sm_100)
+    if (cc >= ::cuda::compute_capability{10, 0})
     {
       if (benchmark_match && operation_t == op_kind_t::plus && primitive_accum_t == primitive_accum::yes)
       {
@@ -1143,7 +1144,7 @@ struct policy_selector
       }
     }
 
-    if (arch >= ::cuda::arch_id::sm_90)
+    if (cc >= ::cuda::compute_capability{9, 0})
     {
       if (primitive_op_t == primitive_op::yes)
       {
@@ -1239,7 +1240,7 @@ struct policy_selector
     }
 
     // Keep sm_86 aligned with legacy policy_hub behavior: policy_hub resets to default policy for 86.
-    if (arch >= ::cuda::arch_id::sm_86)
+    if (cc >= ::cuda::compute_capability{8, 6})
     {
       return make_mem_scaled_lookback_scan_policy(
         128,
@@ -1252,7 +1253,7 @@ struct policy_selector
         default_delay);
     }
 
-    if (arch >= ::cuda::arch_id::sm_80)
+    if (cc >= ::cuda::compute_capability{8, 0})
     {
       if (primitive_op_t == primitive_op::yes)
       {
@@ -1347,7 +1348,7 @@ struct policy_selector
       }
     }
 
-    if (arch >= ::cuda::arch_id::sm_75)
+    if (cc >= ::cuda::compute_capability{7, 5})
     {
       if (benchmark_match && operation_t == op_kind_t::plus && primitive_accum_t == primitive_accum::yes
           && offset_size == 8 && input_value_size == 4)
@@ -1375,7 +1376,7 @@ struct policy_selector
         default_delay);
     }
 
-    if (arch >= ::cuda::arch_id::sm_60)
+    if (cc >= ::cuda::compute_capability{6, 0})
     {
       return make_mem_scaled_lookback_scan_policy(
         128,
@@ -1427,7 +1428,7 @@ struct benchmark_match_for_policy_selector<
 template <typename InputIteratorT, typename OutputIteratorT, typename AccumT, typename OffsetT, typename ScanOpT>
 struct policy_selector_from_types
 {
-  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::arch_id arch) const -> scan_policy
+  [[nodiscard]] _CCCL_API constexpr auto operator()(::cuda::compute_capability cc) const -> scan_policy
   {
     using InputValueT  = it_value_t<InputIteratorT>;
     using OutputValueT = it_value_t<OutputIteratorT>;
@@ -1451,12 +1452,12 @@ struct policy_selector_from_types
       classify_op<ScanOpT>,
       THRUST_NS_QUALIFIER::is_contiguous_iterator_v<InputIteratorT>,
       THRUST_NS_QUALIFIER::is_contiguous_iterator_v<OutputIteratorT>,
-      ::cuda::std::is_trivially_copyable_v<InputValueT>,
-      ::cuda::std::is_trivially_copyable_v<OutputValueT>,
+      ::cuda::is_trivially_copyable_v<InputValueT>,
+      ::cuda::is_trivially_copyable_v<OutputValueT>,
       ::cuda::std::is_default_constructible_v<OutputValueT>,
       accum_is_primitive_or_trivially_copy_constructible,
       benchmark_match};
-    return policies(arch);
+    return policies(cc);
   }
 };
 } // namespace detail::scan

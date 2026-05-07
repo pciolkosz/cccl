@@ -15,7 +15,7 @@
 #  pragma system_header
 #endif // no system header
 
-#include <cub/detail/arch_dispatch.cuh>
+#include <cub/detail/cc_dispatch.cuh>
 #include <cub/detail/choose_offset.cuh>
 #include <cub/detail/launcher/cuda_runtime.cuh>
 #include <cub/detail/type_traits.cuh>
@@ -137,19 +137,22 @@ CUB_RUNTIME_FUNCTION _CCCL_FORCEINLINE auto dispatch(
     return (num_segments == 0) ? cudaSuccess : cudaErrorUnknown;
   }
 
-  ::cuda::arch_id arch_id{};
-  if (const auto error = CubDebug(launcher_factory.PtxArchId(arch_id)))
+  ::cuda::compute_capability cc{};
+  if (const auto error = CubDebug(launcher_factory.PtxComputeCap(cc)))
   {
     return error;
   }
 
-  const segmented_scan_policy active_policy = policy_selector(arch_id);
+  const segmented_scan_policy active_policy = policy_selector(cc);
 
 #if !_CCCL_COMPILER(NVRTC) && defined(CUB_DEBUG_LOG)
   NV_IF_TARGET(
     NV_IS_HOST,
     (::std::stringstream ss; ss << active_policy;
-     _CubLog("Dispatching DeviceSegmentedScan to arch %d with tuning: %s\n", (int) arch_id, ss.str().c_str());))
+     _CubLog("Dispatching DeviceSegmentedScan to compute capability %d.%d with tuning: %s\n",
+             cc.major_cap(),
+             cc.minor_cap(),
+             ss.str().c_str());))
 #endif // !_CCCL_COMPILER(NVRTC) && defined(CUB_DEBUG_LOG)
 
   if (d_temp_storage == nullptr)
@@ -170,10 +173,10 @@ CUB_RUNTIME_FUNCTION _CCCL_FORCEINLINE auto dispatch(
       case worker::block: {
         constexpr int workers_per_block = 1;
         const auto max_segments         = active_policy.block.max_segments;
-        const auto block_threads        = active_policy.block.block_threads;
+        const auto threads_per_block    = active_policy.block.threads_per_block;
         _CCCL_ASSERT(max_segments > 0, "Policy value for max segments is not positive");
         _CCCL_ASSERT(num_segments_per_worker <= max_segments, "Number of segments per block exceeds maximum value");
-        return {workers_per_block, block_threads, ::cuda::std::min(num_segments_per_worker, max_segments)};
+        return {workers_per_block, threads_per_block, ::cuda::std::min(num_segments_per_worker, max_segments)};
       }
       default:
         _CCCL_UNREACHABLE();
