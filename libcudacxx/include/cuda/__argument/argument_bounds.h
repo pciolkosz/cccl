@@ -47,8 +47,7 @@ struct __no_bounds
 template <auto _Min, auto _Max>
 struct static_argument_bounds
 {
-  static_assert(::cuda::std::is_same_v<decltype(_Min), decltype(_Max)>,
-                "Min and Max must have the same type");
+  static_assert(::cuda::std::is_same_v<decltype(_Min), decltype(_Max)>, "Min and Max must have the same type");
   static_assert(_Min <= _Max, "Min must be <= Max");
 
   using value_type = decltype(_Min);
@@ -87,8 +86,8 @@ struct runtime_argument_bounds
     _CCCL_ASSERT(__min <= __max, "Runtime minimum bound must be <= runtime maximum bound");
   }
 
-  static constexpr bool has_runtime_bounds =
-    true; // always true when explicitly constructed; see __no_bounds for "absent"
+  static constexpr bool has_runtime_bounds = true; // always true when explicitly constructed; see __no_bounds for
+                                                   // "absent"
 };
 
 #ifndef _CCCL_DOXYGEN_INVOKED
@@ -130,11 +129,9 @@ template <class _Tp>
 
 // Helper to detect either bounds type (cv-qualified safe)
 template <class _Tp>
-inline constexpr bool __is_static_argument_bounds_cv_v =
-  __is_static_argument_bounds_v<::cuda::std::remove_cv_t<_Tp>>;
+inline constexpr bool __is_static_argument_bounds_cv_v = __is_static_argument_bounds_v<::cuda::std::remove_cv_t<_Tp>>;
 template <class _Tp>
-inline constexpr bool __is_runtime_argument_bounds_cv_v =
-  __is_runtime_argument_bounds_v<::cuda::std::remove_cv_t<_Tp>>;
+inline constexpr bool __is_runtime_argument_bounds_cv_v = __is_runtime_argument_bounds_v<::cuda::std::remove_cv_t<_Tp>>;
 template <class _Tp>
 inline constexpr bool __is_argument_bounds_v =
   __is_static_argument_bounds_cv_v<_Tp> || __is_runtime_argument_bounds_cv_v<_Tp>;

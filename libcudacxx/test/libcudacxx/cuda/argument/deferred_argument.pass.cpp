@@ -39,8 +39,8 @@ TEST_FUNC constexpr bool test()
   // Per-segment deferred with both bounds
   {
     int arr[4] = {10, 20, 30, 40};
-    auto def =
-      cuda::deferred_argument{cuda::std::span<int>{arr, 4}, cuda::argument_bounds<1, 4096>(), cuda::argument_bounds(5, 100)};
+    auto def   = cuda::deferred_argument{
+      cuda::std::span<int>{arr, 4}, cuda::argument_bounds<1, 4096>(), cuda::argument_bounds(5, 100)};
     static_assert(cuda::argument_traits<decltype(def)>::static_min == 1);
     assert(cuda::argument_min(def) == 5);
     assert(cuda::argument_max(def) == 100);

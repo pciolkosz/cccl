@@ -24,7 +24,6 @@
 #include <cuda/__argument/argument_bounds.h>
 #include <cuda/std/__cccl/assert.h>
 #include <cuda/std/__fwd/span.h>
-#include <cuda/std/array>
 #include <cuda/std/__type_traits/enable_if.h>
 #include <cuda/std/__type_traits/is_arithmetic.h>
 #include <cuda/std/__type_traits/is_enum.h>
@@ -32,6 +31,7 @@
 #include <cuda/std/__type_traits/remove_cv.h>
 #include <cuda/std/__type_traits/remove_reference.h>
 #include <cuda/std/__utility/forward.h>
+#include <cuda/std/array>
 #include <cuda/std/cstddef>
 #include <cuda/std/limits>
 #include <cuda/std/span>
@@ -153,7 +153,6 @@ public:
   {
     __validate();
   }
-
 };
 
 #ifndef _CCCL_DOXYGEN_INVOKED
@@ -180,8 +179,7 @@ _CCCL_HOST_DEVICE dynamic_argument(_Arg, static_argument_bounds<_Min, _Max>, run
 template <class _Arg, class _StaticBounds = __no_bounds>
 struct deferred_argument
 {
-  static_assert(::cuda::std::__is_cuda_std_span_v<_Arg>,
-                "deferred_argument requires a cuda::std::span");
+  static_assert(::cuda::std::__is_cuda_std_span_v<_Arg>, "deferred_argument requires a cuda::std::span");
 
   using element_type = __argument_element_type_t<_Arg>;
 
@@ -261,9 +259,10 @@ inline constexpr bool __is_argument_wrapper_v<static_argument<_Value>> = true;
 template <class _Arg, class _StaticBounds>
 inline constexpr bool __is_argument_wrapper_v<deferred_argument<_Arg, _StaticBounds>> = true;
 
-template <class _Tp,
-          ::cuda::std::enable_if_t<!__is_argument_wrapper_v<::cuda::std::remove_cv_t<::cuda::std::remove_reference_t<_Tp>>>,
-                                   int> = 0>
+template <
+  class _Tp,
+  ::cuda::std::enable_if_t<!__is_argument_wrapper_v<::cuda::std::remove_cv_t<::cuda::std::remove_reference_t<_Tp>>>,
+                           int> = 0>
 [[nodiscard]] _CCCL_API constexpr _Tp&& unwrap_argument(_Tp&& __arg) noexcept
 {
   return ::cuda::std::forward<_Tp>(__arg);
@@ -431,8 +430,7 @@ template <class _Tp>
 // =====================================================================
 
 //! @brief Returns the runtime minimum bound of an argument.
-template <class _Tp,
-          ::cuda::std::enable_if_t<!__is_argument_wrapper_v<::cuda::std::remove_cv_t<_Tp>>, int> = 0>
+template <class _Tp, ::cuda::std::enable_if_t<!__is_argument_wrapper_v<::cuda::std::remove_cv_t<_Tp>>, int> = 0>
 [[nodiscard]] _CCCL_API constexpr auto argument_min(_Tp) noexcept
 {
   return ::cuda::std::numeric_limits<__argument_element_type_t<_Tp>>::lowest();
@@ -457,8 +455,7 @@ template <class _Arg, class _StaticBounds>
 }
 
 //! @brief Returns the runtime maximum bound of an argument.
-template <class _Tp,
-          ::cuda::std::enable_if_t<!__is_argument_wrapper_v<::cuda::std::remove_cv_t<_Tp>>, int> = 0>
+template <class _Tp, ::cuda::std::enable_if_t<!__is_argument_wrapper_v<::cuda::std::remove_cv_t<_Tp>>, int> = 0>
 [[nodiscard]] _CCCL_API constexpr auto argument_max(_Tp) noexcept
 {
   return ::cuda::std::numeric_limits<__argument_element_type_t<_Tp>>::max();

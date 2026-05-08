@@ -79,14 +79,14 @@ TEST_FUNC void test()
 
   // Unwrap: scalar
   {
-    constexpr auto sa        = cuda::static_argument<42>{};
+    constexpr auto sa         = cuda::static_argument<42>{};
     constexpr const auto& val = cuda::unwrap_argument(sa);
     static_assert(val == 42);
   }
 
   // Unwrap: array
   {
-    constexpr auto sa        = cuda::static_argument<cuda::std::array<int, 3>{10, 20, 30}>{};
+    constexpr auto sa         = cuda::static_argument<cuda::std::array<int, 3>{10, 20, 30}>{};
     constexpr const auto& val = cuda::unwrap_argument(sa);
     static_assert(val[0] == 10);
     static_assert(val[2] == 30);

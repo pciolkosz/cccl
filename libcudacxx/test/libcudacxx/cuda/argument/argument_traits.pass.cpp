@@ -64,9 +64,8 @@ TEST_FUNC void test()
   static_assert(
     cuda::std::is_same_v<cuda::argument_traits<cuda::deferred_argument<cuda::std::span<int, 1>>>::value_type,
                          cuda::std::span<int, 1>>);
-  static_assert(
-    cuda::std::is_same_v<cuda::argument_traits<cuda::deferred_argument<cuda::std::span<int>>>::value_type,
-                         cuda::std::span<int>>);
+  static_assert(cuda::std::is_same_v<cuda::argument_traits<cuda::deferred_argument<cuda::std::span<int>>>::value_type,
+                                     cuda::std::span<int>>);
 
   // --- __is_single_value_v on unwrapped wrapper types ---
 
@@ -74,7 +73,8 @@ TEST_FUNC void test()
   static_assert(cuda::__is_single_value_v<cuda::argument_traits<cuda::dynamic_argument<int>>::value_type>);
 
   // dynamic_argument<span<int>> unwraps to span<int> → not single value
-  static_assert(!cuda::__is_single_value_v<cuda::argument_traits<cuda::dynamic_argument<cuda::std::span<int>>>::value_type>);
+  static_assert(
+    !cuda::__is_single_value_v<cuda::argument_traits<cuda::dynamic_argument<cuda::std::span<int>>>::value_type>);
 
   // dynamic_argument<int*> unwraps to int* → not single value
   static_assert(!cuda::__is_single_value_v<cuda::argument_traits<cuda::dynamic_argument<int*>>::value_type>);
