@@ -1,0 +1,88 @@
+//===----------------------------------------------------------------------===//
+//
+// Part of libcu++, the C++ Standard Library for your entire system,
+// under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+// SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
+//
+//===----------------------------------------------------------------------===//
+
+#include <cuda/argument>
+#include <cuda/std/cassert>
+#include <cuda/std/type_traits>
+
+#include "test_macros.h"
+
+TEST_FUNC constexpr bool test()
+{
+  // --- static_argument_bounds ---
+
+  // Basic static bounds
+  {
+    constexpr auto b = cuda::static_argument_bounds<1, 4096>{};
+    static_assert(b.min == 1);
+    static_assert(b.max == 4096);
+    static_assert(cuda::std::is_same_v<decltype(b)::value_type, int>);
+  }
+
+  // Exact static bounds
+  {
+    constexpr auto b = cuda::static_argument_bounds<42, 42>{};
+    static_assert(b.min == 42);
+    static_assert(b.max == 42);
+  }
+
+  // Long type deduced from NTTPs
+  {
+    constexpr auto b = cuda::static_argument_bounds<0L, 1000L>{};
+    static_assert(cuda::std::is_same_v<decltype(b)::value_type, long>);
+  }
+
+  // --- runtime_argument_bounds ---
+
+  // Basic runtime bounds
+  {
+    auto b = cuda::runtime_argument_bounds{10, 100};
+    assert(b.min == 10);
+    assert(b.max == 100);
+    static_assert(cuda::std::is_same_v<decltype(b)::value_type, int>);
+  }
+
+  // --- argument_bounds factory functions ---
+
+  // Static via factory
+  {
+    constexpr auto b = cuda::argument_bounds<1, 8>();
+    static_assert(b.min == 1);
+    static_assert(b.max == 8);
+    static_assert(cuda::__is_static_argument_bounds_cv_v<decltype(b)>);
+    static_assert(!cuda::__is_runtime_argument_bounds_cv_v<decltype(b)>);
+    static_assert(cuda::__is_argument_bounds_v<decltype(b)>);
+  }
+
+  // Runtime via factory
+  {
+    auto b = cuda::argument_bounds(10, 100);
+    assert(b.min == 10);
+    assert(b.max == 100);
+    static_assert(!cuda::__is_static_argument_bounds_cv_v<decltype(b)>);
+    static_assert(cuda::__is_runtime_argument_bounds_cv_v<decltype(b)>);
+    static_assert(cuda::__is_argument_bounds_v<decltype(b)>);
+  }
+
+  // Non-bounds type
+  {
+    static_assert(!cuda::__is_argument_bounds_v<int>);
+  }
+
+  return true;
+}
+
+int main(int, char**)
+{
+  test();
+  static_assert(test());
+
+  return 0;
+}
