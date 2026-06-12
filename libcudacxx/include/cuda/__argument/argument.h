@@ -171,6 +171,12 @@ template <class _ElementType, auto _Lowest, auto _Highest>
 inline constexpr bool __valid_static_bounds_v<_ElementType, static_bounds<_Lowest, _Highest>> =
   __static_bound_in_range<_ElementType, _Lowest>() && __static_bound_in_range<_ElementType, _Highest>();
 
+template <class _StaticBounds>
+inline constexpr bool __is_singleton_static_bounds_v = false;
+
+template <auto _Lowest, auto _Highest>
+inline constexpr bool __is_singleton_static_bounds_v<static_bounds<_Lowest, _Highest>> = (_Lowest == _Highest);
+
 template <class _ElementType, class _StaticBounds>
 _CCCL_API constexpr _ElementType __wrapper_static_lowest() noexcept
 {
@@ -182,6 +188,13 @@ _CCCL_API constexpr _ElementType __wrapper_static_lowest() noexcept
   {
     return static_cast<_ElementType>(_StaticBounds::lower());
   }
+}
+
+template <class _ElementType, class _StaticBounds>
+_CCCL_API constexpr _ElementType __wrapper_static_value() noexcept
+{
+  static_assert(__is_singleton_static_bounds_v<_StaticBounds>);
+  return __wrapper_static_lowest<_ElementType, _StaticBounds>();
 }
 
 template <class _ElementType, class _StaticBounds>
@@ -804,7 +817,7 @@ struct __traits_impl<immediate<_Arg, _StaticBounds>>
                 "argument wrapper bounds type must be cuda::args::no_bounds or cuda::args::static_bounds with "
                 "values representable by the element type");
 
-  static constexpr bool is_constant     = false;
+  static constexpr bool is_constant     = __is_singleton_static_bounds_v<_StaticBounds>;
   static constexpr bool is_deferred     = false;
   static constexpr bool is_single_value = true;
   static constexpr element_type lowest  = __wrapper_static_lowest<element_type, _StaticBounds>();
@@ -850,8 +863,8 @@ struct __traits_impl<deferred<_Arg, _StaticBounds>>
                 "argument wrapper bounds type must be cuda::args::no_bounds or cuda::args::static_bounds with "
                 "values representable by the element type");
 
-  static constexpr bool is_constant     = false;
-  static constexpr bool is_deferred     = true;
+  static constexpr bool is_constant     = __is_singleton_static_bounds_v<_StaticBounds>;
+  static constexpr bool is_deferred     = !__is_singleton_static_bounds_v<_StaticBounds>;
   static constexpr bool is_single_value = true;
   static constexpr element_type lowest  = __wrapper_static_lowest<element_type, _StaticBounds>();
   static constexpr element_type highest = __wrapper_static_highest<element_type, _StaticBounds>();
@@ -905,7 +918,14 @@ template <auto _Value>
 template <class _Arg, class _StaticBounds>
 [[nodiscard]] _CCCL_API constexpr auto __lowest_(immediate<_Arg, _StaticBounds> __arg) noexcept
 {
-  return __access::__arg(__arg);
+  if constexpr (__is_singleton_static_bounds_v<_StaticBounds>)
+  {
+    return __wrapper_static_value<__element_type_of_t<_Arg>, _StaticBounds>();
+  }
+  else
+  {
+    return __access::__arg(__arg);
+  }
 }
 
 template <class _Arg, class _StaticBounds>
@@ -920,10 +940,17 @@ template <class _Arg, class _StaticBounds>
 template <class _Arg, class _StaticBounds>
 [[nodiscard]] _CCCL_API constexpr auto __lowest_(deferred<_Arg, _StaticBounds> __arg) noexcept
 {
-  using _ET                    = __element_type_of_t<_Arg>;
-  const auto& __runtime_bounds = __access::__runtime_bounds(__arg);
-  __validate_bounds_intersection<_ET, _StaticBounds>(__runtime_bounds);
-  return __effective_lowest<_ET, _StaticBounds>(__runtime_bounds);
+  using _ET = __element_type_of_t<_Arg>;
+  if constexpr (__is_singleton_static_bounds_v<_StaticBounds>)
+  {
+    return __wrapper_static_value<_ET, _StaticBounds>();
+  }
+  else
+  {
+    const auto& __runtime_bounds = __access::__runtime_bounds(__arg);
+    __validate_bounds_intersection<_ET, _StaticBounds>(__runtime_bounds);
+    return __effective_lowest<_ET, _StaticBounds>(__runtime_bounds);
+  }
 }
 
 template <class _Arg, class _StaticBounds>
@@ -958,7 +985,14 @@ template <auto _Value>
 template <class _Arg, class _StaticBounds>
 [[nodiscard]] _CCCL_API constexpr auto __highest_(immediate<_Arg, _StaticBounds> __arg) noexcept
 {
-  return __access::__arg(__arg);
+  if constexpr (__is_singleton_static_bounds_v<_StaticBounds>)
+  {
+    return __wrapper_static_value<__element_type_of_t<_Arg>, _StaticBounds>();
+  }
+  else
+  {
+    return __access::__arg(__arg);
+  }
 }
 
 template <class _Arg, class _StaticBounds>
@@ -973,10 +1007,17 @@ template <class _Arg, class _StaticBounds>
 template <class _Arg, class _StaticBounds>
 [[nodiscard]] _CCCL_API constexpr auto __highest_(deferred<_Arg, _StaticBounds> __arg) noexcept
 {
-  using _ET                    = __element_type_of_t<_Arg>;
-  const auto& __runtime_bounds = __access::__runtime_bounds(__arg);
-  __validate_bounds_intersection<_ET, _StaticBounds>(__runtime_bounds);
-  return __effective_highest<_ET, _StaticBounds>(__runtime_bounds);
+  using _ET = __element_type_of_t<_Arg>;
+  if constexpr (__is_singleton_static_bounds_v<_StaticBounds>)
+  {
+    return __wrapper_static_value<_ET, _StaticBounds>();
+  }
+  else
+  {
+    const auto& __runtime_bounds = __access::__runtime_bounds(__arg);
+    __validate_bounds_intersection<_ET, _StaticBounds>(__runtime_bounds);
+    return __effective_highest<_ET, _StaticBounds>(__runtime_bounds);
+  }
 }
 
 template <class _Arg, class _StaticBounds>

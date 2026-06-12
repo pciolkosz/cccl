@@ -106,8 +106,24 @@ TEST_FUNC void test()
 #if TEST_HAS_CLASS_NTTP
   static_assert(!cuda::args::__traits<cuda::args::__constant_sequence<cuda::std::array<int, 3>{1, 2, 3}>>::is_deferred);
 #endif // TEST_HAS_CLASS_NTTP
+  static_assert(!cuda::args::__traits<cuda::args::immediate<int, cuda::args::static_bounds<8, 8>>>::is_deferred);
+  static_assert(!cuda::args::__traits<cuda::args::deferred<int*, cuda::args::static_bounds<8, 8>>>::is_deferred);
   static_assert(cuda::args::__traits<cuda::args::deferred<cuda::std::span<int, 1>>>::is_deferred);
+  static_assert(cuda::args::__traits<cuda::args::deferred<int*, cuda::args::static_bounds<1, 8>>>::is_deferred);
   static_assert(cuda::args::__traits<cuda::args::deferred_sequence<cuda::std::span<int>>>::is_deferred);
+
+  // --- argument_traits: is_constant ---
+
+  static_assert(!cuda::args::__traits<int>::is_constant);
+  static_assert(!cuda::args::__traits<cuda::args::immediate<int>>::is_constant);
+  static_assert(!cuda::args::__traits<cuda::args::immediate<int, cuda::args::static_bounds<1, 8>>>::is_constant);
+  static_assert(cuda::args::__traits<cuda::args::immediate<int, cuda::args::static_bounds<8, 8>>>::is_constant);
+  static_assert(cuda::args::__traits<cuda::args::deferred<int*, cuda::args::static_bounds<8, 8>>>::is_constant);
+  static_assert(!cuda::args::__traits<cuda::args::__immediate_sequence<cuda::std::span<int>,
+                                                                       cuda::args::static_bounds<8, 8>>>::is_constant);
+  static_assert(!cuda::args::__traits<cuda::args::deferred_sequence<cuda::std::span<int>,
+                                                                    cuda::args::static_bounds<8, 8>>>::is_constant);
+  static_assert(cuda::args::__traits<cuda::args::constant<42>>::is_constant);
 
   // --- argument_traits: is_single_value ---
 
@@ -150,6 +166,10 @@ TEST_FUNC void test()
   static_assert(cuda::args::__traits<float>::highest == (cuda::std::numeric_limits<float>::max)());
   static_assert(cuda::args::__traits<const cuda::args::immediate<int, cuda::args::static_bounds<1, 8>>>::lowest == 1);
   static_assert(cuda::args::__traits<cuda::args::immediate<int, cuda::args::static_bounds<1, 8>>&>::highest == 8);
+  static_assert(cuda::args::__traits<cuda::args::immediate<int, cuda::args::static_bounds<8, 8>>>::lowest == 8);
+  static_assert(cuda::args::__traits<cuda::args::immediate<int, cuda::args::static_bounds<8, 8>>>::highest == 8);
+  static_assert(cuda::args::__traits<cuda::args::deferred<int*, cuda::args::static_bounds<8, 8>>>::lowest == 8);
+  static_assert(cuda::args::__traits<cuda::args::deferred<int*, cuda::args::static_bounds<8, 8>>>::highest == 8);
   static_assert(
     cuda::args::__traits<cuda::args::__immediate_sequence<cuda::std::span<int>, cuda::args::static_bounds<1, 8>>>::highest
     == 8);

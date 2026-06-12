@@ -46,6 +46,20 @@ TEST_FUNC constexpr bool test()
     assert(cuda::args::__highest_(da) == 5);
   }
 
+  // Uniform scalar with singleton static bounds is treated as constant by traits and bounds queries
+  {
+    auto da = cuda::args::immediate{5, cuda::args::bounds<5, 5>()};
+    static_assert(cuda::args::__traits<decltype(da)>::is_constant);
+    static_assert(cuda::args::__traits<decltype(da)>::lowest == 5);
+    static_assert(cuda::args::__traits<decltype(da)>::highest == 5);
+    static_assert(cuda::args::__lowest_(decltype(da){5}) == 5);
+    static_assert(cuda::args::__highest_(decltype(da){5}) == 5);
+    assert(cuda::args::__lowest_(da) == 5);
+    assert(cuda::args::__highest_(da) == 5);
+    cuda::args::__access::__arg(da) = 5;
+    assert(cuda::args::__unwrap(da) == 5);
+  }
+
   // Non-sequence values are accepted without scalar-only restrictions
   {
     auto da = cuda::args::immediate{non_sequence_value{7}};

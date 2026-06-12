@@ -38,6 +38,19 @@ TEST_FUNC constexpr bool test()
     static_assert(cuda::args::__traits<decltype(def)>::highest == 1000);
   }
 
+  // Deferred single value with singleton static bounds is treated as constant by traits and bounds queries
+  {
+    int val  = 5;
+    auto def = cuda::args::deferred{cuda::std::span<int, 1>{&val, 1}, cuda::args::bounds<5, 5>()};
+    static_assert(cuda::args::__traits<decltype(def)>::is_constant);
+    static_assert(!cuda::args::__traits<decltype(def)>::is_deferred);
+    static_assert(cuda::args::__traits<decltype(def)>::lowest == 5);
+    static_assert(cuda::args::__traits<decltype(def)>::highest == 5);
+    assert(cuda::args::__lowest_(def) == 5);
+    assert(cuda::args::__highest_(def) == 5);
+    assert(cuda::args::__unwrap(def)[0] == 5);
+  }
+
   // Deferred single value via pointer
   {
     int val     = 42;
@@ -72,6 +85,19 @@ TEST_FUNC constexpr bool test()
     assert(cuda::args::__highest_(def) == 100);
     cuda::args::__access::__runtime_bounds(def) = cuda::args::bounds(5, 90);
     assert(cuda::args::__highest_(def) == 90);
+  }
+
+  // Deferred single value with singleton static bounds and wider runtime bounds
+  {
+    int val  = 5;
+    auto def = cuda::args::deferred{
+      cuda::std::span<int, 1>{&val, 1}, cuda::args::bounds<5, 5>(), cuda::args::bounds(0, 10)};
+    static_assert(cuda::args::__traits<decltype(def)>::is_constant);
+    static_assert(!cuda::args::__traits<decltype(def)>::is_deferred);
+    assert(cuda::args::__access::__runtime_bounds(def).lower() == 0);
+    assert(cuda::args::__access::__runtime_bounds(def).upper() == 10);
+    assert(cuda::args::__lowest_(def) == 5);
+    assert(cuda::args::__highest_(def) == 5);
   }
 
   // Deferred sequence via fancy iterator
