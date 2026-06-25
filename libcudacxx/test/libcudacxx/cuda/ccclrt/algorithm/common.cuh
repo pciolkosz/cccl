@@ -12,6 +12,7 @@
 #define TEST_LIBCUDACXX_CCCLRT_ALGORITHM_COMMON_CUH
 
 #include <cuda/algorithm>
+#include <cuda/buffer>
 #include <cuda/memory_resource>
 #include <cuda/std/mdspan>
 #include <cuda/stream>
@@ -35,131 +36,21 @@ void check_result_and_erase(cuda::stream_ref stream, Result&& result, uint8_t pa
   int expected = get_expected_value(pattern_byte);
 
   stream.sync();
-  for (int& i : result)
+  for (size_t i = 0; i < result.size(); ++i)
   {
-    CCCLRT_REQUIRE(i == expected);
-    i = 0;
+    CCCLRT_REQUIRE(result.data()[i] == expected);
+    result.data()[i] = 0;
   }
 }
 
-enum class test_buffer_type
-{
-  pinned,
-  device,
-  managed
-};
-
-// Temporary test type until we move the buffer types to libcu++
-template <typename T>
-struct test_buffer
-{
-  test_buffer_type type;
-  T* data_ptr;
-  std::size_t buffer_size;
-
-  test_buffer(test_buffer_type type, std::size_t size)
-      : type(type)
-      , data_ptr(nullptr)
-      , buffer_size(size)
-  {
-    cuda::__ensure_current_context ctx_setter{cuda::device_ref{0}};
-    if (type == test_buffer_type::pinned)
-    {
-      _CCCL_TRY_CUDA_API(cudaMallocHost, "Failed to allocate pinned memory", &data_ptr, size * sizeof(T));
-    }
-    else if (type == test_buffer_type::device)
-    {
-      _CCCL_TRY_CUDA_API(cudaMalloc, "Failed to allocate device memory", &data_ptr, size * sizeof(T));
-    }
-    else if (type == test_buffer_type::managed)
-    {
-      _CCCL_TRY_CUDA_API(cudaMallocManaged, "Failed to allocate managed memory", &data_ptr, size * sizeof(T));
-    }
-  }
-
-  ~test_buffer()
-  {
-    if (data_ptr)
-    {
-      cuda::__ensure_current_context ctx_setter{cuda::device_ref{0}};
-      if (type == test_buffer_type::pinned)
-      {
-        _CCCL_LOG_CUDA_API(cudaFreeHost, "Failed to free pinned memory", data_ptr);
-      }
-      else if (type == test_buffer_type::device)
-      {
-        _CCCL_LOG_CUDA_API(cudaFree, "Failed to free device memory", data_ptr);
-      }
-      else if (type == test_buffer_type::managed)
-      {
-        _CCCL_LOG_CUDA_API(cudaFree, "Failed to free managed memory", data_ptr);
-      }
-    }
-  }
-
-  test_buffer(const test_buffer&) = delete;
-  test_buffer(test_buffer&& other) noexcept
-      : type(other.type)
-      , data_ptr(other.data_ptr)
-      , buffer_size(other.buffer_size)
-  {
-    other.data_ptr    = nullptr;
-    other.buffer_size = 0;
-  }
-
-  test_buffer& operator=(const test_buffer&) = delete;
-  test_buffer& operator=(test_buffer&& other) noexcept
-  {
-    ::cuda::std::exchange(type, other.type);
-    ::cuda::std::exchange(data_ptr, other.data_ptr);
-    ::cuda::std::exchange(buffer_size, other.buffer_size);
-    return *this;
-  }
-
-  T* begin() const
-  {
-    return data_ptr;
-  }
-
-  T* end() const
-  {
-    return data_ptr + buffer_size;
-  }
-
-  T* data() const
-  {
-    return data_ptr;
-  }
-
-  std::size_t size() const
-  {
-    return buffer_size;
-  }
-
-  std::size_t size_bytes() const
-  {
-    return buffer_size * sizeof(T);
-  }
-
-  operator cuda::std::span<const T>() const
-  {
-    return {data_ptr, buffer_size};
-  }
-
-  operator cuda::std::span<T>()
-  {
-    return {data_ptr, buffer_size};
-  }
-};
-
 template <typename Layout = cuda::std::layout_right, typename Extents>
-auto make_buffer_for_mdspan(Extents extents, char value = 0)
+auto make_buffer_for_mdspan(cuda::stream_ref stream, Extents extents, char value = 0)
 {
   auto mapping = typename Layout::template mapping<decltype(extents)>{extents};
 
-  test_buffer<int> buffer(test_buffer_type::pinned, mapping.required_span_size());
+  auto buffer = cuda::make_pinned_buffer<int>(stream, mapping.required_span_size(), cuda::no_init);
 
-  memset(buffer.data(), value, buffer.size_bytes());
+  memset(buffer.data(), value, buffer.size() * sizeof(int));
 
   return buffer;
 }
