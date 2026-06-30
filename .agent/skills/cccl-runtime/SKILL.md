@@ -19,9 +19,10 @@ Use `docs/libcudacxx/runtime.rst` and the `docs/libcudacxx/runtime/` subpages as
 ## Test Patterns
 
 - Prefer `cuda::stream stream{device}` over raw `cudaStream_t`; pass `stream.get()` only to APIs that still require a native handle, such as `thrust::cuda::par.on(...)`.
+- When a host-side test uses a stream policy, call `stream.sync()` before leaving the test body, even if the algorithm returns a scalar or iterator-like result.
 - Prefer `cuda::make_device_buffer<T>(stream, device, ...)` and `cuda::buffer` over `thrust::device_vector` for migrated Runtime tests. Direct braced initializer lists are supported when constructing buffers.
 - Avoid host dereference of device-buffer iterators. Compare iterator offsets, assert in a device functor, or copy results back with `cuda::copy_bytes` and synchronize the stream before host assertions.
-- For host-side Runtime buffers in tests, use a synchronous adapter around `cuda::mr::legacy_pinned_memory_resource` when `cuda::make_pinned_buffer` would be gated by CTK availability. If the helper intentionally needs a stable device, use `cuda::device_ref{0}` explicitly.
+- For host-side Runtime buffers in tests, use a synchronous adapter around `cuda::mr::legacy_pinned_memory_resource` when `cuda::make_pinned_buffer` would be gated by CTK availability. If the helper intentionally needs a stable device, use `cuda::device_ref{0}` explicitly. Use these host buffers for expected-result computation when migrating tests that previously used `thrust::host_vector`.
 - Preserve tests whose purpose is raw pointer coverage, but use Runtime buffers as the backing allocation and synchronize the initialization stream before using a pointer with a default-stream Thrust policy.
 
 ## Launch Patterns
@@ -29,6 +30,7 @@ Use `docs/libcudacxx/runtime.rst` and the `docs/libcudacxx/runtime/` subpages as
 - Prefer `cuda::launch(stream, config, functor{}, args...)` over raw `<<<...>>>` launches.
 - Use functors with `__device__ operator()` rather than templated `__global__` kernels when the call fits the Runtime launch model.
 - Buffers passed to `cuda::launch` become `cuda::std::span` arguments; take the span in the functor and call `begin()` / `end()` inside the functor.
+- For device-side algorithms that return scalar results, pass the expected value into the launched functor and assert on device instead of allocating a one-element result buffer solely to copy the result back.
 - If one functor would have predicate and non-predicate overloads where `cuda::launch` could treat the config as a first functor argument, split them into separate functor types to keep overload resolution unambiguous.
 - After a launch that performs device-side assertions, call `stream.sync()` so failures are observed at the test site.
 
