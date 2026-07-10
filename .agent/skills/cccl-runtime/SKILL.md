@@ -24,7 +24,7 @@ Use `docs/libcudacxx/runtime.rst` and the `docs/libcudacxx/runtime/` subpages as
 - Avoid host dereference of device-buffer iterators. Compare iterator offsets, assert in a device functor, or copy results back with `cuda::copy_bytes` and synchronize the stream before host assertions.
 - For fill/generate-style tests where all output elements should have one value, use a stream-ordered buffer check that copies to a host `std::vector<typename Buffer::value_type>` and compares each element. Do not reintroduce `thrust::host_vector` solely to build that reference.
 - For host-side Runtime buffers in tests, use a synchronous adapter around `cuda::mr::legacy_pinned_memory_resource` when `cuda::make_pinned_buffer` would be gated by CTK availability. If the helper intentionally needs a stable device, use `cuda::device_ref{0}` explicitly. Use these host buffers for expected-result computation when migrating tests that previously used `thrust::host_vector`.
-- When updating expected host Runtime buffers for simple fill-like ranges, a plain host loop over the expected buffer is often clearer than invoking a host-side Thrust algorithm just to mirror the device operation.
+- When updating expected host Runtime buffers, using an established host-side Thrust algorithm can be a clear oracle and gives useful coverage for Runtime buffer host iterators. Prefer an independent loop only when the host algorithm would make the oracle too coupled to the behavior under test.
 - Preserve tests whose purpose is raw pointer coverage, but use Runtime buffers as the backing allocation and synchronize the initialization stream before using a pointer with a default-stream Thrust policy.
 
 ## Benchmark Patterns
