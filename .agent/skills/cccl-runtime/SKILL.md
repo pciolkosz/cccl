@@ -34,6 +34,7 @@ Use `docs/libcudacxx/runtime.rst` and the `docs/libcudacxx/runtime/` subpages as
 - Buffers passed to `cuda::launch` become `cuda::std::span` arguments; take the span in the functor and call `begin()` / `end()` inside the functor.
 - If the launched algorithm needs the full output range size, use the span’s `size()` inside the functor instead of passing a duplicate size argument from the host.
 - For subrange algorithms, pass the buffer plus small scalar offsets/counts into the launch functor, then compute `span.begin() + offset` inside the functor. Avoid passing host-computed begin/end iterators into `cuda::launch` when the whole buffer is already an argument.
+- For launched algorithms that return an iterator into a passed buffer, prefer asserting the returned iterator against `span.begin() + expected_offset` inside the device functor instead of copying iterator objects back to the host.
 - For device-side algorithms that return scalar results, pass the expected value into the launched functor and assert on device instead of allocating a one-element result buffer solely to copy the result back.
 - If one functor would have predicate and non-predicate overloads where `cuda::launch` could treat the config as a first functor argument, split them into separate functor types to keep overload resolution unambiguous.
 - After a launch that performs device-side assertions, call `stream.sync()` so failures are observed at the test site.
