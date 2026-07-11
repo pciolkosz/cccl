@@ -34,7 +34,9 @@ Use `docs/libcudacxx/runtime.rst` and the `docs/libcudacxx/runtime/` subpages as
 - Pass the benchmark stream to CUB device APIs through an execution environment, for example `cuda::std::execution::env{stream}` or the local `cub_bench_env(...)` helper when an allocator is also needed.
 - When constructing a CUB benchmark env outside a `state.exec` launch callback, combine the stream with the caching allocator explicitly: `cuda::std::execution::env{stream, cuda::std::execution::prop{cuda::mr::get_memory_resource, cuda::mr::resource_ref<>{alloc}}}`.
 - For setup-only scalar outputs that kernels write and the host reads after `stream.sync()`, use a host-accessible, device-accessible Runtime buffer backed by `cuda::mr::synchronous_resource_adapter<cuda::mr::legacy_pinned_memory_resource>`.
-- Keep shared data generators on their existing return type until the generator API itself is intentionally updated; use Runtime buffers for local benchmark setup storage that the benchmark owns directly.
+- Prefer nvbench helper generator APIs that return Runtime buffers, such as `generate.uniform.key_segments(...).device_buffer<T>(stream, device)`, when migrating generated benchmark inputs away from `thrust::device_vector`.
+- Generator helpers that allocate a Runtime buffer may need to synchronize the allocation stream before calling existing generator internals that are not stream-aware. Keep that synchronization in benchmark setup code, outside timed `state.exec` regions.
+- Keep shared data generators on their existing return type only when no buffer-returning helper exists yet; use Runtime buffers for local benchmark setup storage that the benchmark owns directly.
 
 ## Launch Patterns
 
