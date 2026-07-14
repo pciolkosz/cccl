@@ -12,6 +12,8 @@
 #define __CUDAX_KERNEL__
 
 #include <cuda/experimental/__kernel/attributes.cuh>
+#include <cuda/experimental/__kernel/jit_dispatch.cuh>
+#include <cuda/experimental/__kernel/jit_launch.cuh>
 #include <cuda/experimental/__kernel/kernel_ref.cuh>
 
 #endif // __CUDAX_KERNEL__

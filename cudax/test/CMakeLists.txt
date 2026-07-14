@@ -148,6 +148,7 @@ cudax_add_catch2_test(test_target green_context
 )
 
 cudax_add_catch2_test(test_target kernel
+    kernel/jit_dispatch.cu
     kernel/kernel_ref.cu
 )
 

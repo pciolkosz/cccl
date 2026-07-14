@@ -45,6 +45,23 @@ foreach (example_src IN LISTS example_srcs)
   cudax_add_example(example_target "${example_src}")
 endforeach()
 
+if (TARGET cudax.example.jit_dispatch_nvrtc)
+  target_link_libraries(
+    cudax.example.jit_dispatch_nvrtc
+    PRIVATE
+      CUDA::cuda_driver
+      CUDA::cudart
+      CUDA::nvrtc
+  )
+  target_compile_definitions(
+    cudax.example.jit_dispatch_nvrtc
+    PRIVATE
+      CUDAX_EXAMPLE_CUDAX_INCLUDE_DIR="${cudax_SOURCE_DIR}/include"
+      CUDAX_EXAMPLE_DIR="${cudax_SOURCE_DIR}/examples"
+      CUDAX_EXAMPLE_LIBCUDACXX_INCLUDE_DIR="${CCCL_SOURCE_DIR}/libcudacxx/include"
+  )
+endif()
+
 # FIXME: Enable MSVC
 if (cudax_ENABLE_CUDASTF AND NOT "MSVC" STREQUAL "${CMAKE_CXX_COMPILER_ID}")
   # STF examples are handled separately:
