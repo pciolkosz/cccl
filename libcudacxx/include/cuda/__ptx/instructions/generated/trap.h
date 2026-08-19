@@ -12,7 +12,12 @@ __device__ static inline void trap();
 template <typename = void>
 _CCCL_DEVICE static inline void trap()
 {
-  asm volatile("trap;" : : :);
+    asm volatile (
+      "trap;"
+      :
+      :
+      :
+    );
 }
 #endif // __cccl_ptx_isa >= 100
 

@@ -151,7 +151,7 @@ enum class dot_report_mechanism
   per_16bytes_8000,
   per_16bytes_80,
   per_16bytes_8,
-  per_element_ff,
+  per_element_ff
 };
 
 template <dot_sem __sem>
@@ -264,13 +264,15 @@ template <int n>
 using n32_t = ::cuda::std::integral_constant<int, n>;
 
 template <dot_report_mechanism __report_mechanism>
-using report_mechanism_t         = ::cuda::std::integral_constant<dot_report_mechanism, __report_mechanism>;
+using report_mechanism_t = ::cuda::std::integral_constant<dot_report_mechanism, __report_mechanism>;
+
 using mbarrier_report_disabled_t = report_mechanism_t<dot_report_mechanism::disabled>;
-using mbarrier_report_valid_per_16bytes_80000000_t = report_mechanism_t<dot_report_mechanism::per_16bytes_80000000>;
-using mbarrier_report_valid_per_16bytes_8000_t     = report_mechanism_t<dot_report_mechanism::per_16bytes_8000>;
-using mbarrier_report_valid_per_16bytes_80_t       = report_mechanism_t<dot_report_mechanism::per_16bytes_80>;
-using mbarrier_report_valid_per_16bytes_8_t        = report_mechanism_t<dot_report_mechanism::per_16bytes_8>;
-using mbarrier_report_valid_per_element_ff_t       = report_mechanism_t<dot_report_mechanism::per_element_ff>;
+using mbarrier_report_valid_per_16bytes_80000000_t =
+  report_mechanism_t<dot_report_mechanism::per_16bytes_80000000>;
+using mbarrier_report_valid_per_16bytes_8000_t = report_mechanism_t<dot_report_mechanism::per_16bytes_8000>;
+using mbarrier_report_valid_per_16bytes_80_t   = report_mechanism_t<dot_report_mechanism::per_16bytes_80>;
+using mbarrier_report_valid_per_16bytes_8_t    = report_mechanism_t<dot_report_mechanism::per_16bytes_8>;
+using mbarrier_report_valid_per_element_ff_t   = report_mechanism_t<dot_report_mechanism::per_element_ff>;
 
 [[maybe_unused]] static constexpr mbarrier_report_disabled_t mbarrier_report_disabled{};
 [[maybe_unused]] static constexpr mbarrier_report_valid_per_16bytes_80000000_t

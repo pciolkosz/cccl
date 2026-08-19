@@ -4,6 +4,6 @@ fabric.submit
 =============
 
 -  PTX ISA:
-   `fabric.submit <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#parallel-synchronization-and-communication-instructions-fabric>`__
+   `fabric.submit <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#fabric-instructions-fabric-submit>`__
 
 .. include:: generated/fabric_submit.rst

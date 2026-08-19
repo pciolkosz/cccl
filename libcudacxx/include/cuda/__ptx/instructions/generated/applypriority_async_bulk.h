@@ -12,12 +12,17 @@ __device__ static inline void applypriority_async_bulk_L2_evict_normal(
 */
 #if __cccl_ptx_isa >= 940
 template <typename = void>
-_CCCL_DEVICE static inline void applypriority_async_bulk_L2_evict_normal(void* __srcMem, ::cuda::std::uint32_t __size)
+_CCCL_DEVICE static inline void applypriority_async_bulk_L2_evict_normal(
+  void* __srcMem,
+  ::cuda::std::uint32_t __size)
 {
-  asm volatile("applypriority.async.bulk.global.bulk_group.L2::evict_normal [%0], %1;"
-               :
-               : "l"(__as_ptr_gmem(__srcMem)), "r"(__size)
-               : "memory");
+    asm volatile (
+      "applypriority.async.bulk.global.bulk_group.L2::evict_normal [%0], %1;"
+      :
+      : "l"(__as_ptr_gmem(__srcMem)),
+        "r"(__size)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 

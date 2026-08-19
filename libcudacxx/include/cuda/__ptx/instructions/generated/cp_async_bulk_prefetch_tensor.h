@@ -4,8 +4,7 @@
 #define _CUDA_PTX_GENERATED_CP_ASYNC_BULK_PREFETCH_TENSOR_H_
 
 /*
-// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80,
-SM_90
+// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80, SM_90
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor(
@@ -23,16 +22,19 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::cache_hint [%0, {%1}], %2;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::cache_hint [%0, {%1}], %2;"
       :
-      : "l"(__tensorMap), "r"(__tensorCoords[0]), "l"(__cache_policy)
-      : "memory");
+      : "l"(__tensorMap),
+        "r"(__tensorCoords[0]),
+        "l"(__cache_policy)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80,
-SM_90
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80, SM_90
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor(
@@ -50,16 +52,20 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::cache_hint [%0, {%1, %2}], %3;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::cache_hint [%0, {%1, %2}], %3;"
       :
-      : "l"(__tensorMap), "r"(__tensorCoords[0]), "r"(__tensorCoords[1]), "l"(__cache_policy)
-      : "memory");
+      : "l"(__tensorMap),
+        "r"(__tensorCoords[0]),
+        "r"(__tensorCoords[1]),
+        "l"(__cache_policy)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
 /*
-// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80,
-SM_90
+// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80, SM_90
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor(
@@ -77,16 +83,21 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::cache_hint [%0, {%1, %2, %3}], %4;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::cache_hint [%0, {%1, %2, %3}], %4;"
       :
-      : "l"(__tensorMap), "r"(__tensorCoords[0]), "r"(__tensorCoords[1]), "r"(__tensorCoords[2]), "l"(__cache_policy)
-      : "memory");
+      : "l"(__tensorMap),
+        "r"(__tensorCoords[0]),
+        "r"(__tensorCoords[1]),
+        "r"(__tensorCoords[2]),
+        "l"(__cache_policy)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
 /*
-// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80,
-SM_90
+// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80, SM_90
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor(
@@ -104,7 +115,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::cache_hint [%0, {%1, %2, %3, %4}], %5;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::cache_hint [%0, {%1, %2, %3, %4}], %5;"
       :
       : "l"(__tensorMap),
         "r"(__tensorCoords[0]),
@@ -112,13 +124,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor(
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
 /*
-// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80,
-SM_90
+// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 80, SM_90
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor(
@@ -136,7 +148,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::cache_hint [%0, {%1, %2, %3, %4, %5}], %6;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::cache_hint [%0, {%1, %2, %3, %4, %5}], %6;"
       :
       : "l"(__tensorMap),
         "r"(__tensorCoords[0]),
@@ -145,13 +158,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor(
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile::gather4.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX
-ISA 86, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile::gather4.L2::cache_hint [tensorMap, tensorCoords], cache_policy; // PTX ISA 86, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_tile_gather4(
@@ -169,7 +182,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_tile_gather4(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile::gather4.L2::cache_hint [%0, {%1, %2, %3, %4, %5}], %6;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile::gather4.L2::cache_hint [%0, {%1, %2, %3, %4, %5}], %6;"
       :
       : "l"(__tensorMap),
         "r"(__tensorCoords[0]),
@@ -178,13 +192,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_tile_gather4(
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 860
 
 /*
-// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a,
-SM_107f
+// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
@@ -195,19 +209,23 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
 #if __cccl_ptx_isa >= 940
 template <typename = void>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
-  ::cuda::ptx::space_global_t, const void* __tensorMap, const ::cuda::std::int32_t (&__tensorCoords)[1])
+  ::cuda::ptx::space_global_t,
+  const void* __tensorMap,
+  const ::cuda::std::int32_t (&__tensorCoords)[1])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::evict_last [%0, {%1}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::evict_last [%0, {%1}];"
       :
-      : "l"(__tensorMap), "r"(__tensorCoords[0])
-      : "memory");
+      : "l"(__tensorMap),
+        "r"(__tensorCoords[0])
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
@@ -227,16 +245,20 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2}], %3;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2}], %3;"
       :
-      : "l"(__tensorMap), "l"(__gAddrToOverride), "r"(__tensorCoords[0]), "l"(__cache_policy)
-      : "memory");
+      : "l"(__tensorMap),
+        "l"(__gAddrToOverride),
+        "r"(__tensorCoords[0]),
+        "l"(__cache_policy)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
@@ -254,16 +276,19 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   const ::cuda::std::int32_t (&__tensorCoords)[1])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2}];"
       :
-      : "l"(__tensorMap), "l"(__gAddrToOverride), "r"(__tensorCoords[0])
-      : "memory");
+      : "l"(__tensorMap),
+        "l"(__gAddrToOverride),
+        "r"(__tensorCoords[0])
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim [tensorMap,
-gAddrToOverride, tensorSizeToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
@@ -286,21 +311,21 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
 {
   // __space == space_global (due to parameter type constraint)
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim "
-      "[%0, %1, {%2}, {%3}], %4;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim [%0, %1, {%2}, {%3}], %4;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
         "h"(/*as_b16*/ *reinterpret_cast<const ::cuda::std::int16_t*>(&__tensorSizeToOverride[0])),
         "r"(__tensorCoords[0]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim [tensorMap,
-gAddrToOverride, tensorSizeToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.1d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
@@ -321,20 +346,20 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
 {
   // __space == space_global (due to parameter type constraint)
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim "
-      "[%0, %1, {%2}, {%3}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.1d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim [%0, %1, {%2}, {%3}];"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
         "h"(/*as_b16*/ *reinterpret_cast<const ::cuda::std::int16_t*>(&__tensorSizeToOverride[0])),
         "r"(__tensorCoords[0])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a,
-SM_107f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
@@ -345,19 +370,24 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
 #if __cccl_ptx_isa >= 940
 template <typename = void>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
-  ::cuda::ptx::space_global_t, const void* __tensorMap, const ::cuda::std::int32_t (&__tensorCoords)[2])
+  ::cuda::ptx::space_global_t,
+  const void* __tensorMap,
+  const ::cuda::std::int32_t (&__tensorCoords)[2])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::evict_last [%0, {%1, %2}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::evict_last [%0, {%1, %2}];"
       :
-      : "l"(__tensorMap), "r"(__tensorCoords[0]), "r"(__tensorCoords[1])
-      : "memory");
+      : "l"(__tensorMap),
+        "r"(__tensorCoords[0]),
+        "r"(__tensorCoords[1])
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
@@ -377,16 +407,21 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2, %3}], %4;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2, %3}], %4;"
       :
-      : "l"(__tensorMap), "l"(__gAddrToOverride), "r"(__tensorCoords[0]), "r"(__tensorCoords[1]), "l"(__cache_policy)
-      : "memory");
+      : "l"(__tensorMap),
+        "l"(__gAddrToOverride),
+        "r"(__tensorCoords[0]),
+        "r"(__tensorCoords[1]),
+        "l"(__cache_policy)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
@@ -404,20 +439,22 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   const ::cuda::std::int32_t (&__tensorCoords)[2])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2, %3}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2, %3}];"
       :
-      : "l"(__tensorMap), "l"(__gAddrToOverride), "r"(__tensorCoords[0]), "r"(__tensorCoords[1])
-      : "memory");
+      : "l"(__tensorMap),
+        "l"(__gAddrToOverride),
+        "r"(__tensorCoords[0]),
+        "r"(__tensorCoords[1])
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim_stride
-[tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim_stride [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
-template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> =
-true>
+template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
   cuda::ptx::space_global_t,
   const void* tensorMap,
@@ -429,10 +466,7 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_override(
   uint64_t cache_policy = 0x10F0000000000000);
 */
 #if __cccl_ptx_isa >= 940
-template <typename _B16,
-          ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true,
-          typename _B32,
-          ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
+template <typename _B16, ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true, typename _B32, ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::ptx::space_global_t,
   const void* __tensorMap,
@@ -447,8 +481,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   static_assert(sizeof(_B16) == 2, "");
   static_assert(sizeof(_B32) == 4, "");
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim_"
-      "stride [%0, %1, {%2, %3}, {%4}, %5, {%6, %7}], %8;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim_stride [%0, %1, {%2, %3}, {%4}, %5, {%6, %7}], %8;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -459,17 +493,15 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
         "r"(__tensorCoords[0]),
         "r"(__tensorCoords[1]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim_stride
-[tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim_stride [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
-template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> =
-true>
+template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
   cuda::ptx::space_global_t,
   const void* tensorMap,
@@ -480,10 +512,7 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_overri
   const int32_t (&tensorCoords)[2]);
 */
 #if __cccl_ptx_isa >= 940
-template <typename _B16,
-          ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true,
-          typename _B32,
-          ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
+template <typename _B16, ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true, typename _B32, ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
   ::cuda::ptx::space_global_t,
   const void* __tensorMap,
@@ -497,8 +526,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   static_assert(sizeof(_B16) == 2, "");
   static_assert(sizeof(_B32) == 4, "");
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim_"
-      "stride [%0, %1, {%2, %3}, {%4}, %5, {%6, %7}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim_stride [%0, %1, {%2, %3}, {%4}, %5, {%6, %7}];"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -508,13 +537,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
         "h"(/*as_b16*/ *reinterpret_cast<const ::cuda::std::int16_t*>(&__tensorUpperStrideToOverride)),
         "r"(__tensorCoords[0]),
         "r"(__tensorCoords[1])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a,
-SM_107f
+// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
@@ -525,19 +554,25 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
 #if __cccl_ptx_isa >= 940
 template <typename = void>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
-  ::cuda::ptx::space_global_t, const void* __tensorMap, const ::cuda::std::int32_t (&__tensorCoords)[3])
+  ::cuda::ptx::space_global_t,
+  const void* __tensorMap,
+  const ::cuda::std::int32_t (&__tensorCoords)[3])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::evict_last [%0, {%1, %2, %3}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::evict_last [%0, {%1, %2, %3}];"
       :
-      : "l"(__tensorMap), "r"(__tensorCoords[0]), "r"(__tensorCoords[1]), "r"(__tensorCoords[2])
-      : "memory");
+      : "l"(__tensorMap),
+        "r"(__tensorCoords[0]),
+        "r"(__tensorCoords[1]),
+        "r"(__tensorCoords[2])
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
@@ -557,8 +592,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2, %3, %4}], "
-      "%5;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2, %3, %4}], %5;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -566,13 +601,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
         "r"(__tensorCoords[1]),
         "r"(__tensorCoords[2]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
@@ -590,20 +625,23 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   const ::cuda::std::int32_t (&__tensorCoords)[3])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2, %3, %4}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2, %3, %4}];"
       :
-      : "l"(__tensorMap), "l"(__gAddrToOverride), "r"(__tensorCoords[0]), "r"(__tensorCoords[1]), "r"(__tensorCoords[2])
-      : "memory");
+      : "l"(__tensorMap),
+        "l"(__gAddrToOverride),
+        "r"(__tensorCoords[0]),
+        "r"(__tensorCoords[1]),
+        "r"(__tensorCoords[2])
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim_stride
-[tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim_stride [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
-template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> =
-true>
+template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
   cuda::ptx::space_global_t,
   const void* tensorMap,
@@ -615,10 +653,7 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_override(
   uint64_t cache_policy = 0x10F0000000000000);
 */
 #if __cccl_ptx_isa >= 940
-template <typename _B16,
-          ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true,
-          typename _B32,
-          ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
+template <typename _B16, ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true, typename _B32, ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::ptx::space_global_t,
   const void* __tensorMap,
@@ -633,8 +668,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   static_assert(sizeof(_B16) == 2, "");
   static_assert(sizeof(_B32) == 4, "");
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim_"
-      "stride [%0, %1, {%2, %3, %4}, {%5, %6}, %7, {%8, %9, %10}], %11;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim_stride [%0, %1, {%2, %3, %4}, {%5, %6}, %7, {%8, %9, %10}], %11;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -648,17 +683,15 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
         "r"(__tensorCoords[1]),
         "r"(__tensorCoords[2]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim_stride
-[tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.3d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim_stride [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
-template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> =
-true>
+template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
   cuda::ptx::space_global_t,
   const void* tensorMap,
@@ -669,10 +702,7 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_overri
   const int32_t (&tensorCoords)[3]);
 */
 #if __cccl_ptx_isa >= 940
-template <typename _B16,
-          ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true,
-          typename _B32,
-          ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
+template <typename _B16, ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true, typename _B32, ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
   ::cuda::ptx::space_global_t,
   const void* __tensorMap,
@@ -686,8 +716,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   static_assert(sizeof(_B16) == 2, "");
   static_assert(sizeof(_B32) == 4, "");
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim_"
-      "stride [%0, %1, {%2, %3, %4}, {%5, %6}, %7, {%8, %9, %10}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.3d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim_stride [%0, %1, {%2, %3, %4}, {%5, %6}, %7, {%8, %9, %10}];"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -700,13 +730,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
         "r"(__tensorCoords[0]),
         "r"(__tensorCoords[1]),
         "r"(__tensorCoords[2])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a,
-SM_107f
+// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
@@ -717,19 +747,26 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
 #if __cccl_ptx_isa >= 940
 template <typename = void>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
-  ::cuda::ptx::space_global_t, const void* __tensorMap, const ::cuda::std::int32_t (&__tensorCoords)[4])
+  ::cuda::ptx::space_global_t,
+  const void* __tensorMap,
+  const ::cuda::std::int32_t (&__tensorCoords)[4])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::evict_last [%0, {%1, %2, %3, %4}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::evict_last [%0, {%1, %2, %3, %4}];"
       :
-      : "l"(__tensorMap), "r"(__tensorCoords[0]), "r"(__tensorCoords[1]), "r"(__tensorCoords[2]), "r"(__tensorCoords[3])
-      : "memory");
+      : "l"(__tensorMap),
+        "r"(__tensorCoords[0]),
+        "r"(__tensorCoords[1]),
+        "r"(__tensorCoords[2]),
+        "r"(__tensorCoords[3])
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
@@ -749,8 +786,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2, %3, %4, "
-      "%5}], %6;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2, %3, %4, %5}], %6;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -759,13 +796,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
@@ -783,8 +820,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   const ::cuda::std::int32_t (&__tensorCoords)[4])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2, %3, %4, "
-      "%5}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2, %3, %4, %5}];"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -792,17 +829,15 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
         "r"(__tensorCoords[1]),
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim_stride
-[tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim_stride [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
-template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> =
-true>
+template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
   cuda::ptx::space_global_t,
   const void* tensorMap,
@@ -814,10 +849,7 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_override(
   uint64_t cache_policy = 0x10F0000000000000);
 */
 #if __cccl_ptx_isa >= 940
-template <typename _B16,
-          ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true,
-          typename _B32,
-          ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
+template <typename _B16, ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true, typename _B32, ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::ptx::space_global_t,
   const void* __tensorMap,
@@ -832,8 +864,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   static_assert(sizeof(_B16) == 2, "");
   static_assert(sizeof(_B32) == 4, "");
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim_"
-      "stride [%0, %1, {%2, %3, %4, %5}, {%6, %7, %8}, %9, {%10, %11, %12, %13}], %14;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim_stride [%0, %1, {%2, %3, %4, %5}, {%6, %7, %8}, %9, {%10, %11, %12, %13}], %14;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -850,17 +882,15 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim_stride
-[tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.4d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim_stride [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
-template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> =
-true>
+template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
   cuda::ptx::space_global_t,
   const void* tensorMap,
@@ -871,10 +901,7 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_overri
   const int32_t (&tensorCoords)[4]);
 */
 #if __cccl_ptx_isa >= 940
-template <typename _B16,
-          ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true,
-          typename _B32,
-          ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
+template <typename _B16, ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true, typename _B32, ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
   ::cuda::ptx::space_global_t,
   const void* __tensorMap,
@@ -888,8 +915,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   static_assert(sizeof(_B16) == 2, "");
   static_assert(sizeof(_B32) == 4, "");
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim_"
-      "stride [%0, %1, {%2, %3, %4, %5}, {%6, %7, %8}, %9, {%10, %11, %12, %13}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.4d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim_stride [%0, %1, {%2, %3, %4, %5}, {%6, %7, %8}, %9, {%10, %11, %12, %13}];"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -905,13 +932,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
         "r"(__tensorCoords[1]),
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a,
-SM_107f
+// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
@@ -922,10 +949,13 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
 #if __cccl_ptx_isa >= 940
 template <typename = void>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
-  ::cuda::ptx::space_global_t, const void* __tensorMap, const ::cuda::std::int32_t (&__tensorCoords)[5])
+  ::cuda::ptx::space_global_t,
+  const void* __tensorMap,
+  const ::cuda::std::int32_t (&__tensorCoords)[5])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::evict_last [%0, {%1, %2, %3, %4, %5}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::evict_last [%0, {%1, %2, %3, %4, %5}];"
       :
       : "l"(__tensorMap),
         "r"(__tensorCoords[0]),
@@ -933,13 +963,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last(
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
@@ -959,8 +989,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2, %3, %4, "
-      "%5, %6}], %7;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::cache_hint.override::global_address [%0, %1, {%2, %3, %4, %5, %6}], %7;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -970,13 +1000,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::evict_last.override::global_address [tensorMap, gAddrToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
@@ -994,8 +1024,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   const ::cuda::std::int32_t (&__tensorCoords)[5])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2, %3, %4, "
-      "%5, %6}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::evict_last.override::global_address [%0, %1, {%2, %3, %4, %5, %6}];"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -1004,17 +1034,15 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim_stride
-[tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride,
-tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::cache_hint.override::global_address.override::global_dim_stride [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
-template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> =
-true>
+template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_override(
   cuda::ptx::space_global_t,
   const void* tensorMap,
@@ -1026,10 +1054,7 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_override(
   uint64_t cache_policy = 0x10F0000000000000);
 */
 #if __cccl_ptx_isa >= 940
-template <typename _B16,
-          ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true,
-          typename _B32,
-          ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
+template <typename _B16, ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true, typename _B32, ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   ::cuda::ptx::space_global_t,
   const void* __tensorMap,
@@ -1044,8 +1069,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
   static_assert(sizeof(_B16) == 2, "");
   static_assert(sizeof(_B32) == 4, "");
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim_"
-      "stride [%0, %1, {%2, %3, %4, %5, %6}, {%7, %8, %9, %10}, %11, {%12, %13, %14, %15, %16}], %17;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::cache_hint.override::global_address.override::global_dim_stride [%0, %1, {%2, %3, %4, %5, %6}, {%7, %8, %9, %10}, %11, {%12, %13, %14, %15, %16}], %17;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -1065,17 +1090,15 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_override(
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim_stride
-[tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride,
-tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.5d.L2.src.tile.L2::evict_last.override::global_address.override::global_dim_stride [tensorMap, gAddrToOverride, tensorSizeToOverride, tensorLowerStrideToOverride, tensorUpperStrideToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
-template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> =
-true>
+template <typename B16, enable_if_t<sizeof(B16) == 2, bool> = true, typename B32, enable_if_t<sizeof(B32) == 4, bool> = true>
 __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
   cuda::ptx::space_global_t,
   const void* tensorMap,
@@ -1086,10 +1109,7 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_overri
   const int32_t (&tensorCoords)[5]);
 */
 #if __cccl_ptx_isa >= 940
-template <typename _B16,
-          ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true,
-          typename _B32,
-          ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
+template <typename _B16, ::cuda::std::enable_if_t<sizeof(_B16) == 2, bool> = true, typename _B32, ::cuda::std::enable_if_t<sizeof(_B32) == 4, bool> = true>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_override(
   ::cuda::ptx::space_global_t,
   const void* __tensorMap,
@@ -1103,8 +1123,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
   static_assert(sizeof(_B16) == 2, "");
   static_assert(sizeof(_B32) == 4, "");
   static_assert(sizeof(_B16) == 2, "");
-  asm("cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim_"
-      "stride [%0, %1, {%2, %3, %4, %5, %6}, {%7, %8, %9, %10}, %11, {%12, %13, %14, %15, %16}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.5d.L2.global.tile.L2::evict_last.override::global_address.override::global_dim_stride [%0, %1, {%2, %3, %4, %5, %6}, {%7, %8, %9, %10}, %11, {%12, %13, %14, %15, %16}];"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -1123,13 +1143,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_L2_evict_last_over
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile::gather4.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94,
-SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile::gather4.L2::evict_last [tensorMap, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_tile_gather4_L2_evict_last(
@@ -1140,10 +1160,13 @@ __device__ static inline void cp_async_bulk_prefetch_tensor_tile_gather4_L2_evic
 #if __cccl_ptx_isa >= 940
 template <typename = void>
 _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_tile_gather4_L2_evict_last(
-  ::cuda::ptx::space_global_t, const void* __tensorMap, const ::cuda::std::int32_t (&__tensorCoords)[5])
+  ::cuda::ptx::space_global_t,
+  const void* __tensorMap,
+  const ::cuda::std::int32_t (&__tensorCoords)[5])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile::gather4.L2::evict_last [%0, {%1, %2, %3, %4, %5}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile::gather4.L2::evict_last [%0, {%1, %2, %3, %4, %5}];"
       :
       : "l"(__tensorMap),
         "r"(__tensorCoords[0]),
@@ -1151,13 +1174,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_tile_gather4_L2_ev
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile::gather4.L2::cache_hint.override::global_address [tensorMap,
-gAddrToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile::gather4.L2::cache_hint.override::global_address [tensorMap, gAddrToOverride, tensorCoords], cache_policy; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_tile_gather4_override(
@@ -1177,8 +1200,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_tile_gather4_overr
   ::cuda::std::uint64_t __cache_policy = 0x10F0000000000000)
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile::gather4.L2::cache_hint.override::global_address [%0, %1, {%2, "
-      "%3, %4, %5, %6}], %7;"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile::gather4.L2::cache_hint.override::global_address [%0, %1, {%2, %3, %4, %5, %6}], %7;"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -1188,13 +1211,13 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_tile_gather4_overr
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4]),
         "l"(__cache_policy)
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
 /*
-// cp.async.bulk.prefetch.tensor.2d.L2.src.tile::gather4.L2::evict_last.override::global_address [tensorMap,
-gAddrToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
+// cp.async.bulk.prefetch.tensor.2d.L2.src.tile::gather4.L2::evict_last.override::global_address [tensorMap, gAddrToOverride, tensorCoords]; // PTX ISA 94, SM_107a, SM_107f
 // .src       = { .global }
 template <typename = void>
 __device__ static inline void cp_async_bulk_prefetch_tensor_tile_gather4_L2_evict_last_override(
@@ -1212,8 +1235,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_tile_gather4_L2_ev
   const ::cuda::std::int32_t (&__tensorCoords)[5])
 {
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.prefetch.tensor.2d.L2.global.tile::gather4.L2::evict_last.override::global_address [%0, %1, {%2, "
-      "%3, %4, %5, %6}];"
+    asm (
+      "cp.async.bulk.prefetch.tensor.2d.L2.global.tile::gather4.L2::evict_last.override::global_address [%0, %1, {%2, %3, %4, %5, %6}];"
       :
       : "l"(__tensorMap),
         "l"(__gAddrToOverride),
@@ -1222,7 +1245,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_prefetch_tensor_tile_gather4_L2_ev
         "r"(__tensorCoords[2]),
         "r"(__tensorCoords[3]),
         "r"(__tensorCoords[4])
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 

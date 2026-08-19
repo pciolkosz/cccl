@@ -4,8 +4,7 @@
 #define _CUDA_PTX_GENERATED_TCGEN05_MMA_SP_H_
 
 /*
-// tcgen05.mma.sp.cta_group.kind [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, enable_input_d; // PTX ISA 86,
-SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, enable_input_d; // PTX ISA 86, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::f16, .kind::f8f6f4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -33,80 +32,76 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp(
 {
   static_assert(__kind == kind_f16 || __kind == kind_f8f6f4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_f16 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::f16 [%0], %1, %2, [%3], %4, PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_f16 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::f16 [%0], %1, %2, [%3], %4, PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_f8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::f8f6f4 [%0], %1, %2, [%3], %4, PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_f8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::f8f6f4 [%0], %1, %2, [%3], %4, PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_f16 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::f16 [%0], %1, %2, [%3], %4, PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_f16 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::f16 [%0], %1, %2, [%3], %4, PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_f8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::f8f6f4 [%0], %1, %2, [%3], %4, PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_f8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::f8f6f4 [%0], %1, %2, [%3], %4, PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 860
 
 /*
-// tcgen05.mma.sp.cta_group.kind [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, enable_input_d; // PTX ISA 86,
-SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, enable_input_d; // PTX ISA 86, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::f16, .kind::f8f6f4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -134,80 +129,76 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_tmem_a(
 {
   static_assert(__kind == kind_f16 || __kind == kind_f8f6f4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_f16 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::f16 [%0], [%1], %2, [%3], %4, PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_f16 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::f16 [%0], [%1], %2, [%3], %4, PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_f8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::f8f6f4 [%0], [%1], %2, [%3], %4, PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_f8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::f8f6f4 [%0], [%1], %2, [%3], %4, PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_f16 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::f16 [%0], [%1], %2, [%3], %4, PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_f16 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::f16 [%0], [%1], %2, [%3], %4, PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_f8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::f8f6f4 [%0], [%1], %2, [%3], %4, PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_f8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %5, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::f8f6f4 [%0], [%1], %2, [%3], %4, PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 860
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16 [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem],
-[scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16 [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -239,52 +230,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16(
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16 [%0], %1, %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16 [%0], %1, %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16 [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16 [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32 [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem],
-[scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32 [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -316,132 +303,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32(
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32 [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16 [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem],
-[scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16 [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -473,52 +448,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_tmem_a(
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16 [%0], [%1], %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16 [%0], [%1], %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16 [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16 [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32 [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem],
-[scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32 [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -550,132 +521,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_tmem_a(
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], "
-      "PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32 [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::fill [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc,
-[scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::fill [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -707,53 +666,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_collector_a_f
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::fill [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::fill [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::fill [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::fill [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::fill [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc,
-[scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f,
-SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::fill [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -785,132 +739,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_collector_a_f
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::fill [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::fill [d_tmem], [a_tmem], b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::fill [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -942,53 +884,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_tmem_a_collec
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::fill [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::fill [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::fill [d_tmem], [a_tmem], b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a,
-SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::fill [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -1020,132 +957,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_tmem_a_collec
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::fill [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::use [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc,
-[scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::use [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -1177,53 +1102,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_collector_a_u
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::use [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::use [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::use [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::use [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::use [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc,
-[scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f,
-SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::use [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -1255,132 +1175,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_collector_a_u
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::use [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::use [d_tmem], [a_tmem], b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::use [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -1412,53 +1320,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_tmem_a_collec
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::use [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::use [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::use [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::use [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::use [d_tmem], [a_tmem], b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a,
-SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::use [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -1490,132 +1393,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_tmem_a_collec
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::use [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::lastuse [d_tmem], a_desc, b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::lastuse [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -1647,53 +1538,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_collector_a_l
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::lastuse [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::lastuse [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::lastuse [d_tmem], a_desc, b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a,
-SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::lastuse [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -1725,132 +1611,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_collector_a_l
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::lastuse [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::lastuse [d_tmem], [a_tmem], b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::lastuse [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -1882,53 +1756,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_tmem_a_collec
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::lastuse [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::lastuse [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::lastuse [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::lastuse [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::lastuse [d_tmem], [a_tmem], b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a,
-SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::lastuse [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -1960,132 +1829,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_tmem_a_collec
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::lastuse [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::discard [d_tmem], a_desc, b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::discard [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -2117,53 +1974,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_collector_a_d
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::discard [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::discard [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::discard [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::discard [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::discard [d_tmem], a_desc, b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a,
-SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::discard [d_tmem], a_desc, b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -2195,132 +2047,120 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_collector_a_d
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, [%5], "
-      "[%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "l"(__a_desc),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::discard [%0], %1, %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "l"(__a_desc),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::discard [d_tmem], [a_tmem], b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
+// tcgen05.mma.sp.cta_group.kind.block_scale.block16.collector::a::discard [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_103a, SM_107a, SM_110a
 // .kind      = { .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_cta_group Cta_Group>
@@ -2352,53 +2192,48 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block16_tmem_a_collec
 {
   // __kind == kind_mxf4nvf4 (due to parameter type constraint)
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::discard [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::discard [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block16.collector::a::discard [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block16.collector::a::discard [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 
 /*
-// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::discard [d_tmem], [a_tmem], b_desc, [sp_info_tmem],
-idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a,
-SM_107f, SM_110a, SM_110f
+// tcgen05.mma.sp.cta_group.kind.block_scale.block32.collector::a::discard [d_tmem], [a_tmem], b_desc, [sp_info_tmem], idesc, [scale_A_tmem], [scale_B_tmem], enable_input_d; // PTX ISA 88, SM_100a, SM_100f, SM_103a, SM_103f, SM_107a, SM_107f, SM_110a, SM_110f
 // .kind      = { .kind::mxf8f6f4, .kind::mxf4, .kind::mxf4nvf4 }
 // .cta_group = { .cta_group::1, .cta_group::2 }
 template <cuda::ptx::dot_kind Kind, cuda::ptx::dot_cta_group Cta_Group>
@@ -2430,126 +2265,115 @@ _CCCL_DEVICE static inline void tcgen05_mma_sp_block_scale_block32_tmem_a_collec
 {
   static_assert(__kind == kind_mxf8f6f4 || __kind == kind_mxf4 || __kind == kind_mxf4nvf4, "");
   static_assert(__cta_group == cta_group_1 || __cta_group == cta_group_2, "");
-  if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
-  else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2)
-  {
-    asm volatile(
-      "{\n\t"
-      ".reg .pred PRED_enable_input_d; \n\t"
-      "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
-      "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, "
-      "[%5], [%6], PRED_enable_input_d; \n"
-      "}"
-      :
-      : "r"(__d_tmem),
-        "r"(__a_tmem),
-        "l"(__b_desc),
-        "r"(__sp_info_tmem),
-        "r"(__idesc),
-        "r"(__scale_A_tmem),
-        "r"(__scale_B_tmem),
-        "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
-      : "memory");
-  }
+    if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf8f6f4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf8f6f4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf8f6f4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_1) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::1.kind::mxf4nvf4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    } else if constexpr (__kind == kind_mxf4nvf4 && __cta_group == cta_group_2) {
+      asm volatile (
+        "{\n\t"
+        ".reg .pred PRED_enable_input_d; \n\t"
+        "setp.ne.b32 PRED_enable_input_d, %7, 0; \n\t"
+        "tcgen05.mma.sp.cta_group::2.kind::mxf4nvf4.block_scale.block32.collector::a::discard [%0], [%1], %2, [%3], %4, [%5], [%6], PRED_enable_input_d; \n"
+        "}"
+        :
+        : "r"(__d_tmem),
+          "r"(__a_tmem),
+          "l"(__b_desc),
+          "r"(__sp_info_tmem),
+          "r"(__idesc),
+          "r"(__scale_A_tmem),
+          "r"(__scale_B_tmem),
+          "r"(static_cast<::cuda::std::uint32_t>(__enable_input_d))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 880
 

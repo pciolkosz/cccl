@@ -14,24 +14,20 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_fence_proxy_alias(void** fn_ptr)
-{
+__global__ void test_fence_proxy_alias(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 750
-  NV_IF_TARGET(NV_PROVIDES_SM_70,
-               (
-                   // fence.proxy.alias; // 4.
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)()>(cuda::ptx::fence_proxy_alias));));
+  NV_IF_TARGET(NV_PROVIDES_SM_70, (
+    // fence.proxy.alias; // 4.
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)()>(cuda::ptx::fence_proxy_alias));
+  ));
 #endif // __cccl_ptx_isa >= 750
 
 #if __cccl_ptx_isa >= 940
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // fence.proxy.alias.acquire.sys;
-        * fn_ptr++ =
-          reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_acquire_t)>(cuda::ptx::fence_proxy_alias));
-          // fence.proxy.alias.release.sys;
-            * fn_ptr++ =
-              reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_release_t)>(cuda::ptx::fence_proxy_alias));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // fence.proxy.alias.acquire.sys;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_acquire_t)>(cuda::ptx::fence_proxy_alias));
+    // fence.proxy.alias.release.sys;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_release_t)>(cuda::ptx::fence_proxy_alias));
+  ));
 #endif // __cccl_ptx_isa >= 940
 }

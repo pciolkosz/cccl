@@ -12,7 +12,12 @@ __device__ static inline void fence_proxy_alias();
 template <typename = void>
 _CCCL_DEVICE static inline void fence_proxy_alias()
 {
-  asm volatile("fence.proxy.alias; // 4." : : : "memory");
+    asm volatile (
+      "fence.proxy.alias; // 4."
+      :
+      :
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 750
 
@@ -25,17 +30,25 @@ __device__ static inline void fence_proxy_alias(
 */
 #if __cccl_ptx_isa >= 940
 template <::cuda::ptx::dot_sem _Sem>
-_CCCL_DEVICE static inline void fence_proxy_alias(::cuda::ptx::sem_t<_Sem> __sem)
+_CCCL_DEVICE static inline void fence_proxy_alias(
+  ::cuda::ptx::sem_t<_Sem> __sem)
 {
   static_assert(__sem == sem_acquire || __sem == sem_release, "");
-  if constexpr (__sem == sem_acquire)
-  {
-    asm volatile("fence.proxy.alias.acquire.sys;" : : : "memory");
-  }
-  else if constexpr (__sem == sem_release)
-  {
-    asm volatile("fence.proxy.alias.release.sys;" : : : "memory");
-  }
+    if constexpr (__sem == sem_acquire) {
+      asm volatile (
+        "fence.proxy.alias.acquire.sys;"
+        :
+        :
+        : "memory"
+      );
+    } else if constexpr (__sem == sem_release) {
+      asm volatile (
+        "fence.proxy.alias.release.sys;"
+        :
+        :
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 940
 

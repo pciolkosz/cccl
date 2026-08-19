@@ -14,20 +14,18 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_fabric_submit(void** fn_ptr)
-{
+__global__ void test_fabric_submit(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 930
-  NV_IF_TARGET(NV_PROVIDES_SM_100,
-               (
-                   // fabric.submit;
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)()>(cuda::ptx::fabric_submit));));
+  NV_IF_TARGET(NV_PROVIDES_SM_100, (
+    // fabric.submit;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)()>(cuda::ptx::fabric_submit));
+  ));
 #endif // __cccl_ptx_isa >= 930
 
 #if __cccl_ptx_isa >= 930
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_100,
-    (
-        // fabric.submit.op_restrict::fetching;
-        * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)()>(cuda::ptx::fabric_submit_op_restrict_fetching));));
+  NV_IF_TARGET(NV_PROVIDES_SM_100, (
+    // fabric.submit.op_restrict::fetching;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)()>(cuda::ptx::fabric_submit_op_restrict_fetching));
+  ));
 #endif // __cccl_ptx_isa >= 930
 }

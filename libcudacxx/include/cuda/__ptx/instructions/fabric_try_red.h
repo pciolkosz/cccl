@@ -5,7 +5,7 @@
 // under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-// SPDX-FileCopyrightText: Copyright (c) 2024 NVIDIA CORPORATION & AFFILIATES.
+// SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
 //
 //===----------------------------------------------------------------------===//
 
@@ -27,6 +27,17 @@
 #include <cuda/std/cstdint>
 
 #include <nv/target> // __CUDA_MINIMUM_ARCH__ and friends
+
+// Forward-declare __half and __nv_bfloat16. The cuda_fp16.h and cuda_bf16.h are
+// expensive to include. The APIs use only pointers, so we do not have to define
+// the types. If the user wants to use these types, it is their responsibility
+// to include the headers.
+#if _LIBCUDACXX_HAS_NVFP16()
+struct __half;
+#endif // _LIBCUDACXX_HAS_NVFP16()
+#if _LIBCUDACXX_HAS_NVBF16()
+struct __nv_bfloat16;
+#endif // _LIBCUDACXX_HAS_NVBF16()
 
 #include <cuda/std/__cccl/prologue.h>
 

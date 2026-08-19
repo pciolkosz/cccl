@@ -17,14 +17,10 @@ supported on older compilers.
 
 .. include:: generated/mbarrier_arrive.rst
 
-.. _libcudacxx-ptx-instructions-mbarrier-arrive-no-complete:
-
 mbarrier.arrive.no_complete
 ---------------------------
 
 .. include:: generated/mbarrier_arrive_no_complete.rst
-
-.. _libcudacxx-ptx-instructions-mbarrier-arrive-expect-tx:
 
 mbarrier.arrive.expect_tx
 -------------------------

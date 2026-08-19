@@ -4,6 +4,6 @@ fabric.try_get
 ==============
 
 -  PTX ISA:
-   `fabric.try_get <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#parallel-synchronization-and-communication-instructions-fabric>`__
+   `fabric.try_get <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#fabric-instructions-fabric-try-get>`__
 
 .. include:: generated/fabric_try_get.rst

@@ -14,21 +14,21 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_applypriority_async_bulk(void** fn_ptr)
-{
+__global__ void test_applypriority_async_bulk(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 940
 
-  NV_IF_TARGET(NV_HAS_FEATURE_SM_107a,
-               (
-                   // applypriority.async.bulk.global.bulk_group.L2::evict_normal [srcMem], size;
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(void*, cuda::std::uint32_t)>(
-                     cuda::ptx::applypriority_async_bulk_L2_evict_normal));));
+  NV_IF_TARGET(NV_HAS_FEATURE_SM_107a, (
+      // applypriority.async.bulk.global.bulk_group.L2::evict_normal [srcMem], size;
+      *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(void* , cuda::std::uint32_t )>(cuda::ptx::applypriority_async_bulk_L2_evict_normal));
+  ));
 
-  NV_IF_TARGET(NV_HAS_FEATURE_SM_107f,
-               (
-                   // applypriority.async.bulk.global.bulk_group.L2::evict_normal [srcMem], size;
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(void*, cuda::std::uint32_t)>(
-                     cuda::ptx::applypriority_async_bulk_L2_evict_normal));));
+
+
+  NV_IF_TARGET(NV_HAS_FEATURE_SM_107f, (
+      // applypriority.async.bulk.global.bulk_group.L2::evict_normal [srcMem], size;
+      *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(void* , cuda::std::uint32_t )>(cuda::ptx::applypriority_async_bulk_L2_evict_normal));
+  ));
+
 
 #endif // __cccl_ptx_isa >= 940
 }

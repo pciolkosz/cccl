@@ -16,13 +16,20 @@ __device__ static inline void fence_sync_restrict(
 */
 #if __cccl_ptx_isa >= 860
 template <typename = void>
-_CCCL_DEVICE static inline void
-  fence_sync_restrict(::cuda::ptx::sem_acquire_t, ::cuda::ptx::space_cluster_t, ::cuda::ptx::scope_cluster_t)
+_CCCL_DEVICE static inline void fence_sync_restrict(
+  ::cuda::ptx::sem_acquire_t,
+  ::cuda::ptx::space_cluster_t,
+  ::cuda::ptx::scope_cluster_t)
 {
   // __sem == sem_acquire (due to parameter type constraint)
   // __space == space_cluster (due to parameter type constraint)
   // __scope == scope_cluster (due to parameter type constraint)
-  asm volatile("fence.acquire.sync_restrict::shared::cluster.cluster;" : : : "memory");
+    asm volatile (
+      "fence.acquire.sync_restrict::shared::cluster.cluster;"
+      :
+      :
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 860
 
@@ -39,13 +46,20 @@ __device__ static inline void fence_sync_restrict(
 */
 #if __cccl_ptx_isa >= 860
 template <typename = void>
-_CCCL_DEVICE static inline void
-  fence_sync_restrict(::cuda::ptx::sem_release_t, ::cuda::ptx::space_shared_t, ::cuda::ptx::scope_cluster_t)
+_CCCL_DEVICE static inline void fence_sync_restrict(
+  ::cuda::ptx::sem_release_t,
+  ::cuda::ptx::space_shared_t,
+  ::cuda::ptx::scope_cluster_t)
 {
   // __sem == sem_release (due to parameter type constraint)
   // __space == space_shared (due to parameter type constraint)
   // __scope == scope_cluster (due to parameter type constraint)
-  asm volatile("fence.release.sync_restrict::shared::cta.cluster;" : : : "memory");
+    asm volatile (
+      "fence.release.sync_restrict::shared::cta.cluster;"
+      :
+      :
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 860
 

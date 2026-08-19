@@ -14,22 +14,11 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_fabric_try_get(void** fn_ptr)
-{
+__global__ void test_fabric_try_get(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 930
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_100,
-    (
-        // fabric.try_get.async.shared::cta.mbarrier::complete_tx::bytes.mbarrier::report::fabric.relaxed.sys.b128
-        // [dstMem], [srcLeId, srcDataOff], size, [smem_bar];
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::space_shared_t,
-                               cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_sys_t,
-                               void*,
-                               cuda::std::uint32_t,
-                               cuda::std::uint64_t,
-                               cuda::std::uint32_t,
-                               cuda::std::uint64_t*)>(cuda::ptx::fabric_try_get));));
+  NV_IF_TARGET(NV_PROVIDES_SM_100, (
+    // fabric.try_get.async.shared::cta.mbarrier::complete_tx::bytes.mbarrier::report::fabric.relaxed.sys.b128 [dstMem], [srcLeId, srcDataOff], size, [smem_bar];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::space_shared_t, cuda::ptx::sem_relaxed_t, cuda::ptx::scope_sys_t, void* , cuda::std::uint32_t , cuda::std::uint64_t , cuda::std::uint32_t , cuda::std::uint64_t* )>(cuda::ptx::fabric_try_get));
+  ));
 #endif // __cccl_ptx_isa >= 930
 }

@@ -12,7 +12,12 @@ __device__ static inline void fence_proxy_async();
 template <typename = void>
 _CCCL_DEVICE static inline void fence_proxy_async()
 {
-  asm volatile("fence.proxy.async; // 5." : : : "memory");
+    asm volatile (
+      "fence.proxy.async; // 5."
+      :
+      :
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
@@ -25,21 +30,32 @@ __device__ static inline void fence_proxy_async(
 */
 #if __cccl_ptx_isa >= 800
 template <::cuda::ptx::dot_space _Space>
-_CCCL_DEVICE static inline void fence_proxy_async(::cuda::ptx::space_t<_Space> __space)
+_CCCL_DEVICE static inline void fence_proxy_async(
+  ::cuda::ptx::space_t<_Space> __space)
 {
   static_assert(__space == space_global || __space == space_cluster || __space == space_shared, "");
-  if constexpr (__space == space_global)
-  {
-    asm volatile("fence.proxy.async.global; // 6." : : : "memory");
-  }
-  else if constexpr (__space == space_cluster)
-  {
-    asm volatile("fence.proxy.async.shared::cluster; // 6." : : : "memory");
-  }
-  else if constexpr (__space == space_shared)
-  {
-    asm volatile("fence.proxy.async.shared::cta; // 6." : : : "memory");
-  }
+    if constexpr (__space == space_global) {
+      asm volatile (
+        "fence.proxy.async.global; // 6."
+        :
+        :
+        : "memory"
+      );
+    } else if constexpr (__space == space_cluster) {
+      asm volatile (
+        "fence.proxy.async.shared::cluster; // 6."
+        :
+        :
+        : "memory"
+      );
+    } else if constexpr (__space == space_shared) {
+      asm volatile (
+        "fence.proxy.async.shared::cta; // 6."
+        :
+        :
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 800
 

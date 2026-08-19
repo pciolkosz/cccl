@@ -4,6 +4,6 @@ fabric.wait
 ===========
 
 -  PTX ISA:
-   `fabric.wait <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#parallel-synchronization-and-communication-instructions-fabric>`__
+   `fabric.wait <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#fabric-instructions-fabric-wait>`__
 
 .. include:: generated/fabric_wait.rst

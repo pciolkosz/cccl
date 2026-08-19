@@ -12,7 +12,12 @@ __device__ static inline void fabric_wait();
 template <typename = void>
 _CCCL_DEVICE static inline void fabric_wait()
 {
-  asm volatile("fabric.wait.sync_restrict::reads;" : : :);
+    asm volatile (
+      "fabric.wait.sync_restrict::reads;"
+      :
+      :
+      :
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 

@@ -12,9 +12,14 @@ __device__ static inline uint32_t get_sreg_tid_x();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_tid_x()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%tid.x;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%tid.x;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -27,9 +32,14 @@ __device__ static inline uint32_t get_sreg_tid_y();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_tid_y()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%tid.y;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%tid.y;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -42,9 +52,14 @@ __device__ static inline uint32_t get_sreg_tid_z();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_tid_z()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%tid.z;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%tid.z;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -57,9 +72,14 @@ __device__ static inline uint32_t get_sreg_ntid_x();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_ntid_x()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%ntid.x;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%ntid.x;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -72,9 +92,14 @@ __device__ static inline uint32_t get_sreg_ntid_y();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_ntid_y()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%ntid.y;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%ntid.y;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -87,9 +112,14 @@ __device__ static inline uint32_t get_sreg_ntid_z();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_ntid_z()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%ntid.z;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%ntid.z;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -102,9 +132,14 @@ __device__ static inline uint32_t get_sreg_laneid();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_laneid()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%laneid;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%laneid;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 130
 
@@ -117,9 +152,14 @@ __device__ static inline uint32_t get_sreg_warpid();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_warpid()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%warpid;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%warpid;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 130
 
@@ -132,9 +172,14 @@ __device__ static inline uint32_t get_sreg_nwarpid();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_nwarpid()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%nwarpid;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%nwarpid;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -147,9 +192,14 @@ __device__ static inline uint32_t get_sreg_ctaid_x();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_ctaid_x()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%ctaid.x;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%ctaid.x;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -162,9 +212,14 @@ __device__ static inline uint32_t get_sreg_ctaid_y();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_ctaid_y()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%ctaid.y;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%ctaid.y;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -177,9 +232,14 @@ __device__ static inline uint32_t get_sreg_ctaid_z();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_ctaid_z()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%ctaid.z;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%ctaid.z;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -192,9 +252,14 @@ __device__ static inline uint32_t get_sreg_nctaid_x();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_nctaid_x()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%nctaid.x;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%nctaid.x;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -207,9 +272,14 @@ __device__ static inline uint32_t get_sreg_nctaid_y();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_nctaid_y()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%nctaid.y;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%nctaid.y;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -222,9 +292,14 @@ __device__ static inline uint32_t get_sreg_nctaid_z();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_nctaid_z()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%nctaid.z;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%nctaid.z;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -237,9 +312,14 @@ __device__ static inline uint32_t get_sreg_smid();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_smid()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%smid;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%smid;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 130
 
@@ -252,9 +332,14 @@ __device__ static inline uint32_t get_sreg_nsmid();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_nsmid()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%nsmid;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%nsmid;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -267,9 +352,14 @@ __device__ static inline uint64_t get_sreg_gridid();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint64_t get_sreg_gridid()
 {
-  ::cuda::std::uint64_t __sreg_value;
-  asm("mov.u64 %0, %%gridid;" : "=l"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint64_t __sreg_value;
+    asm (
+      "mov.u64 %0, %%gridid;"
+      : "=l"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 300
 
@@ -282,16 +372,18 @@ __device__ static inline bool get_sreg_is_explicit_cluster();
 template <typename = void>
 _CCCL_DEVICE static inline bool get_sreg_is_explicit_cluster()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("{\n\t"
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "{\n\t"
       ".reg .pred P_OUT; \n\t"
       "mov.pred P_OUT, %%is_explicit_cluster; \n\t"
       "selp.b32 %0, 1, 0, P_OUT; \n"
       "}"
       : "=r"(__sreg_value)
       :
-      :);
-  return static_cast<bool>(__sreg_value);
+      :
+    );
+    return static_cast<bool>(__sreg_value);
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -304,9 +396,14 @@ __device__ static inline uint32_t get_sreg_clusterid_x();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_clusterid_x()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%clusterid.x;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%clusterid.x;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -319,9 +416,14 @@ __device__ static inline uint32_t get_sreg_clusterid_y();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_clusterid_y()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%clusterid.y;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%clusterid.y;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -334,9 +436,14 @@ __device__ static inline uint32_t get_sreg_clusterid_z();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_clusterid_z()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%clusterid.z;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%clusterid.z;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -349,9 +456,14 @@ __device__ static inline uint32_t get_sreg_nclusterid_x();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_nclusterid_x()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%nclusterid.x;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%nclusterid.x;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -364,9 +476,14 @@ __device__ static inline uint32_t get_sreg_nclusterid_y();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_nclusterid_y()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%nclusterid.y;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%nclusterid.y;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -379,9 +496,14 @@ __device__ static inline uint32_t get_sreg_nclusterid_z();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_nclusterid_z()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%nclusterid.z;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%nclusterid.z;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -394,9 +516,14 @@ __device__ static inline uint32_t get_sreg_cluster_ctaid_x();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_cluster_ctaid_x()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%cluster_ctaid.x;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%cluster_ctaid.x;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -409,9 +536,14 @@ __device__ static inline uint32_t get_sreg_cluster_ctaid_y();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_cluster_ctaid_y()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%cluster_ctaid.y;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%cluster_ctaid.y;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -424,9 +556,14 @@ __device__ static inline uint32_t get_sreg_cluster_ctaid_z();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_cluster_ctaid_z()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%cluster_ctaid.z;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%cluster_ctaid.z;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -439,9 +576,14 @@ __device__ static inline uint32_t get_sreg_cluster_nctaid_x();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_cluster_nctaid_x()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%cluster_nctaid.x;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%cluster_nctaid.x;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -454,9 +596,14 @@ __device__ static inline uint32_t get_sreg_cluster_nctaid_y();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_cluster_nctaid_y()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%cluster_nctaid.y;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%cluster_nctaid.y;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -469,9 +616,14 @@ __device__ static inline uint32_t get_sreg_cluster_nctaid_z();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_cluster_nctaid_z()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%cluster_nctaid.z;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%cluster_nctaid.z;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -484,9 +636,14 @@ __device__ static inline uint32_t get_sreg_cluster_ctarank();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_cluster_ctarank()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%cluster_ctarank;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%cluster_ctarank;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -499,9 +656,14 @@ __device__ static inline uint32_t get_sreg_cluster_nctarank();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_cluster_nctarank()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%cluster_nctarank;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%cluster_nctarank;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 780
 
@@ -514,9 +676,14 @@ __device__ static inline uint32_t get_sreg_lanemask_eq();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_lanemask_eq()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%lanemask_eq;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%lanemask_eq;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -529,9 +696,14 @@ __device__ static inline uint32_t get_sreg_lanemask_le();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_lanemask_le()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%lanemask_le;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%lanemask_le;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -544,9 +716,14 @@ __device__ static inline uint32_t get_sreg_lanemask_lt();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_lanemask_lt()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%lanemask_lt;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%lanemask_lt;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -559,9 +736,14 @@ __device__ static inline uint32_t get_sreg_lanemask_ge();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_lanemask_ge()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%lanemask_ge;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%lanemask_ge;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -574,9 +756,14 @@ __device__ static inline uint32_t get_sreg_lanemask_gt();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_lanemask_gt()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%lanemask_gt;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%lanemask_gt;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -589,9 +776,14 @@ __device__ static inline uint32_t get_sreg_clock();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_clock()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%clock;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%clock;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 100
 
@@ -604,9 +796,14 @@ __device__ static inline uint32_t get_sreg_clock_hi();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_clock_hi()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%clock_hi;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%clock_hi;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 500
 
@@ -619,9 +816,14 @@ __device__ static inline uint64_t get_sreg_clock64();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint64_t get_sreg_clock64()
 {
-  ::cuda::std::uint64_t __sreg_value;
-  asm volatile("mov.u64 %0, %%clock64;" : "=l"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint64_t __sreg_value;
+    asm volatile (
+      "mov.u64 %0, %%clock64;"
+      : "=l"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -634,9 +836,14 @@ __device__ static inline uint64_t get_sreg_globaltimer();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint64_t get_sreg_globaltimer()
 {
-  ::cuda::std::uint64_t __sreg_value;
-  asm volatile("mov.u64 %0, %%globaltimer;" : "=l"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint64_t __sreg_value;
+    asm volatile (
+      "mov.u64 %0, %%globaltimer;"
+      : "=l"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 310
 
@@ -649,9 +856,14 @@ __device__ static inline uint32_t get_sreg_globaltimer_lo();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_globaltimer_lo()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%globaltimer_lo;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%globaltimer_lo;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 310
 
@@ -664,9 +876,14 @@ __device__ static inline uint32_t get_sreg_globaltimer_hi();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_globaltimer_hi()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm volatile("mov.u32 %0, %%globaltimer_hi;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm volatile (
+      "mov.u32 %0, %%globaltimer_hi;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 310
 
@@ -679,9 +896,14 @@ __device__ static inline uint32_t get_sreg_total_smem_size();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_total_smem_size()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%total_smem_size;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%total_smem_size;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 410
 
@@ -694,9 +916,14 @@ __device__ static inline uint32_t get_sreg_aggr_smem_size();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_aggr_smem_size()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%aggr_smem_size;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%aggr_smem_size;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 810
 
@@ -709,9 +936,14 @@ __device__ static inline uint32_t get_sreg_dynamic_smem_size();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint32_t get_sreg_dynamic_smem_size()
 {
-  ::cuda::std::uint32_t __sreg_value;
-  asm("mov.u32 %0, %%dynamic_smem_size;" : "=r"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint32_t __sreg_value;
+    asm (
+      "mov.u32 %0, %%dynamic_smem_size;"
+      : "=r"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 410
 
@@ -724,9 +956,14 @@ __device__ static inline uint64_t get_sreg_current_graph_exec();
 template <typename = void>
 _CCCL_DEVICE static inline ::cuda::std::uint64_t get_sreg_current_graph_exec()
 {
-  ::cuda::std::uint64_t __sreg_value;
-  asm("mov.u64 %0, %%current_graph_exec;" : "=l"(__sreg_value) : :);
-  return __sreg_value;
+    ::cuda::std::uint64_t __sreg_value;
+    asm (
+      "mov.u64 %0, %%current_graph_exec;"
+      : "=l"(__sreg_value)
+      :
+      :
+    );
+    return __sreg_value;
 }
 #endif // __cccl_ptx_isa >= 800
 

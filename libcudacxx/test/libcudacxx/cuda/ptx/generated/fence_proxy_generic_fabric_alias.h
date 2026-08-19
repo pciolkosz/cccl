@@ -14,17 +14,13 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_fence_proxy_generic_fabric_alias(void** fn_ptr)
-{
+__global__ void test_fence_proxy_generic_fabric_alias(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 930
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_100,
-    (
-        // fence.proxy.generic::fabric.alias.acquire.sys;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_acquire_t)>(cuda::ptx::fence_proxy_generic_fabric_alias));
-          // fence.proxy.generic::fabric.alias.release.sys;
-            * fn_ptr++ = reinterpret_cast<void*>(
-              static_cast<void (*)(cuda::ptx::sem_release_t)>(cuda::ptx::fence_proxy_generic_fabric_alias));));
+  NV_IF_TARGET(NV_PROVIDES_SM_100, (
+    // fence.proxy.generic::fabric.alias.acquire.sys;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_acquire_t)>(cuda::ptx::fence_proxy_generic_fabric_alias));
+    // fence.proxy.generic::fabric.alias.release.sys;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_release_t)>(cuda::ptx::fence_proxy_generic_fabric_alias));
+  ));
 #endif // __cccl_ptx_isa >= 930
 }

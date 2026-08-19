@@ -11,9 +11,15 @@ __device__ static inline void prefetch_L1(
 */
 #if __cccl_ptx_isa >= 200
 template <typename = void>
-_CCCL_DEVICE static inline void prefetch_L1(const void* __addr)
+_CCCL_DEVICE static inline void prefetch_L1(
+  const void* __addr)
 {
-  asm volatile("prefetch.global.L1 [%0];" : : "l"(__as_ptr_gmem(__addr)) : "memory");
+    asm volatile (
+      "prefetch.global.L1 [%0];"
+      :
+      : "l"(__as_ptr_gmem(__addr))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -25,9 +31,15 @@ __device__ static inline void prefetch_L2(
 */
 #if __cccl_ptx_isa >= 200
 template <typename = void>
-_CCCL_DEVICE static inline void prefetch_L2(const void* __addr)
+_CCCL_DEVICE static inline void prefetch_L2(
+  const void* __addr)
 {
-  asm volatile("prefetch.global.L2 [%0];" : : "l"(__as_ptr_gmem(__addr)) : "memory");
+    asm volatile (
+      "prefetch.global.L2 [%0];"
+      :
+      : "l"(__as_ptr_gmem(__addr))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 200
 
@@ -39,9 +51,15 @@ __device__ static inline void prefetch_L1_32B(
 */
 #if __cccl_ptx_isa >= 940
 template <typename = void>
-_CCCL_DEVICE static inline void prefetch_L1_32B(const void* __addr)
+_CCCL_DEVICE static inline void prefetch_L1_32B(
+  const void* __addr)
 {
-  asm volatile("prefetch.global.L1::32B.valid_addr [%0];" : : "l"(__as_ptr_gmem(__addr)) : "memory");
+    asm volatile (
+      "prefetch.global.L1::32B.valid_addr [%0];"
+      :
+      : "l"(__as_ptr_gmem(__addr))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 940
 
@@ -53,9 +71,15 @@ __device__ static inline void prefetch_L2_evict_last(
 */
 #if __cccl_ptx_isa >= 740
 template <typename = void>
-_CCCL_DEVICE static inline void prefetch_L2_evict_last(const void* __addr)
+_CCCL_DEVICE static inline void prefetch_L2_evict_last(
+  const void* __addr)
 {
-  asm volatile("prefetch.global.L2::evict_last [%0];" : : "l"(__as_ptr_gmem(__addr)) : "memory");
+    asm volatile (
+      "prefetch.global.L2::evict_last [%0];"
+      :
+      : "l"(__as_ptr_gmem(__addr))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 740
 
@@ -67,9 +91,15 @@ __device__ static inline void prefetch_L2_evict_normal(
 */
 #if __cccl_ptx_isa >= 740
 template <typename = void>
-_CCCL_DEVICE static inline void prefetch_L2_evict_normal(const void* __addr)
+_CCCL_DEVICE static inline void prefetch_L2_evict_normal(
+  const void* __addr)
 {
-  asm volatile("prefetch.global.L2::evict_normal [%0];" : : "l"(__as_ptr_gmem(__addr)) : "memory");
+    asm volatile (
+      "prefetch.global.L2::evict_normal [%0];"
+      :
+      : "l"(__as_ptr_gmem(__addr))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 740
 
@@ -81,9 +111,15 @@ __device__ static inline void prefetch_tensormap(
 */
 #if __cccl_ptx_isa >= 800
 template <typename = void>
-_CCCL_DEVICE static inline void prefetch_tensormap(const void* __addr)
+_CCCL_DEVICE static inline void prefetch_tensormap(
+  const void* __addr)
 {
-  asm volatile("prefetch.tensormap [%0];" : : "l"(__addr) : "memory");
+    asm volatile (
+      "prefetch.tensormap [%0];"
+      :
+      : "l"(__addr)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 

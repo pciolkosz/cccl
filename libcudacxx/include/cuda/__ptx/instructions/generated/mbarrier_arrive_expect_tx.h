@@ -28,22 +28,25 @@ _CCCL_DEVICE static inline ::cuda::std::uint64_t mbarrier_arrive_expect_tx(
   // __sem == sem_release (due to parameter type constraint)
   static_assert(__scope == scope_cta || __scope == scope_cluster, "");
   // __space == space_shared (due to parameter type constraint)
-  ::cuda::std::uint64_t __state;
-  if constexpr (__scope == scope_cta)
-  {
-    asm("mbarrier.arrive.expect_tx.release.cta.shared::cta.b64 %0, [%1], %2; // 8. "
+    ::cuda::std::uint64_t __state;
+    if constexpr (__scope == scope_cta) {
+      asm (
+        "mbarrier.arrive.expect_tx.release.cta.shared::cta.b64 %0, [%1], %2; // 8. "
         : "=l"(__state)
-        : "r"(__as_ptr_smem(__addr)), "r"(__tx_count)
-        : "memory");
-  }
-  else if constexpr (__scope == scope_cluster)
-  {
-    asm("mbarrier.arrive.expect_tx.release.cluster.shared::cta.b64 %0, [%1], %2; // 8. "
+        : "r"(__as_ptr_smem(__addr)),
+          "r"(__tx_count)
+        : "memory"
+      );
+    } else if constexpr (__scope == scope_cluster) {
+      asm (
+        "mbarrier.arrive.expect_tx.release.cluster.shared::cta.b64 %0, [%1], %2; // 8. "
         : "=l"(__state)
-        : "r"(__as_ptr_smem(__addr)), "r"(__tx_count)
-        : "memory");
-  }
-  return __state;
+        : "r"(__as_ptr_smem(__addr)),
+          "r"(__tx_count)
+        : "memory"
+      );
+    }
+    return __state;
 }
 #endif // __cccl_ptx_isa >= 800
 
@@ -72,10 +75,13 @@ _CCCL_DEVICE static inline void mbarrier_arrive_expect_tx(
   // __sem == sem_release (due to parameter type constraint)
   // __scope == scope_cluster (due to parameter type constraint)
   // __space == space_cluster (due to parameter type constraint)
-  asm("mbarrier.arrive.expect_tx.release.cluster.shared::cluster.b64   _, [%0], %1; // 9. "
+    asm (
+      "mbarrier.arrive.expect_tx.release.cluster.shared::cluster.b64   _, [%0], %1; // 9. "
       :
-      : "r"(__as_ptr_remote_dsmem(__addr)), "r"(__tx_count)
-      : "memory");
+      : "r"(__as_ptr_remote_dsmem(__addr)),
+        "r"(__tx_count)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
@@ -104,22 +110,25 @@ _CCCL_DEVICE static inline ::cuda::std::uint64_t mbarrier_arrive_expect_tx(
   // __sem == sem_relaxed (due to parameter type constraint)
   static_assert(__scope == scope_cta || __scope == scope_cluster, "");
   // __space == space_shared (due to parameter type constraint)
-  ::cuda::std::uint64_t __state;
-  if constexpr (__scope == scope_cta)
-  {
-    asm("mbarrier.arrive.expect_tx.relaxed.cta.shared::cta.b64 %0, [%1], %2;"
+    ::cuda::std::uint64_t __state;
+    if constexpr (__scope == scope_cta) {
+      asm (
+        "mbarrier.arrive.expect_tx.relaxed.cta.shared::cta.b64 %0, [%1], %2;"
         : "=l"(__state)
-        : "r"(__as_ptr_dsmem(__addr)), "r"(__txCount)
-        : "memory");
-  }
-  else if constexpr (__scope == scope_cluster)
-  {
-    asm("mbarrier.arrive.expect_tx.relaxed.cluster.shared::cta.b64 %0, [%1], %2;"
+        : "r"(__as_ptr_dsmem(__addr)),
+          "r"(__txCount)
+        : "memory"
+      );
+    } else if constexpr (__scope == scope_cluster) {
+      asm (
+        "mbarrier.arrive.expect_tx.relaxed.cluster.shared::cta.b64 %0, [%1], %2;"
         : "=l"(__state)
-        : "r"(__as_ptr_dsmem(__addr)), "r"(__txCount)
-        : "memory");
-  }
-  return __state;
+        : "r"(__as_ptr_dsmem(__addr)),
+          "r"(__txCount)
+        : "memory"
+      );
+    }
+    return __state;
 }
 #endif // __cccl_ptx_isa >= 860
 
@@ -148,10 +157,13 @@ _CCCL_DEVICE static inline void mbarrier_arrive_expect_tx(
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_cluster (due to parameter type constraint)
   // __space == space_cluster (due to parameter type constraint)
-  asm("mbarrier.arrive.expect_tx.relaxed.cluster.shared::cluster.b64 _, [%0], %1;"
+    asm (
+      "mbarrier.arrive.expect_tx.relaxed.cluster.shared::cluster.b64 _, [%0], %1;"
       :
-      : "r"(__as_ptr_dsmem(__addr)), "r"(__txCount)
-      : "memory");
+      : "r"(__as_ptr_dsmem(__addr)),
+        "r"(__txCount)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 860
 

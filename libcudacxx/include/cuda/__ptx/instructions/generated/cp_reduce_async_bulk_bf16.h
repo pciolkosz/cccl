@@ -32,10 +32,14 @@ _CCCL_DEVICE static inline void cp_reduce_async_bulk(
   // __space == space_shared (due to parameter type constraint)
   // __type == type_bf16 (due to parameter type constraint)
   // __op == op_min (due to parameter type constraint)
-  asm("cp.reduce.async.bulk.global.shared::cta.bulk_group.min.bf16  [%0], [%1], %2; // 4."
+    asm (
+      "cp.reduce.async.bulk.global.shared::cta.bulk_group.min.bf16  [%0], [%1], %2; // 4."
       :
-      : "l"(__as_ptr_gmem(__dstMem)), "r"(__as_ptr_smem(__srcMem)), "r"(__size)
-      : "memory");
+      : "l"(__as_ptr_gmem(__dstMem)),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
@@ -68,10 +72,14 @@ _CCCL_DEVICE static inline void cp_reduce_async_bulk(
   // __space == space_shared (due to parameter type constraint)
   // __type == type_bf16 (due to parameter type constraint)
   // __op == op_max (due to parameter type constraint)
-  asm("cp.reduce.async.bulk.global.shared::cta.bulk_group.max.bf16  [%0], [%1], %2; // 4."
+    asm (
+      "cp.reduce.async.bulk.global.shared::cta.bulk_group.max.bf16  [%0], [%1], %2; // 4."
       :
-      : "l"(__as_ptr_gmem(__dstMem)), "r"(__as_ptr_smem(__srcMem)), "r"(__size)
-      : "memory");
+      : "l"(__as_ptr_gmem(__dstMem)),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
@@ -104,10 +112,14 @@ _CCCL_DEVICE static inline void cp_reduce_async_bulk(
   // __space == space_shared (due to parameter type constraint)
   // __type == type_bf16 (due to parameter type constraint)
   // __op == op_add (due to parameter type constraint)
-  asm("cp.reduce.async.bulk.global.shared::cta.bulk_group.add.noftz.bf16  [%0], [%1], %2; // 5."
+    asm (
+      "cp.reduce.async.bulk.global.shared::cta.bulk_group.add.noftz.bf16  [%0], [%1], %2; // 5."
       :
-      : "l"(__as_ptr_gmem(__dstMem)), "r"(__as_ptr_smem(__srcMem)), "r"(__size)
-      : "memory");
+      : "l"(__as_ptr_gmem(__dstMem)),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 

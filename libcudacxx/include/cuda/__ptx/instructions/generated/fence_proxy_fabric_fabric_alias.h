@@ -12,17 +12,25 @@ __device__ static inline void fence_proxy_fabric_fabric_alias(
 */
 #if __cccl_ptx_isa >= 930
 template <::cuda::ptx::dot_sem _Sem>
-_CCCL_DEVICE static inline void fence_proxy_fabric_fabric_alias(::cuda::ptx::sem_t<_Sem> __sem)
+_CCCL_DEVICE static inline void fence_proxy_fabric_fabric_alias(
+  ::cuda::ptx::sem_t<_Sem> __sem)
 {
   static_assert(__sem == sem_acquire || __sem == sem_release, "");
-  if constexpr (__sem == sem_acquire)
-  {
-    asm volatile("fence.proxy.fabric::fabric.alias.acquire.sys;" : : : "memory");
-  }
-  else if constexpr (__sem == sem_release)
-  {
-    asm volatile("fence.proxy.fabric::fabric.alias.release.sys;" : : : "memory");
-  }
+    if constexpr (__sem == sem_acquire) {
+      asm volatile (
+        "fence.proxy.fabric::fabric.alias.acquire.sys;"
+        :
+        :
+        : "memory"
+      );
+    } else if constexpr (__sem == sem_release) {
+      asm volatile (
+        "fence.proxy.fabric::fabric.alias.release.sys;"
+        :
+        :
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 930
 

@@ -14,12 +14,11 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_fabric_wait(void** fn_ptr)
-{
+__global__ void test_fabric_wait(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 930
-  NV_IF_TARGET(NV_PROVIDES_SM_100,
-               (
-                   // fabric.wait.sync_restrict::reads;
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)()>(cuda::ptx::fabric_wait));));
+  NV_IF_TARGET(NV_PROVIDES_SM_100, (
+    // fabric.wait.sync_restrict::reads;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)()>(cuda::ptx::fabric_wait));
+  ));
 #endif // __cccl_ptx_isa >= 930
 }

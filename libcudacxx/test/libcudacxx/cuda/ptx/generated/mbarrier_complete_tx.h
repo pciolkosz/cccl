@@ -14,103 +14,61 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_mbarrier_complete_tx(void** fn_ptr)
-{
+__global__ void test_mbarrier_complete_tx(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 800
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // mbarrier.complete_tx.relaxed.cta.shared::cta.b64 [addr], txCount;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_cta_t,
-                               cuda::ptx::space_shared_t,
-                               cuda::std::uint64_t*,
-                               cuda::std::uint32_t)>(cuda::ptx::mbarrier_complete_tx));));
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // mbarrier.complete_tx.relaxed.cluster.shared::cta.b64 [addr], txCount;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_cluster_t,
-                               cuda::ptx::space_shared_t,
-                               cuda::std::uint64_t*,
-                               cuda::std::uint32_t)>(cuda::ptx::mbarrier_complete_tx));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // mbarrier.complete_tx.relaxed.cta.shared::cta.b64 [addr], txCount;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_relaxed_t, cuda::ptx::scope_cta_t, cuda::ptx::space_shared_t, cuda::std::uint64_t* , cuda::std::uint32_t )>(cuda::ptx::mbarrier_complete_tx));
+  ));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // mbarrier.complete_tx.relaxed.cluster.shared::cta.b64 [addr], txCount;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_relaxed_t, cuda::ptx::scope_cluster_t, cuda::ptx::space_shared_t, cuda::std::uint64_t* , cuda::std::uint32_t )>(cuda::ptx::mbarrier_complete_tx));
+  ));
 #endif // __cccl_ptx_isa >= 800
 
 #if __cccl_ptx_isa >= 800
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // mbarrier.complete_tx.relaxed.cta.shared::cluster.b64 [addr], txCount;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_cta_t,
-                               cuda::ptx::space_cluster_t,
-                               cuda::std::uint64_t*,
-                               cuda::std::uint32_t)>(cuda::ptx::mbarrier_complete_tx));));
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // mbarrier.complete_tx.relaxed.cluster.shared::cluster.b64 [addr], txCount;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_cluster_t,
-                               cuda::ptx::space_cluster_t,
-                               cuda::std::uint64_t*,
-                               cuda::std::uint32_t)>(cuda::ptx::mbarrier_complete_tx));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // mbarrier.complete_tx.relaxed.cta.shared::cluster.b64 [addr], txCount;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_relaxed_t, cuda::ptx::scope_cta_t, cuda::ptx::space_cluster_t, cuda::std::uint64_t* , cuda::std::uint32_t )>(cuda::ptx::mbarrier_complete_tx));
+  ));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // mbarrier.complete_tx.relaxed.cluster.shared::cluster.b64 [addr], txCount;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_relaxed_t, cuda::ptx::scope_cluster_t, cuda::ptx::space_cluster_t, cuda::std::uint64_t* , cuda::std::uint32_t )>(cuda::ptx::mbarrier_complete_tx));
+  ));
 #endif // __cccl_ptx_isa >= 800
 
 #if __cccl_ptx_isa >= 940
 
-  NV_IF_TARGET(
-    NV_HAS_FEATURE_SM_107a,
-    (
-        // mbarrier.complete_tx.relaxed.cta.shared::cluster.multicast::cluster::32b.b64 [addr], txCount, ctaMask;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_cta_t,
-                               cuda::ptx::space_cluster_t,
-                               cuda::std::uint64_t*,
-                               cuda::std::uint32_t,
-                               cuda::std::uint32_t)>(cuda::ptx::mbarrier_complete_tx_multicast_32b));));
+  NV_IF_TARGET(NV_HAS_FEATURE_SM_107a, (
+      // mbarrier.complete_tx.relaxed.cta.shared::cluster.multicast::cluster::32b.b64 [addr], txCount, ctaMask;
+      *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_relaxed_t, cuda::ptx::scope_cta_t, cuda::ptx::space_cluster_t, cuda::std::uint64_t* , cuda::std::uint32_t , cuda::std::uint32_t )>(cuda::ptx::mbarrier_complete_tx_multicast_32b));
+  ));
 
-  NV_IF_TARGET(
-    NV_HAS_FEATURE_SM_107f,
-    (
-        // mbarrier.complete_tx.relaxed.cta.shared::cluster.multicast::cluster::32b.b64 [addr], txCount, ctaMask;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_cta_t,
-                               cuda::ptx::space_cluster_t,
-                               cuda::std::uint64_t*,
-                               cuda::std::uint32_t,
-                               cuda::std::uint32_t)>(cuda::ptx::mbarrier_complete_tx_multicast_32b));));
 
-  NV_IF_TARGET(
-    NV_HAS_FEATURE_SM_107a,
-    (
-        // mbarrier.complete_tx.relaxed.cluster.shared::cluster.multicast::cluster::32b.b64 [addr], txCount, ctaMask;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_cluster_t,
-                               cuda::ptx::space_cluster_t,
-                               cuda::std::uint64_t*,
-                               cuda::std::uint32_t,
-                               cuda::std::uint32_t)>(cuda::ptx::mbarrier_complete_tx_multicast_32b));));
 
-  NV_IF_TARGET(
-    NV_HAS_FEATURE_SM_107f,
-    (
-        // mbarrier.complete_tx.relaxed.cluster.shared::cluster.multicast::cluster::32b.b64 [addr], txCount, ctaMask;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_relaxed_t,
-                               cuda::ptx::scope_cluster_t,
-                               cuda::ptx::space_cluster_t,
-                               cuda::std::uint64_t*,
-                               cuda::std::uint32_t,
-                               cuda::std::uint32_t)>(cuda::ptx::mbarrier_complete_tx_multicast_32b));));
+
+  NV_IF_TARGET(NV_HAS_FEATURE_SM_107f, (
+      // mbarrier.complete_tx.relaxed.cta.shared::cluster.multicast::cluster::32b.b64 [addr], txCount, ctaMask;
+      *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_relaxed_t, cuda::ptx::scope_cta_t, cuda::ptx::space_cluster_t, cuda::std::uint64_t* , cuda::std::uint32_t , cuda::std::uint32_t )>(cuda::ptx::mbarrier_complete_tx_multicast_32b));
+  ));
+
+
+
+
+  NV_IF_TARGET(NV_HAS_FEATURE_SM_107a, (
+      // mbarrier.complete_tx.relaxed.cluster.shared::cluster.multicast::cluster::32b.b64 [addr], txCount, ctaMask;
+      *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_relaxed_t, cuda::ptx::scope_cluster_t, cuda::ptx::space_cluster_t, cuda::std::uint64_t* , cuda::std::uint32_t , cuda::std::uint32_t )>(cuda::ptx::mbarrier_complete_tx_multicast_32b));
+  ));
+
+
+
+
+  NV_IF_TARGET(NV_HAS_FEATURE_SM_107f, (
+      // mbarrier.complete_tx.relaxed.cluster.shared::cluster.multicast::cluster::32b.b64 [addr], txCount, ctaMask;
+      *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_relaxed_t, cuda::ptx::scope_cluster_t, cuda::ptx::space_cluster_t, cuda::std::uint64_t* , cuda::std::uint32_t , cuda::std::uint32_t )>(cuda::ptx::mbarrier_complete_tx_multicast_32b));
+  ));
+
+
 
 #endif // __cccl_ptx_isa >= 940
 }

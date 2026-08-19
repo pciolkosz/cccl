@@ -28,10 +28,15 @@ _CCCL_DEVICE static inline void cp_async_bulk(
 {
   // __space == space_cluster (due to parameter type constraint)
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes [%0], [%1], %2, [%3];"
+    asm (
+      "cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes [%0], [%1], %2, [%3];"
       :
-      : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__as_ptr_smem(__dstMem)),
+        "l"(__as_ptr_gmem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
@@ -60,10 +65,15 @@ _CCCL_DEVICE static inline void cp_async_bulk(
 {
   // __space == space_shared (due to parameter type constraint)
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes [%0], [%1], %2, [%3];"
+    asm (
+      "cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes [%0], [%1], %2, [%3];"
       :
-      : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__as_ptr_smem(__dstMem)),
+        "l"(__as_ptr_gmem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 860
 
@@ -92,19 +102,20 @@ _CCCL_DEVICE static inline void cp_async_bulk(
 {
   // __space == space_cluster (due to parameter type constraint)
   // __space == space_shared (due to parameter type constraint)
-  asm("cp.async.bulk.shared::cluster.shared::cta.mbarrier::complete_tx::bytes [%0], [%1], %2, [%3];"
+    asm (
+      "cp.async.bulk.shared::cluster.shared::cta.mbarrier::complete_tx::bytes [%0], [%1], %2, [%3];"
       :
       : "r"(__as_ptr_remote_dsmem(__dstMem)),
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_remote_dsmem(__rdsmem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
 /*
-// cp.async.bulk.dst.src.mbarrier::complete_tx::bytes.ignore_oob [dstMem], [srcMem], size, ignoreBytesLeft,
-ignoreBytesRight, [smem_bar]; // PTX ISA 92, SM_90
+// cp.async.bulk.dst.src.mbarrier::complete_tx::bytes.ignore_oob [dstMem], [srcMem], size, ignoreBytesLeft, ignoreBytesRight, [smem_bar]; // PTX ISA 92, SM_90
 // .dst       = { .shared::cta }
 // .src       = { .global }
 template <typename = void>
@@ -132,7 +143,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_ignore_oob(
 {
   // __space == space_shared (due to parameter type constraint)
   // __space == space_global (due to parameter type constraint)
-  asm("cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.ignore_oob [%0], [%1], %2, %3, %4, [%5];"
+    asm (
+      "cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.ignore_oob [%0], [%1], %2, %3, %4, [%5];"
       :
       : "r"(__as_ptr_smem(__dstMem)),
         "l"(__as_ptr_gmem(__srcMem)),
@@ -140,7 +152,8 @@ _CCCL_DEVICE static inline void cp_async_bulk_ignore_oob(
         "r"(__ignoreBytesLeft),
         "r"(__ignoreBytesRight),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 920
 
@@ -167,10 +180,14 @@ _CCCL_DEVICE static inline void cp_async_bulk(
 {
   // __space == space_global (due to parameter type constraint)
   // __space == space_shared (due to parameter type constraint)
-  asm("cp.async.bulk.global.shared::cta.bulk_group [%0], [%1], %2;"
+    asm (
+      "cp.async.bulk.global.shared::cta.bulk_group [%0], [%1], %2;"
       :
-      : "l"(__as_ptr_gmem(__dstMem)), "r"(__as_ptr_smem(__srcMem)), "r"(__size)
-      : "memory");
+      : "l"(__as_ptr_gmem(__dstMem)),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 800
 
@@ -199,22 +216,24 @@ _CCCL_DEVICE static inline void cp_async_bulk_cp_mask(
 {
   // __space == space_global (due to parameter type constraint)
   // __space == space_shared (due to parameter type constraint)
-  asm("cp.async.bulk.global.shared::cta.bulk_group.cp_mask [%0], [%1], %2, %3;"
+    asm (
+      "cp.async.bulk.global.shared::cta.bulk_group.cp_mask [%0], [%1], %2, %3;"
       :
-      : "l"(__as_ptr_gmem(__dstMem)), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "h"(__byteMask)
-      : "memory");
+      : "l"(__as_ptr_gmem(__dstMem)),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "h"(__byteMask)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 860
 
 /*
-// cp.async.bulk.dst.src.mbarrier::complete_tx::bytes.report_mechanism [dstMem], [srcMem], size, [smem_bar]; // PTX ISA
-94, SM_107a, SM_107f
+// cp.async.bulk.dst.src.mbarrier::complete_tx::bytes.report_mechanism [dstMem], [srcMem], size, [smem_bar]; // PTX ISA 94, SM_107a, SM_107f
 // .dst       = { .shared::cta, .shared::cluster }
 // .src       = { .global }
-// .report_mechanism = { .mbarrier::report::validity::per_16bytes::80000000,
-.mbarrier::report::validity::per_16bytes::8000, .mbarrier::report::validity::per_16bytes::80,
-.mbarrier::report::validity::per_16bytes::8, .mbarrier::report::validity::per_element::ff } template
-<cuda::ptx::dot_space Space, cuda::ptx::dot_report_mechanism Report_Mechanism>
+// .report_mechanism = { .mbarrier::report::validity::per_16bytes::80000000, .mbarrier::report::validity::per_16bytes::8000, .mbarrier::report::validity::per_16bytes::80, .mbarrier::report::validity::per_16bytes::8, .mbarrier::report::validity::per_element::ff }
+template <cuda::ptx::dot_space Space, cuda::ptx::dot_report_mechanism Report_Mechanism>
 __device__ static inline void cp_async_bulk(
   cuda::ptx::space_t<Space> space,
   cuda::ptx::space_global_t,
@@ -237,93 +256,108 @@ _CCCL_DEVICE static inline void cp_async_bulk(
 {
   static_assert(__space == space_shared || __space == space_cluster, "");
   // __space == space_global (due to parameter type constraint)
-  static_assert(
-    __report_mechanism == mbarrier_report_valid_per_16bytes_80000000
-      || __report_mechanism == mbarrier_report_valid_per_16bytes_8000
-      || __report_mechanism == mbarrier_report_valid_per_16bytes_80
-      || __report_mechanism == mbarrier_report_valid_per_16bytes_8
-      || __report_mechanism == mbarrier_report_valid_per_element_ff,
-    "");
-  if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_16bytes_80000000)
-  {
-    asm("cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::"
-        "80000000 [%0], [%1], %2, [%3];"
+  static_assert(__report_mechanism == mbarrier_report_valid_per_16bytes_80000000 || __report_mechanism == mbarrier_report_valid_per_16bytes_8000 || __report_mechanism == mbarrier_report_valid_per_16bytes_80 || __report_mechanism == mbarrier_report_valid_per_16bytes_8 || __report_mechanism == mbarrier_report_valid_per_element_ff, "");
+    if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_16bytes_80000000) {
+      asm (
+        "cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::80000000 [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_16bytes_8000)
-  {
-    asm("cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::8000 "
-        "[%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_16bytes_8000) {
+      asm (
+        "cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::8000 [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_16bytes_80)
-  {
-    asm("cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::80 "
-        "[%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_16bytes_80) {
+      asm (
+        "cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::80 [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_16bytes_8)
-  {
-    asm("cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::8 "
-        "[%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_16bytes_8) {
+      asm (
+        "cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::8 [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_element_ff)
-  {
-    asm("cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_element::ff "
-        "[%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_shared && __report_mechanism == mbarrier_report_valid_per_element_ff) {
+      asm (
+        "cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_element::ff [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_16bytes_80000000)
-  {
-    asm("cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::"
-        "80000000 [%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_16bytes_80000000) {
+      asm (
+        "cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::80000000 [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_16bytes_8000)
-  {
-    asm("cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::"
-        "8000 [%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_16bytes_8000) {
+      asm (
+        "cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::8000 [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_16bytes_80)
-  {
-    asm("cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::80 "
-        "[%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_16bytes_80) {
+      asm (
+        "cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::80 [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_16bytes_8)
-  {
-    asm("cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::8 "
-        "[%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_16bytes_8) {
+      asm (
+        "cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_16bytes::8 [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
-  else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_element_ff)
-  {
-    asm("cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_element::ff "
-        "[%0], [%1], %2, [%3];"
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    } else if constexpr (__space == space_cluster && __report_mechanism == mbarrier_report_valid_per_element_ff) {
+      asm (
+        "cp.async.bulk.shared::cluster.global.mbarrier::complete_tx::bytes.mbarrier::report::validity::per_element::ff [%0], [%1], %2, [%3];"
         :
-        : "r"(__as_ptr_smem(__dstMem)), "l"(__as_ptr_gmem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-        : "memory");
-  }
+        : "r"(__as_ptr_smem(__dstMem)),
+          "l"(__as_ptr_gmem(__srcMem)),
+          "r"(__size),
+          "r"(__as_ptr_smem(__smem_bar))
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 940
 

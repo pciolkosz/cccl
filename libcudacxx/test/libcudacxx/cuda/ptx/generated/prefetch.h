@@ -14,51 +14,46 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_prefetch(void** fn_ptr)
-{
+__global__ void test_prefetch(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 200
-  NV_IF_TARGET(NV_PROVIDES_SM_50,
-               (
-                   // prefetch.global.L1 [addr];
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void*)>(cuda::ptx::prefetch_L1));));
+  NV_IF_TARGET(NV_PROVIDES_SM_50, (
+    // prefetch.global.L1 [addr];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* )>(cuda::ptx::prefetch_L1));
+  ));
 #endif // __cccl_ptx_isa >= 200
 
 #if __cccl_ptx_isa >= 200
-  NV_IF_TARGET(NV_PROVIDES_SM_50,
-               (
-                   // prefetch.global.L2 [addr];
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void*)>(cuda::ptx::prefetch_L2));));
+  NV_IF_TARGET(NV_PROVIDES_SM_50, (
+    // prefetch.global.L2 [addr];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* )>(cuda::ptx::prefetch_L2));
+  ));
 #endif // __cccl_ptx_isa >= 200
 
 #if __cccl_ptx_isa >= 940
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // prefetch.global.L1::32B.valid_addr [addr];
-        * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void*)>(cuda::ptx::prefetch_L1_32B));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // prefetch.global.L1::32B.valid_addr [addr];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* )>(cuda::ptx::prefetch_L1_32B));
+  ));
 #endif // __cccl_ptx_isa >= 940
 
 #if __cccl_ptx_isa >= 740
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_80,
-    (
-        // prefetch.global.L2::evict_last [addr];
-        * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void*)>(cuda::ptx::prefetch_L2_evict_last));));
+  NV_IF_TARGET(NV_PROVIDES_SM_80, (
+    // prefetch.global.L2::evict_last [addr];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* )>(cuda::ptx::prefetch_L2_evict_last));
+  ));
 #endif // __cccl_ptx_isa >= 740
 
 #if __cccl_ptx_isa >= 740
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_80,
-    (
-        // prefetch.global.L2::evict_normal [addr];
-        * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void*)>(cuda::ptx::prefetch_L2_evict_normal));));
+  NV_IF_TARGET(NV_PROVIDES_SM_80, (
+    // prefetch.global.L2::evict_normal [addr];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* )>(cuda::ptx::prefetch_L2_evict_normal));
+  ));
 #endif // __cccl_ptx_isa >= 740
 
 #if __cccl_ptx_isa >= 800
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // prefetch.tensormap [addr];
-        * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void*)>(cuda::ptx::prefetch_tensormap));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // prefetch.tensormap [addr];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* )>(cuda::ptx::prefetch_tensormap));
+  ));
 #endif // __cccl_ptx_isa >= 800
 }

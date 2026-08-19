@@ -12,7 +12,12 @@ __device__ static inline void tcgen05_wait_ld();
 template <typename = void>
 _CCCL_DEVICE static inline void tcgen05_wait_ld()
 {
-  asm volatile("tcgen05.wait::ld.sync.aligned;" : : : "memory");
+    asm volatile (
+      "tcgen05.wait::ld.sync.aligned;"
+      :
+      :
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 860
 
@@ -25,7 +30,12 @@ __device__ static inline void tcgen05_wait_st();
 template <typename = void>
 _CCCL_DEVICE static inline void tcgen05_wait_st()
 {
-  asm volatile("tcgen05.wait::st.sync.aligned;" : : : "memory");
+    asm volatile (
+      "tcgen05.wait::st.sync.aligned;"
+      :
+      :
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 860
 

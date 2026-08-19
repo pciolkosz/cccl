@@ -5,7 +5,7 @@
 // under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-// SPDX-FileCopyrightText: Copyright (c) 2024 NVIDIA CORPORATION & AFFILIATES.
+// SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
 //
 //===----------------------------------------------------------------------===//
 
@@ -32,18 +32,7 @@
 
 _CCCL_BEGIN_NAMESPACE_CUDA_PTX
 
-#if defined(__input)
-#  pragma push_macro("__input")
-#  undef __input
-#  define _CUDA_PTX_STMATRIX_POP_MACRO___INPUT
-#endif // defined(__input)
-
 #include <cuda/__ptx/instructions/generated/stmatrix.h>
-
-#if defined(_CUDA_PTX_STMATRIX_POP_MACRO___INPUT)
-#  pragma pop_macro("__input")
-#  undef _CUDA_PTX_STMATRIX_POP_MACRO___INPUT
-#endif // defined(_CUDA_PTX_STMATRIX_POP_MACRO___INPUT)
 
 _CCCL_END_NAMESPACE_CUDA_PTX
 

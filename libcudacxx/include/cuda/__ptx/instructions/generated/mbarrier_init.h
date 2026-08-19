@@ -12,9 +12,17 @@ __device__ static inline void mbarrier_init(
 */
 #if __cccl_ptx_isa >= 700
 template <typename = void>
-_CCCL_DEVICE static inline void mbarrier_init(::cuda::std::uint64_t* __addr, const ::cuda::std::uint32_t& __count)
+_CCCL_DEVICE static inline void mbarrier_init(
+  ::cuda::std::uint64_t* __addr,
+  const ::cuda::std::uint32_t& __count)
 {
-  asm("mbarrier.init.shared.b64 [%0], %1;" : : "r"(__as_ptr_smem(__addr)), "r"(__count) : "memory");
+    asm (
+      "mbarrier.init.shared.b64 [%0], %1;"
+      :
+      : "r"(__as_ptr_smem(__addr)),
+        "r"(__count)
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 700
 
@@ -30,17 +38,28 @@ __device__ static inline void mbarrier_init(
 #if __cccl_ptx_isa >= 940
 template <::cuda::ptx::dot_layout _Layout>
 _CCCL_DEVICE static inline void mbarrier_init(
-  ::cuda::ptx::layout_t<_Layout> __layout, ::cuda::std::uint64_t* __addr, const ::cuda::std::uint32_t& __count)
+  ::cuda::ptx::layout_t<_Layout> __layout,
+  ::cuda::std::uint64_t* __addr,
+  const ::cuda::std::uint32_t& __count)
 {
   static_assert(__layout == layout_v0 || __layout == layout_v1, "");
-  if constexpr (__layout == layout_v0)
-  {
-    asm("mbarrier.init.layout::v0.shared.b64 [%0], %1;" : : "r"(__as_ptr_smem(__addr)), "r"(__count) : "memory");
-  }
-  else if constexpr (__layout == layout_v1)
-  {
-    asm("mbarrier.init.layout::v1.shared.b64 [%0], %1;" : : "r"(__as_ptr_smem(__addr)), "r"(__count) : "memory");
-  }
+    if constexpr (__layout == layout_v0) {
+      asm (
+        "mbarrier.init.layout::v0.shared.b64 [%0], %1;"
+        :
+        : "r"(__as_ptr_smem(__addr)),
+          "r"(__count)
+        : "memory"
+      );
+    } else if constexpr (__layout == layout_v1) {
+      asm (
+        "mbarrier.init.layout::v1.shared.b64 [%0], %1;"
+        :
+        : "r"(__as_ptr_smem(__addr)),
+          "r"(__count)
+        : "memory"
+      );
+    }
 }
 #endif // __cccl_ptx_isa >= 940
 

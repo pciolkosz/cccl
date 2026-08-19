@@ -12,11 +12,19 @@ __device__ static inline uint32_t bmsk_clamp(
 */
 #if __cccl_ptx_isa >= 760
 template <typename = void>
-_CCCL_DEVICE static inline ::cuda::std::uint32_t bmsk_clamp(::cuda::std::uint32_t __a_reg, ::cuda::std::uint32_t __b_reg)
+_CCCL_DEVICE static inline ::cuda::std::uint32_t bmsk_clamp(
+  ::cuda::std::uint32_t __a_reg,
+  ::cuda::std::uint32_t __b_reg)
 {
-  ::cuda::std::uint32_t __dest;
-  asm("bmsk.clamp.b32 %0, %1, %2;" : "=r"(__dest) : "r"(__a_reg), "r"(__b_reg) :);
-  return __dest;
+    ::cuda::std::uint32_t __dest;
+    asm (
+      "bmsk.clamp.b32 %0, %1, %2;"
+      : "=r"(__dest)
+      : "r"(__a_reg),
+        "r"(__b_reg)
+      :
+    );
+    return __dest;
 }
 #endif // __cccl_ptx_isa >= 760
 
@@ -29,11 +37,19 @@ __device__ static inline uint32_t bmsk_wrap(
 */
 #if __cccl_ptx_isa >= 760
 template <typename = void>
-_CCCL_DEVICE static inline ::cuda::std::uint32_t bmsk_wrap(::cuda::std::uint32_t __a_reg, ::cuda::std::uint32_t __b_reg)
+_CCCL_DEVICE static inline ::cuda::std::uint32_t bmsk_wrap(
+  ::cuda::std::uint32_t __a_reg,
+  ::cuda::std::uint32_t __b_reg)
 {
-  ::cuda::std::uint32_t __dest;
-  asm("bmsk.wrap.b32 %0, %1, %2;" : "=r"(__dest) : "r"(__a_reg), "r"(__b_reg) :);
-  return __dest;
+    ::cuda::std::uint32_t __dest;
+    asm (
+      "bmsk.wrap.b32 %0, %1, %2;"
+      : "=r"(__dest)
+      : "r"(__a_reg),
+        "r"(__b_reg)
+      :
+    );
+    return __dest;
 }
 #endif // __cccl_ptx_isa >= 760
 

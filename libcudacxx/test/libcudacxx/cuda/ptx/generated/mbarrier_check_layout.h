@@ -14,20 +14,15 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_mbarrier_check_layout(void** fn_ptr)
-{
+__global__ void test_mbarrier_check_layout(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 940
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // mbarrier.check_layout.layout::v0.shared::cta.b64 p, [addr];
-        * fn_ptr++ = reinterpret_cast<void*>(static_cast<bool (*)(cuda::ptx::layout_v0_t, const cuda::std::uint64_t*)>(
-          cuda::ptx::mbarrier_check_layout));));
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // mbarrier.check_layout.layout::v1.shared::cta.b64 p, [addr];
-        * fn_ptr++ = reinterpret_cast<void*>(static_cast<bool (*)(cuda::ptx::layout_v1_t, const cuda::std::uint64_t*)>(
-          cuda::ptx::mbarrier_check_layout));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // mbarrier.check_layout.layout::v0.shared::cta.b64 p, [addr];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<bool (*)(cuda::ptx::layout_v0_t, const cuda::std::uint64_t* )>(cuda::ptx::mbarrier_check_layout));
+  ));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // mbarrier.check_layout.layout::v1.shared::cta.b64 p, [addr];
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<bool (*)(cuda::ptx::layout_v1_t, const cuda::std::uint64_t* )>(cuda::ptx::mbarrier_check_layout));
+  ));
 #endif // __cccl_ptx_isa >= 940
 }

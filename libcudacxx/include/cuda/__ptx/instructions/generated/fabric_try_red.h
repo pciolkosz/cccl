@@ -4,8 +4,7 @@
 #define _CUDA_PTX_GENERATED_FABRIC_TRY_RED_H_
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .and }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -39,17 +38,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.and.b32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.and.b32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .and }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -85,8 +88,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "and.b32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.and.b32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -94,13 +97,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .and }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -134,17 +137,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.and."
-      "b32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.and.b32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .and }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -180,8 +187,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.and.b32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.and.b32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -189,13 +196,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .xor }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -229,17 +236,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.xor.b32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.xor.b32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .xor }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -275,8 +286,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "xor.b32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.xor.b32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -284,13 +295,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .xor }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -324,17 +335,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.xor."
-      "b32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.xor.b32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .xor }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -370,8 +385,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.xor.b32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.xor.b32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -379,13 +394,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .or }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -419,17 +434,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.or.b32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.or.b32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .or }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -465,8 +484,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "or.b32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.or.b32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -474,13 +493,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .or }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -514,17 +533,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.or."
-      "b32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.or.b32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .or }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -560,8 +583,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.or.b32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.or.b32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -569,13 +592,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .and }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -609,17 +632,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.and.b64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.and.b64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .and }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -655,8 +682,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "and.b64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.and.b64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -664,13 +691,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .and }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -704,17 +731,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.and."
-      "b64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.and.b64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .and }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -750,8 +781,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.and.b64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.and.b64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -759,13 +790,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .xor }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -799,17 +830,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.xor.b64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.xor.b64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .xor }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -845,8 +880,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "xor.b64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.xor.b64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -854,13 +889,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .xor }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -894,17 +929,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.xor."
-      "b64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.xor.b64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .xor }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -940,8 +979,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.xor.b64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.xor.b64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -949,13 +988,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .or }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -989,17 +1028,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.or.b64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.or.b64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .or }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1035,8 +1078,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "or.b64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.or.b64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1044,13 +1087,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.b64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .or }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1084,17 +1127,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.or."
-      "b64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.or.b64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.b64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .or }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1130,8 +1177,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.or.b64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.or.b64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1139,13 +1186,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1179,17 +1226,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.u32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.u32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1225,8 +1276,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "min.u32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.u32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1234,13 +1285,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1274,17 +1325,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min."
-      "u32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.u32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1320,8 +1375,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.min.u32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.u32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1329,13 +1384,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1369,17 +1424,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.u32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.u32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1415,8 +1474,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "max.u32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.u32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1424,13 +1483,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1464,17 +1523,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max."
-      "u32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.u32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1510,8 +1573,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.max.u32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.u32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1519,13 +1582,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1559,17 +1622,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.s32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.s32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1605,8 +1672,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "min.s32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.s32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1614,13 +1681,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1654,17 +1721,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min."
-      "s32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.s32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1700,8 +1771,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.min.s32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.s32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1709,13 +1780,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1749,17 +1820,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.s32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.s32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1795,8 +1870,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "max.s32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.s32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1804,13 +1879,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1844,17 +1919,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max."
-      "s32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.s32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1890,8 +1969,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.max.s32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.s32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1899,13 +1978,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1939,17 +2018,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.u64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.u64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -1985,8 +2068,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "min.u64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.u64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -1994,13 +2077,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2034,17 +2117,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min."
-      "u64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.u64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2080,8 +2167,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.min.u64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.u64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2089,13 +2176,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2129,17 +2216,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.u64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.u64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2175,8 +2266,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "max.u64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.u64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2184,13 +2275,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2224,17 +2315,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max."
-      "u64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.u64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2270,8 +2365,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.max.u64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.u64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2279,13 +2374,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2319,17 +2414,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.s64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.s64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2365,8 +2464,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "min.s64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.s64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2374,13 +2473,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2414,17 +2513,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min."
-      "s64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.s64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2460,8 +2563,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.min.s64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.s64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2469,13 +2572,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2509,17 +2612,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.s64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.s64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2555,8 +2662,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "max.s64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.s64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2564,13 +2671,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.s64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2604,17 +2711,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max."
-      "s64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.s64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.s64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2650,8 +2761,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.max.s64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.s64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2659,13 +2770,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2699,17 +2810,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.f16 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.f16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2745,8 +2860,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "min.f16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.f16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2754,13 +2869,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2794,17 +2909,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min."
-      "f16 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.f16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2840,8 +2959,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.min.f16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.f16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2849,13 +2968,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2889,17 +3008,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.f16 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.f16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2935,8 +3058,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "max.f16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.f16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -2944,13 +3067,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -2984,17 +3107,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max."
-      "f16 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.f16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3030,8 +3157,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.max.f16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.f16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3039,13 +3166,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3079,17 +3206,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.bf16 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.bf16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3125,8 +3256,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "min.bf16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.bf16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3134,13 +3265,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3174,18 +3305,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min."
-      "bf16 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.min.bf16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-//
-fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .min }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3221,8 +3355,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.min.bf16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.min.bf16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3230,13 +3364,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3270,17 +3404,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.bf16 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.bf16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3316,8 +3454,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "max.bf16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.bf16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3325,13 +3463,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3365,18 +3503,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max."
-      "bf16 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.max.bf16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-//
-fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .max }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3412,8 +3553,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.max.bf16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.max.bf16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3421,13 +3562,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3461,17 +3602,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.u32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.u32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3507,8 +3652,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "add.u32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.u32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3516,13 +3661,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3556,17 +3701,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add."
-      "u32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.u32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3602,8 +3751,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.add.u32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.u32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3611,13 +3760,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3651,17 +3800,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.u64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.u64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3697,8 +3850,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "add.u64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.u64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3706,13 +3859,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.u64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3746,17 +3899,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add."
-      "u64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.u64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.u64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3792,8 +3949,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.add.u64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.u64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3801,13 +3958,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3841,17 +3998,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f16 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3887,8 +4048,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "add.f16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.f16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3896,13 +4057,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3936,17 +4097,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add."
-      "f16 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -3982,8 +4147,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.add.f16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.f16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -3991,13 +4156,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4031,17 +4196,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.bf16 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.bf16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4077,8 +4246,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "add.bf16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.bf16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -4086,13 +4255,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.bf16 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4126,18 +4295,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add."
-      "bf16 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.bf16 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-//
-fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.bf16 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4173,8 +4345,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.add.bf16 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.bf16 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -4182,13 +4354,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f32 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4222,17 +4394,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f32 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4268,8 +4444,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "add.f32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.f32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -4277,13 +4453,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f32 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f32 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4317,17 +4493,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add."
-      "f32 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f32 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f32
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f32 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4363,8 +4543,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.add.f32 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.f32 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -4372,13 +4552,13 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f64 [dstLeId, dstDataOff],
-[srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4412,17 +4592,21 @@ _CCCL_DEVICE static inline void fabric_try_red(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f64 [%0, "
-      "%1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4458,8 +4642,8 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys."
-      "add.f64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.f64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -4467,13 +4651,13 @@ _CCCL_DEVICE static inline void fabric_try_red_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f64 [dstLeId,
-dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.sem.scope.op.f64 [dstLeId, dstDataOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4507,17 +4691,21 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add."
-      "f64 [%0, %1], [%2], %3, [%4];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.relaxed.sys.add.f64 [%0, %1], [%2], %3, [%4];"
       :
-      : "r"(__dstLeId), "l"(__dstDataOff), "r"(__as_ptr_smem(__srcMem)), "r"(__size), "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "r"(__dstLeId),
+        "l"(__dstDataOff),
+        "r"(__as_ptr_smem(__srcMem)),
+        "r"(__size),
+        "r"(__as_ptr_smem(__smem_bar))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 
 /*
-// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f64
-[dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
+// fabric.try_red.async.multimem.src.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.sem.scope.op.f64 [dstLeId, dstDataOff, dstCounterOff], [srcMem], size, [smem_bar]; // PTX ISA 93, SM_100
 // .op        = { .add }
 // .src       = { .shared::cta }
 // .sem       = { .relaxed }
@@ -4553,8 +4741,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
   // __space == space_shared (due to parameter type constraint)
   // __sem == sem_relaxed (due to parameter type constraint)
   // __scope == scope_sys (due to parameter type constraint)
-  asm("fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes."
-      "relaxed.sys.add.f64 [%0, %1, %2], [%3], %4, [%5];"
+    asm (
+      "fabric.try_red.async.multimem.shared::cta.mbarrier::complete_tx::16B.mbarrier::report::fabric.counted::bytes.relaxed.sys.add.f64 [%0, %1, %2], [%3], %4, [%5];"
       :
       : "r"(__dstLeId),
         "l"(__dstDataOff),
@@ -4562,7 +4750,8 @@ _CCCL_DEVICE static inline void fabric_try_red_multimem_counted(
         "r"(__as_ptr_smem(__srcMem)),
         "r"(__size),
         "r"(__as_ptr_smem(__smem_bar))
-      : "memory");
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 930
 

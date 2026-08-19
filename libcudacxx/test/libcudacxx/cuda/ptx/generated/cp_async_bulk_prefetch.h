@@ -14,31 +14,28 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_cp_async_bulk_prefetch(void** fn_ptr)
-{
+__global__ void test_cp_async_bulk_prefetch(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 800
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // cp.async.bulk.prefetch.L2.global.L2::cache_hint [srcMem], size, cache_policy;
-        * fn_ptr++ =
-          reinterpret_cast<void*>(static_cast<void (*)(const void*, cuda::std::uint32_t, cuda::std::uint64_t)>(
-            cuda::ptx::cp_async_bulk_prefetch));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // cp.async.bulk.prefetch.L2.global.L2::cache_hint [srcMem], size, cache_policy;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* , cuda::std::uint32_t , cuda::std::uint64_t )>(cuda::ptx::cp_async_bulk_prefetch));
+  ));
 #endif // __cccl_ptx_isa >= 800
 
 #if __cccl_ptx_isa >= 940
 
-  NV_IF_TARGET(NV_HAS_FEATURE_SM_107a,
-               (
-                   // cp.async.bulk.prefetch.L2.global.L2::evict_last [srcMem], size;
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void*, cuda::std::uint32_t)>(
-                     cuda::ptx::cp_async_bulk_prefetch_L2_evict_last));));
+  NV_IF_TARGET(NV_HAS_FEATURE_SM_107a, (
+      // cp.async.bulk.prefetch.L2.global.L2::evict_last [srcMem], size;
+      *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* , cuda::std::uint32_t )>(cuda::ptx::cp_async_bulk_prefetch_L2_evict_last));
+  ));
 
-  NV_IF_TARGET(NV_HAS_FEATURE_SM_107f,
-               (
-                   // cp.async.bulk.prefetch.L2.global.L2::evict_last [srcMem], size;
-                   * fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void*, cuda::std::uint32_t)>(
-                     cuda::ptx::cp_async_bulk_prefetch_L2_evict_last));));
+
+
+  NV_IF_TARGET(NV_HAS_FEATURE_SM_107f, (
+      // cp.async.bulk.prefetch.L2.global.L2::evict_last [srcMem], size;
+      *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(const void* , cuda::std::uint32_t )>(cuda::ptx::cp_async_bulk_prefetch_L2_evict_last));
+  ));
+
 
 #endif // __cccl_ptx_isa >= 940
 }

@@ -12,7 +12,12 @@ __device__ static inline void exit();
 template <typename = void>
 _CCCL_DEVICE static inline void exit()
 {
-  asm volatile("exit;" : : :);
+    asm volatile (
+      "exit;"
+      :
+      :
+      :
+    );
 }
 #endif // __cccl_ptx_isa >= 100
 

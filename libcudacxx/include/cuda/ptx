@@ -96,6 +96,8 @@
 #include <cuda/__ptx/instructions/getctarank.h>
 #include <cuda/__ptx/instructions/ld.h>
 #include <cuda/__ptx/instructions/ldmatrix.h>
+#include <cuda/__ptx/instructions/ldmatrix_m16n16_trans.h>
+#include <cuda/__ptx/instructions/mapa.h>
 #include <cuda/__ptx/instructions/mbarrier_arrive.h>
 #include <cuda/__ptx/instructions/mbarrier_check_layout.h>
 #include <cuda/__ptx/instructions/mbarrier_complete_tx.h>

@@ -14,39 +14,27 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_fence_proxy_async_generic_sync_restrict(void** fn_ptr)
-{
+__global__ void test_fence_proxy_async_generic_sync_restrict(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 860
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // fence.proxy.async::generic.acquire.sync_restrict::shared::cluster.cluster;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_acquire_t, cuda::ptx::space_cluster_t, cuda::ptx::scope_cluster_t)>(
-            cuda::ptx::fence_proxy_async_generic_sync_restrict));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // fence.proxy.async::generic.acquire.sync_restrict::shared::cluster.cluster;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_acquire_t, cuda::ptx::space_cluster_t, cuda::ptx::scope_cluster_t)>(cuda::ptx::fence_proxy_async_generic_sync_restrict));
+  ));
 #endif // __cccl_ptx_isa >= 860
 
 #if __cccl_ptx_isa >= 860
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // fence.proxy.async::generic.release.sync_restrict::shared::cta.cluster;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_release_t, cuda::ptx::space_shared_t, cuda::ptx::scope_cluster_t)>(
-            cuda::ptx::fence_proxy_async_generic_sync_restrict));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // fence.proxy.async::generic.release.sync_restrict::shared::cta.cluster;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_release_t, cuda::ptx::space_shared_t, cuda::ptx::scope_cluster_t)>(cuda::ptx::fence_proxy_async_generic_sync_restrict));
+  ));
 #endif // __cccl_ptx_isa >= 860
 
 #if __cccl_ptx_isa >= 940
-  NV_IF_TARGET(
-    NV_PROVIDES_SM_90,
-    (
-        // fence.proxy.async::generic.release.sync_restrict::shared::cluster::read.cta;
-        * fn_ptr++ = reinterpret_cast<void*>(
-          static_cast<void (*)(cuda::ptx::sem_release_t, cuda::ptx::space_cluster_t, cuda::ptx::scope_cta_t)>(
-            cuda::ptx::fence_proxy_async_generic_sync_restrict));
-          // fence.proxy.async::generic.release.sync_restrict::shared::cluster::read.cluster;
-            * fn_ptr++ = reinterpret_cast<void*>(
-              static_cast<void (*)(cuda::ptx::sem_release_t, cuda::ptx::space_cluster_t, cuda::ptx::scope_cluster_t)>(
-                cuda::ptx::fence_proxy_async_generic_sync_restrict));));
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (
+    // fence.proxy.async::generic.release.sync_restrict::shared::cluster::read.cta;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_release_t, cuda::ptx::space_cluster_t, cuda::ptx::scope_cta_t)>(cuda::ptx::fence_proxy_async_generic_sync_restrict));
+    // fence.proxy.async::generic.release.sync_restrict::shared::cluster::read.cluster;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<void (*)(cuda::ptx::sem_release_t, cuda::ptx::space_cluster_t, cuda::ptx::scope_cluster_t)>(cuda::ptx::fence_proxy_async_generic_sync_restrict));
+  ));
 #endif // __cccl_ptx_isa >= 940
 }

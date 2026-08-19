@@ -14,13 +14,11 @@
 // Because `fn_ptr` is possibly visible outside this translation unit, the
 // compiler must compile all the functions which are stored.
 
-__global__ void test_mbarrier_pending_count(void** fn_ptr)
-{
+__global__ void test_mbarrier_pending_count(void ** fn_ptr) {
 #if __cccl_ptx_isa >= 700
-  NV_IF_TARGET(NV_PROVIDES_SM_80,
-               (
-                   // mbarrier.pending_count.b64 count, state;
-                   * fn_ptr++ = reinterpret_cast<void*>(
-                     static_cast<cuda::std::uint32_t (*)(cuda::std::uint64_t)>(cuda::ptx::mbarrier_pending_count));));
+  NV_IF_TARGET(NV_PROVIDES_SM_80, (
+    // mbarrier.pending_count.b64 count, state;
+    *fn_ptr++ = reinterpret_cast<void*>(static_cast<cuda::std::uint32_t (*)(cuda::std::uint64_t )>(cuda::ptx::mbarrier_pending_count));
+  ));
 #endif // __cccl_ptx_isa >= 700
 }

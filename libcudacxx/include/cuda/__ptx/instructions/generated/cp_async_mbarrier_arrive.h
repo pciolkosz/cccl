@@ -11,9 +11,15 @@ __device__ static inline void cp_async_mbarrier_arrive(
 */
 #if __cccl_ptx_isa >= 700
 template <typename = void>
-_CCCL_DEVICE static inline void cp_async_mbarrier_arrive(::cuda::std::uint64_t* __addr)
+_CCCL_DEVICE static inline void cp_async_mbarrier_arrive(
+  ::cuda::std::uint64_t* __addr)
 {
-  asm("cp.async.mbarrier.arrive.b64 [%0];" : : "r"(__as_ptr_smem(__addr)) : "memory");
+    asm (
+      "cp.async.mbarrier.arrive.b64 [%0];"
+      :
+      : "r"(__as_ptr_smem(__addr))
+      : "memory"
+    );
 }
 #endif // __cccl_ptx_isa >= 700
 

@@ -4,6 +4,6 @@ prefetch
 ========
 
 -  PTX ISA:
-   `prefetch <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-prefetch>`__
+   `prefetch <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-prefetch-prefetchu>`__
 
 .. include:: generated/prefetch.rst
