@@ -25,7 +25,7 @@
 
 #include <cuda/std/__cccl/prologue.h>
 
-#if _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 4)
+#if _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 3)
 
 _CCCL_BEGIN_NAMESPACE_CUDA
 
@@ -44,8 +44,8 @@ _CCCL_HOST_DEVICE_API inline void shared_barrier::expect_tx(::cuda::std::ptrdiff
   ::cuda::std::ptrdiff_t __arrive_count_update, ::cuda::std::ptrdiff_t __transaction_count_update)
 {
   _CCCL_ASSERT(1 <= __arrive_count_update, "Arrival count update must be at least one.");
-  _CCCL_ASSERT(__arrive_count_update <= shared_barrier::max(),
-               "Arrival count update cannot exceed shared_barrier::max().");
+  _CCCL_ASSERT(__arrive_count_update <= __max_for_current_kind(),
+               "Arrival count update cannot exceed shared_barrier::max(active kind).");
   _CCCL_ASSERT(0 <= __transaction_count_update, "Transaction count update must be non-negative.");
   _CCCL_ASSERT(__transaction_count_update <= __max_transaction_count_update(),
                "Transaction count update cannot exceed the mbarrier transaction count limit.");
@@ -58,7 +58,7 @@ _CCCL_HOST_DEVICE_API inline void shared_barrier::expect_tx(::cuda::std::ptrdiff
 
 _CCCL_END_NAMESPACE_CUDA
 
-#endif // _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 4)
+#endif // _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 3)
 
 #include <cuda/std/__cccl/epilogue.h>
 

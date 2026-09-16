@@ -9,8 +9,8 @@
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: nvrtc
-// UNSUPPORTED: nvcc-12, nvcc-13.0, nvcc-13.1, nvcc-13.2, nvcc-13.3
-// UNSUPPORTED: pre-sm-90
+// UNSUPPORTED: nvcc-12, nvcc-13.0, nvcc-13.1, nvcc-13.2
+// UNSUPPORTED: pre-sm-80
 
 // UNSUPPORTED: enable-tile
 // error: asm statement is unsupported in tile code
@@ -20,6 +20,7 @@
 #include <cuda/std/chrono>
 #include <cuda/std/cstdint>
 #include <cuda/std/type_traits>
+#include <cuda/std/utility>
 
 #include "concurrent_agents.h"
 #include "cuda_space_selector.h"
@@ -27,10 +28,12 @@
 
 TEST_NV_DIAG_SUPPRESS(static_var_with_dynamic_init)
 
-using barrier_t = cuda::shared_barrier;
+using barrier_t      = cuda::shared_barrier;
+using cuda_barrier_t = cuda::barrier<cuda::thread_scope_block>;
 
 static_assert(cuda::std::is_default_constructible_v<barrier_t>);
 static_assert(!cuda::std::is_constructible_v<barrier_t, cuda::std::ptrdiff_t>);
+static_assert(!cuda::std::is_constructible_v<barrier_t, cuda::shared_barrier_kind, cuda::std::ptrdiff_t>);
 static_assert(!cuda::std::is_same_v<barrier_t::arrival_token, cuda::std::uint64_t>);
 static_assert(!cuda::std::is_constructible_v<barrier_t::arrival_token, int>);
 static_assert(!cuda::std::is_convertible_v<int, barrier_t::arrival_token>);
@@ -39,71 +42,149 @@ static_assert(!cuda::std::is_copy_assignable_v<barrier_t::operation_status>);
 static_assert(cuda::std::is_move_constructible_v<barrier_t::operation_status>);
 static_assert(cuda::std::is_move_assignable_v<barrier_t::operation_status>);
 static_assert(!cuda::std::is_convertible_v<barrier_t::operation_status, bool>);
-static_assert(barrier_t::max() == (1 << 9) - 1);
+static_assert(barrier_t::max(cuda::shared_barrier_kind::completion_only) == (1 << 20) - 1);
+static_assert(barrier_t::max(cuda::shared_barrier_kind::status_reporting) == (1 << 9) - 1);
 
-TEST_DEVICE_FUNC barrier_t*
-construct_barrier(shared_memory_selector<barrier_t, constructor_initializer>& sel, int expected)
+template <class Barrier>
+TEST_DEVICE_FUNC Barrier* construct_barrier(
+  shared_memory_selector<Barrier, constructor_initializer>& sel, cuda::shared_barrier_kind kind, int expected)
 {
-  barrier_t* bar = sel.construct();
-  execute_on_main_thread([&] {
-    init(bar, expected);
-  });
-  return bar;
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    Barrier* bar = sel.construct();
+    execute_on_main_thread([&] {
+      init(bar, kind, expected);
+    });
+    return bar;
+  }
+  else
+  {
+    unused(kind);
+    return sel.construct(expected);
+  }
 }
 
-TEST_DEVICE_FUNC barrier_t*
-construct_checked_barrier(shared_memory_selector<barrier_t, constructor_initializer>& sel, int expected)
+template <class Barrier>
+TEST_DEVICE_FUNC void check_barrier_kind(Barrier* bar, cuda::shared_barrier_kind kind)
 {
-  barrier_t* bar = construct_barrier(sel, expected);
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    assert(bar->is_kind(kind));
+  }
+  else
+  {
+    unused(bar, kind);
+  }
+}
+
+template <class Barrier>
+TEST_DEVICE_FUNC Barrier* construct_checked_barrier(
+  shared_memory_selector<Barrier, constructor_initializer>& sel, cuda::shared_barrier_kind kind, int expected)
+{
+  Barrier* bar = construct_barrier(sel, kind, expected);
   __syncthreads();
+  check_barrier_kind(bar, kind);
   return bar;
 }
 
-TEST_HOST_DEVICE_FUNC void arrive_and_wait_ignoring_status(barrier_t* bar)
+template <class Barrier>
+TEST_DEVICE_FUNC void arrive_and_wait_ignoring_status(Barrier* bar)
 {
-  bar->arrive_and_wait(cuda::ignore_status);
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    bar->arrive_and_wait(cuda::ignore_status);
+  }
+  else
+  {
+    bar->arrive_and_wait();
+  }
 }
 
-TEST_HOST_DEVICE_FUNC void wait_token_ignoring_status(barrier_t* bar, barrier_t::arrival_token& token)
+template <class Barrier>
+TEST_DEVICE_FUNC void wait_token_ignoring_status(Barrier* bar, typename Barrier::arrival_token& token)
 {
-  bar->wait(token, cuda::ignore_status);
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    bar->wait(token, cuda::ignore_status);
+  }
+  else
+  {
+    bar->wait(cuda::std::move(token));
+  }
 }
 
-template <class Duration>
-TEST_HOST_DEVICE_FUNC bool
-try_wait_token_for_ignoring_status(barrier_t* bar, barrier_t::arrival_token& token, Duration delay)
+template <class Barrier, class Duration>
+TEST_DEVICE_FUNC bool
+try_wait_token_for_ignoring_status(Barrier* bar, typename Barrier::arrival_token& token, Duration delay)
 {
-  return bar->try_wait_for(token, delay, cuda::ignore_status);
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    return bar->try_wait_for(token, delay, cuda::ignore_status);
+  }
+  else
+  {
+    return bar->try_wait_for(cuda::std::move(token), delay);
+  }
 }
 
-template <class TimePoint>
-TEST_HOST_DEVICE_FUNC bool
-try_wait_token_until_ignoring_status(barrier_t* bar, barrier_t::arrival_token& token, TimePoint time)
+template <class Barrier, class TimePoint>
+TEST_DEVICE_FUNC bool
+try_wait_token_until_ignoring_status(Barrier* bar, typename Barrier::arrival_token& token, TimePoint time)
 {
-  return bar->try_wait_until(token, time, cuda::ignore_status);
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    return bar->try_wait_until(token, time, cuda::ignore_status);
+  }
+  else
+  {
+    return bar->try_wait_until(cuda::std::move(token), time);
+  }
 }
 
-TEST_HOST_DEVICE_FUNC void wait_phase(barrier_t* bar, int phase)
+template <class Barrier>
+TEST_DEVICE_FUNC void wait_phase(Barrier* bar, int phase)
 {
-  bar->wait(phase, cuda::ignore_status);
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    bar->wait(phase, cuda::ignore_status);
+  }
+  else
+  {
+    bar->wait_parity(phase & 1);
+  }
 }
 
-template <class Duration>
-TEST_HOST_DEVICE_FUNC bool try_wait_phase_for(barrier_t* bar, int phase, Duration delay)
+template <class Barrier, class Duration>
+TEST_DEVICE_FUNC bool try_wait_phase_for(Barrier* bar, int phase, Duration delay)
 {
-  return bar->try_wait_for(phase, delay, cuda::ignore_status);
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    return bar->try_wait_for(phase, delay, cuda::ignore_status);
+  }
+  else
+  {
+    return bar->try_wait_parity_for(phase & 1, delay);
+  }
 }
 
-template <class TimePoint>
-TEST_HOST_DEVICE_FUNC bool try_wait_phase_until(barrier_t* bar, int phase, TimePoint time)
+template <class Barrier, class TimePoint>
+TEST_DEVICE_FUNC bool try_wait_phase_until(Barrier* bar, int phase, TimePoint time)
 {
-  return bar->try_wait_until(phase, time, cuda::ignore_status);
+  if constexpr (cuda::std::is_same_v<Barrier, barrier_t>)
+  {
+    return bar->try_wait_until(phase, time, cuda::ignore_status);
+  }
+  else
+  {
+    return bar->try_wait_parity_until(phase & 1, time);
+  }
 }
 
-TEST_DEVICE_FUNC void test_concurrent_arrive_and_wait()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_concurrent_arrive_and_wait(cuda::shared_barrier_kind kind)
 {
-  shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, 2);
+  shared_memory_selector<Barrier, constructor_initializer> sel;
+  Barrier* bar = construct_checked_barrier(sel, kind, 2);
 
   auto worker = LAMBDA()
   {
@@ -116,12 +197,13 @@ TEST_DEVICE_FUNC void test_concurrent_arrive_and_wait()
   concurrent_agents_launch(worker, worker);
 }
 
-TEST_DEVICE_FUNC void test_concurrent_arrive_wait()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_concurrent_arrive_wait(cuda::shared_barrier_kind kind)
 {
-  shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, 2);
+  shared_memory_selector<Barrier, constructor_initializer> sel;
+  Barrier* bar = construct_checked_barrier(sel, kind, 2);
 
-  barrier_t::arrival_token* token = nullptr;
+  typename Barrier::arrival_token* token = nullptr;
   execute_on_main_thread([&] {
     token = new auto(bar->arrive());
   });
@@ -144,10 +226,11 @@ TEST_DEVICE_FUNC void test_concurrent_arrive_wait()
   });
 }
 
-TEST_DEVICE_FUNC void test_concurrent_arrive_and_drop()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_concurrent_arrive_and_drop(cuda::shared_barrier_kind kind)
 {
-  shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, 2);
+  shared_memory_selector<Barrier, constructor_initializer> sel;
+  Barrier* bar = construct_checked_barrier(sel, kind, 2);
 
   auto dropper = LAMBDA()
   {
@@ -162,13 +245,14 @@ TEST_DEVICE_FUNC void test_concurrent_arrive_and_drop()
   concurrent_agents_launch(dropper, arriver);
 }
 
-TEST_DEVICE_FUNC void test_concurrent_try_wait_for()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_concurrent_try_wait_for(cuda::shared_barrier_kind kind)
 {
-  shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, 2);
+  shared_memory_selector<Barrier, constructor_initializer> sel;
+  Barrier* bar = construct_checked_barrier(sel, kind, 2);
   cuda::std::chrono::nanoseconds delay(0);
 
-  barrier_t::arrival_token* token = nullptr;
+  typename Barrier::arrival_token* token = nullptr;
   execute_on_main_thread([&] {
     token = new auto(bar->arrive());
   });
@@ -191,13 +275,14 @@ TEST_DEVICE_FUNC void test_concurrent_try_wait_for()
   });
 }
 
-TEST_DEVICE_FUNC void test_concurrent_try_wait_until()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_concurrent_try_wait_until(cuda::shared_barrier_kind kind)
 {
-  shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, 2);
+  shared_memory_selector<Barrier, constructor_initializer> sel;
+  Barrier* bar = construct_checked_barrier(sel, kind, 2);
   cuda::std::chrono::duration<int> delay(0);
 
-  barrier_t::arrival_token* token = nullptr;
+  typename Barrier::arrival_token* token = nullptr;
   execute_on_main_thread([&] {
     token = new auto(bar->arrive());
   });
@@ -221,11 +306,12 @@ TEST_DEVICE_FUNC void test_concurrent_try_wait_until()
   });
 }
 
-TEST_DEVICE_FUNC void test_concurrent_wait_phase()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_concurrent_wait_phase(cuda::shared_barrier_kind kind)
 {
-  shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, 2);
-  int phase      = 0;
+  shared_memory_selector<Barrier, constructor_initializer> sel;
+  Barrier* bar = construct_checked_barrier(sel, kind, 2);
+  int phase    = 0;
 
   execute_on_main_thread([&] {
     (void) bar->arrive();
@@ -249,11 +335,12 @@ TEST_DEVICE_FUNC void test_concurrent_wait_phase()
   });
 }
 
-TEST_DEVICE_FUNC void test_concurrent_try_wait_phase_for()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_concurrent_try_wait_phase_for(cuda::shared_barrier_kind kind)
 {
-  shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, 2);
-  int phase      = 0;
+  shared_memory_selector<Barrier, constructor_initializer> sel;
+  Barrier* bar = construct_checked_barrier(sel, kind, 2);
+  int phase    = 0;
   cuda::std::chrono::nanoseconds delay(0);
 
   execute_on_main_thread([&] {
@@ -274,11 +361,12 @@ TEST_DEVICE_FUNC void test_concurrent_try_wait_phase_for()
   concurrent_agents_launch(awaiter, arriver);
 }
 
-TEST_DEVICE_FUNC void test_concurrent_try_wait_phase_until()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_concurrent_try_wait_phase_until(cuda::shared_barrier_kind kind)
 {
-  shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, 2);
-  int phase      = 0;
+  shared_memory_selector<Barrier, constructor_initializer> sel;
+  Barrier* bar = construct_checked_barrier(sel, kind, 2);
+  int phase    = 0;
   cuda::std::chrono::duration<int> delay(0);
 
   execute_on_main_thread([&] {
@@ -300,16 +388,17 @@ TEST_DEVICE_FUNC void test_concurrent_try_wait_phase_until()
   concurrent_agents_launch(awaiter, arriver);
 }
 
-TEST_DEVICE_FUNC void test_shared_memory_barrier_choreography()
+template <class Barrier>
+TEST_DEVICE_FUNC void test_shared_memory_barrier_choreography(cuda::shared_barrier_kind kind)
 {
-  test_concurrent_arrive_and_wait();
-  test_concurrent_arrive_wait();
-  test_concurrent_arrive_and_drop();
-  test_concurrent_try_wait_for();
-  test_concurrent_try_wait_until();
-  test_concurrent_wait_phase();
-  test_concurrent_try_wait_phase_for();
-  test_concurrent_try_wait_phase_until();
+  test_concurrent_arrive_and_wait<Barrier>(kind);
+  test_concurrent_arrive_wait<Barrier>(kind);
+  test_concurrent_arrive_and_drop<Barrier>(kind);
+  test_concurrent_try_wait_for<Barrier>(kind);
+  test_concurrent_try_wait_until<Barrier>(kind);
+  test_concurrent_wait_phase<Barrier>(kind);
+  test_concurrent_try_wait_phase_for<Barrier>(kind);
+  test_concurrent_try_wait_phase_until<Barrier>(kind);
 }
 
 TEST_DEVICE_FUNC void check_success_status(const barrier_t::operation_status& status)
@@ -471,10 +560,10 @@ TEST_DEVICE_FUNC void test_phase_waits(barrier_t* bar)
   check_success_status(status);
 }
 
-TEST_DEVICE_FUNC void test_shared_barrier_common_extensions()
+TEST_DEVICE_FUNC void test_shared_barrier_common_extensions(cuda::shared_barrier_kind kind)
 {
   shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, blockDim.x);
+  barrier_t* bar = construct_checked_barrier(sel, kind, blockDim.x);
 
   test_test_waits(bar);
   test_ignore_status_waits(bar);
@@ -482,19 +571,27 @@ TEST_DEVICE_FUNC void test_shared_barrier_common_extensions()
   test_phase_waits(bar);
 }
 
-TEST_DEVICE_FUNC void test_shared_barrier_sm90_extensions()
+TEST_DEVICE_FUNC void test_shared_barrier_sm90_extensions(cuda::shared_barrier_kind kind)
 {
   shared_memory_selector<barrier_t, constructor_initializer> sel;
-  barrier_t* bar = construct_checked_barrier(sel, blockDim.x);
+  barrier_t* bar = construct_checked_barrier(sel, kind, blockDim.x);
 
   test_tx_waits(bar);
 }
 
 TEST_DEVICE_FUNC void test_shared_barrier_device()
 {
+  test_shared_memory_barrier_choreography<cuda_barrier_t>(cuda::shared_barrier_kind::completion_only);
+  test_shared_memory_barrier_choreography<barrier_t>(cuda::shared_barrier_kind::completion_only);
+  test_shared_barrier_common_extensions(cuda::shared_barrier_kind::completion_only);
+
+#if __cccl_ptx_isa >= 940
   NV_IF_TARGET(NV_PROVIDES_SM_90,
-               (test_shared_memory_barrier_choreography(); test_shared_barrier_common_extensions();
-                test_shared_barrier_sm90_extensions();))
+               (test_shared_memory_barrier_choreography<barrier_t>(cuda::shared_barrier_kind::status_reporting);
+                test_shared_barrier_common_extensions(cuda::shared_barrier_kind::status_reporting);
+                test_shared_barrier_sm90_extensions(cuda::shared_barrier_kind::status_reporting);))
+#endif // __cccl_ptx_isa >= 940
+  NV_IF_TARGET(NV_PROVIDES_SM_90, (test_shared_barrier_sm90_extensions(cuda::shared_barrier_kind::completion_only);))
 }
 
 int main(int, char**)

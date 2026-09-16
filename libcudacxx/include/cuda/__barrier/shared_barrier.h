@@ -37,13 +37,23 @@
 
 #include <nv/target>
 
-#if _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 4)
+#if _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 3)
 #  include <cuda_runtime_api.h>
-#endif // _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 4)
+#endif // _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 3)
 
 #include <cuda/std/__cccl/prologue.h>
 
-#if _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 4)
+#if _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 3)
+
+_CCCL_BEGIN_NAMESPACE_CUDA
+
+enum class shared_barrier_kind
+{
+  completion_only,
+  status_reporting,
+};
+
+_CCCL_END_NAMESPACE_CUDA
 
 _CCCL_BEGIN_NAMESPACE_CUDA_DEVICE
 [[nodiscard]] _CCCL_DEVICE_API ::cuda::std::uint64_t* barrier_native_handle(::cuda::shared_barrier& __b);
@@ -265,14 +275,22 @@ public:
 private:
   [[noreturn]] _CCCL_HOST_DEVICE_API static void __unsupported_storage() noexcept
   {
-    _CCCL_ASSERT(false, "shared_barrier requires local shared memory and mbarrier layout v1 support");
+    _CCCL_ASSERT(false, "shared_barrier requires local shared memory and shared-memory mbarrier support");
     NV_IF_ELSE_TARGET(NV_IS_HOST, (::cuda::std::terminate();), (::__trap();))
     _CCCL_UNREACHABLE();
   }
 
-  [[nodiscard]] _CCCL_HOST_DEVICE_API static constexpr ::cuda::std::ptrdiff_t __max_expected_count() noexcept
+  [[noreturn]] _CCCL_HOST_DEVICE_API static void __unsupported_status_reporting() noexcept
   {
-    return (1 << 9) - 1;
+    _CCCL_ASSERT(false, "shared_barrier status_reporting kind requires mbarrier layout v1 support");
+    NV_IF_ELSE_TARGET(NV_IS_HOST, (::cuda::std::terminate();), (::__trap();))
+    _CCCL_UNREACHABLE();
+  }
+
+  [[nodiscard]] _CCCL_HOST_DEVICE_API static constexpr ::cuda::std::ptrdiff_t
+  __max_for_kind(shared_barrier_kind __kind) noexcept
+  {
+    return __kind == shared_barrier_kind::status_reporting ? ((1 << 9) - 1) : ((1 << 20) - 1);
   }
 
   [[nodiscard]] _CCCL_HOST_DEVICE_API static constexpr ::cuda::std::ptrdiff_t __max_transaction_count_update() noexcept
@@ -310,6 +328,47 @@ private:
     return operation_status(__result.__complete, __result.__report_predicate, __result.__report_value);
   }
 
+  [[nodiscard]] _CCCL_DEVICE_API _CCCL_FORCEINLINE operation_status
+  __make_completion_only_operation_status(bool __complete) const noexcept
+  {
+    return operation_status(__complete, false, 0);
+  }
+
+  [[nodiscard]] _CCCL_DEVICE_API _CCCL_FORCEINLINE operation_status
+  __test_wait_completion_only(arrival_token __token) const
+  {
+    return __make_completion_only_operation_status(__test_wait(__token_value(__token)));
+  }
+
+  [[nodiscard]] _CCCL_DEVICE_API _CCCL_FORCEINLINE operation_status __test_wait_phase_completion_only(int __phase) const
+  {
+    return __make_completion_only_operation_status(__test_wait_phase(__phase_value(__phase)));
+  }
+
+  [[nodiscard]] _CCCL_DEVICE_API _CCCL_FORCEINLINE operation_status
+  __try_wait_completion_only(arrival_token __token) const
+  {
+    return __make_completion_only_operation_status(__try_wait(__token_value(__token)));
+  }
+
+  [[nodiscard]] _CCCL_DEVICE_API _CCCL_FORCEINLINE operation_status __try_wait_phase_completion_only(int __phase) const
+  {
+    return __make_completion_only_operation_status(__try_wait_phase(__phase_value(__phase)));
+  }
+
+  [[nodiscard]] _CCCL_HOST_DEVICE_API ::cuda::std::ptrdiff_t __max_for_current_kind() const
+  {
+#  if __cccl_ptx_isa >= 940
+    NV_IF_TARGET(
+      NV_PROVIDES_SM_90,
+      (return __max_for_kind(is_kind(shared_barrier_kind::status_reporting) ? shared_barrier_kind::status_reporting
+                                                                            : shared_barrier_kind::completion_only);))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (return __max_for_kind(shared_barrier_kind::completion_only);))
+
+    __unsupported_storage();
+  }
+
   [[nodiscard]] _CCCL_HOST_DEVICE_API bool __completed_ignoring_report(const operation_status& __status) const
   {
     (void) __status.has_report();
@@ -319,20 +378,47 @@ private:
 public:
   _CCCL_HOST_DEVICE_API ~shared_barrier()
   {
-    NV_IF_TARGET(NV_PROVIDES_SM_90, (__inval(); return;))
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (__inval(); return;))
+
+    __unsupported_storage();
+  }
+
+  _CCCL_HOST_DEVICE_API inline friend void
+  init(shared_barrier* __b, shared_barrier_kind __kind, ::cuda::std::ptrdiff_t __expected)
+  {
+    _CCCL_ASSERT(1 <= __expected, "Expected arrival count must be at least one.");
+    _CCCL_ASSERT(__expected <= shared_barrier::max(__kind),
+                 "Expected arrival count cannot exceed shared_barrier::max(kind).");
+
+#  if __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_90,
+                 (
+                   __b->__assert_supported_storage(); if (__kind == shared_barrier_kind::status_reporting) {
+                     __b->__init_status_reporting(static_cast<::cuda::std::uint32_t>(__expected));
+                   } else { __b->__init(static_cast<::cuda::std::uint32_t>(__expected)); } return;))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80,
+                 (__b->__assert_supported_storage(); if (__kind == shared_barrier_kind::status_reporting) {
+                   __unsupported_status_reporting();
+                 } __b->__init(static_cast<::cuda::std::uint32_t>(__expected));
+                  return;))
 
     __unsupported_storage();
   }
 
   _CCCL_HOST_DEVICE_API inline friend void init(shared_barrier* __b, ::cuda::std::ptrdiff_t __expected)
   {
-    _CCCL_ASSERT(1 <= __expected, "Expected arrival count must be at least one.");
-    _CCCL_ASSERT(__expected <= shared_barrier::max(), "Expected arrival count cannot exceed shared_barrier::max().");
+    init(__b, shared_barrier_kind::completion_only, __expected);
+  }
 
-    NV_IF_TARGET(
-      NV_PROVIDES_SM_90,
-      (__b->__assert_supported_storage(); __b->__init_status_reporting(static_cast<::cuda::std::uint32_t>(__expected));
-       return;))
+  [[nodiscard]] _CCCL_HOST_DEVICE_API bool is_kind(shared_barrier_kind __kind) const
+  {
+#  if __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_90,
+                 (const bool __is_v1 = __has_status_reporting_layout();
+                  return __kind == shared_barrier_kind::status_reporting ? __is_v1 : !__is_v1;))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (return __kind == shared_barrier_kind::completion_only;))
 
     __unsupported_storage();
   }
@@ -340,9 +426,10 @@ public:
   [[nodiscard]] _CCCL_HOST_DEVICE_API arrival_token arrive(::cuda::std::ptrdiff_t __update = 1)
   {
     _CCCL_ASSERT(1 <= __update, "Arrival count update must be at least one.");
-    _CCCL_ASSERT(__update <= shared_barrier::max(), "Arrival count update cannot exceed shared_barrier::max().");
+    _CCCL_ASSERT(__update <= __max_for_current_kind(),
+                 "Arrival count update cannot exceed shared_barrier::max(active kind).");
 
-    NV_IF_TARGET(NV_PROVIDES_SM_90, (return arrival_token(__arrive(__update));))
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (return arrival_token(__arrive(__update));))
 
     __unsupported_storage();
   }
@@ -353,7 +440,10 @@ public:
 
   [[nodiscard]] _CCCL_HOST_DEVICE_API operation_status test_wait(arrival_token __token, return_status_t) const
   {
+#  if __cccl_ptx_isa >= 940
     NV_IF_TARGET(NV_PROVIDES_SM_90, (return __make_operation_status(__test_wait_status(__token_value(__token)));))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (return __test_wait_completion_only(__token);))
 
     __unsupported_storage();
   }
@@ -366,7 +456,10 @@ public:
 
   [[nodiscard]] _CCCL_HOST_DEVICE_API operation_status try_wait(arrival_token __token, return_status_t) const
   {
+#  if __cccl_ptx_isa >= 940
     NV_IF_TARGET(NV_PROVIDES_SM_90, (return __make_operation_status(__try_wait_status(__token_value(__token)));))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (return __try_wait_completion_only(__token);))
 
     __unsupported_storage();
   }
@@ -406,14 +499,17 @@ public:
 
   _CCCL_HOST_DEVICE_API void arrive_and_drop()
   {
-    NV_IF_TARGET(NV_PROVIDES_SM_90, (__arrive_and_drop(); return;))
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (__arrive_and_drop(); return;))
 
     __unsupported_storage();
   }
 
   [[nodiscard]] _CCCL_HOST_DEVICE_API operation_status test_wait(int __phase, return_status_t) const
   {
+#  if __cccl_ptx_isa >= 940
     NV_IF_TARGET(NV_PROVIDES_SM_90, (return __make_operation_status(__test_wait_phase_status(__phase_value(__phase)));))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (return __test_wait_phase_completion_only(__phase);))
 
     __unsupported_storage();
   }
@@ -426,7 +522,10 @@ public:
 
   [[nodiscard]] _CCCL_HOST_DEVICE_API operation_status try_wait(int __phase, return_status_t) const
   {
+#  if __cccl_ptx_isa >= 940
     NV_IF_TARGET(NV_PROVIDES_SM_90, (return __make_operation_status(__try_wait_phase_status(__phase_value(__phase)));))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (return __try_wait_phase_completion_only(__phase);))
 
     __unsupported_storage();
   }
@@ -456,16 +555,21 @@ public:
 
   [[nodiscard]] _CCCL_HOST_DEVICE_API bool test_wait_conditional_phase(int __phase) const
   {
+#  if __cccl_ptx_isa >= 940
     NV_IF_TARGET(NV_PROVIDES_SM_90, (return __test_wait_conditional_phase(__phase_value(__phase));))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80, (return __test_wait_phase_completion_only(__phase).complete();))
 
     __unsupported_storage();
   }
 
   [[nodiscard]] _CCCL_HOST_DEVICE_API bool try_wait_conditional_phase(int __phase) const
   {
+#  if __cccl_ptx_isa >= 940
     NV_IF_TARGET(NV_PROVIDES_SM_90, (return __try_wait_conditional_phase(__phase_value(__phase));))
+#  endif // __cccl_ptx_isa >= 940
 
-    __unsupported_storage();
+    return test_wait_conditional_phase(__phase);
   }
 
   _CCCL_HOST_DEVICE_API void wait_conditional_phase(int __phase) const
@@ -486,6 +590,7 @@ public:
       return test_wait(__token, return_status);
     }
 
+#  if __cccl_ptx_isa >= 940
     NV_IF_TARGET(
       NV_PROVIDES_SM_90,
       (operation_status __result; const ::cuda::std::chrono::high_resolution_clock::time_point __start =
@@ -497,6 +602,9 @@ public:
          __elapsed = ::cuda::std::chrono::high_resolution_clock::now() - __start;
        } while (!__result.complete() && (__nanosec > __elapsed));
        return __result;))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(NV_PROVIDES_SM_80,
+                 (return __make_completion_only_operation_status(__try_wait_for(__token_value(__token), __nanosec));))
 
     __unsupported_storage();
   }
@@ -534,6 +642,7 @@ public:
       return test_wait(__phase, return_status);
     }
 
+#  if __cccl_ptx_isa >= 940
     NV_IF_TARGET(
       NV_PROVIDES_SM_90,
       (operation_status __result; const ::cuda::std::chrono::high_resolution_clock::time_point __start =
@@ -545,6 +654,10 @@ public:
          __elapsed = ::cuda::std::chrono::high_resolution_clock::now() - __start;
        } while (!__result.complete() && (__nanosec > __elapsed));
        return __result;))
+#  endif // __cccl_ptx_isa >= 940
+    NV_IF_TARGET(
+      NV_PROVIDES_SM_80,
+      (return __make_completion_only_operation_status(__try_wait_phase_for(__phase_value(__phase), __nanosec));))
 
     __unsupported_storage();
   }
@@ -571,9 +684,9 @@ public:
     return try_wait_for(__phase, (__time - _Clock::now()), ignore_status);
   }
 
-  [[nodiscard]] _CCCL_HOST_DEVICE_API static constexpr ::cuda::std::ptrdiff_t max() noexcept
+  [[nodiscard]] _CCCL_HOST_DEVICE_API static constexpr ::cuda::std::ptrdiff_t max(shared_barrier_kind __kind) noexcept
   {
-    return __max_expected_count();
+    return __max_for_kind(__kind);
   }
 };
 
@@ -588,12 +701,12 @@ _CCCL_BEGIN_NAMESPACE_CUDA_DEVICE
 
 _CCCL_END_NAMESPACE_CUDA_DEVICE
 
-#endif // _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 4)
+#endif // _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 3)
 
 #include <cuda/std/__cccl/epilogue.h>
 
-#if _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 4)
+#if _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 3)
 #  include <cuda/__barrier/shared_barrier_tx.h>
-#endif // _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 4)
+#endif // _CCCL_CUDA_COMPILATION() && !_CCCL_COMPILER(NVRTC) && _CCCL_CUDACC_AT_LEAST(13, 3)
 
 #endif // _CUDA___BARRIER_SHARED_BARRIER_H
